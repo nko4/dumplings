@@ -73,8 +73,8 @@ Game = (function() {
     // 2 - brick
     // 3 - bomb
 
-    MAP_X = 34;
-    MAP_Y = 20;
+    MAP_X = 44;
+    MAP_Y = 30;
 
     for (var x = MAP_X; x >= 0; x--) {
       map[x] = [];
@@ -104,7 +104,7 @@ Game = (function() {
 
     map[MAP_X][MAP_Y] = 1; //hack :)
 
-    _.times(parseInt(MAP_X*MAP_Y*0.50),function() {
+    _.times(parseInt(MAP_X*MAP_Y*0.60),function() {
       var x = Math.floor(Math.random() * MAP_X-1) + 1;
       var y = Math.floor(Math.random() * MAP_Y-1) + 1;
       var elem = map[x][y];
