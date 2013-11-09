@@ -49,11 +49,18 @@ Player = (function() {
 
 })();
 
+
+
+ids = 0;
+
 player = new Player(1, 2);
 
 player.getPosition();
 
-
+function nextId() {
+  ids+=1;
+  return ids;
+}
 
 
 
@@ -87,10 +94,10 @@ io.sockets.on('connection', function (socket) {
 
     _.each(players,function(v,k) {
       _tmp_players.push(_.extend({ id: k },v));
-    })
+    });
 
 
-    socket.broadcast.emit('pm', _tmp_players);
+    socket.broadcast.emit('pm',_tmp_players);
 
 
   }); // player move
