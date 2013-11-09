@@ -62,12 +62,11 @@
 
 
             socket.on('leave', function(player) {
-                app.terminateOpponent(player);
-                console.log('opponent '+player+' terminated');
+                app.terminateOpponent(player.id);
+                console.log('opponent '+player.id+' terminated');
             });
 
             socket.on('pm',function(players) {
-            	console.log(players);
             	players.forEach(function(player) {
 
             		// console.log('player-'+player.id+'-x-'+player.x+'-y-'+player.y);
