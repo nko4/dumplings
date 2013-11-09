@@ -10,6 +10,7 @@ var port = (isProduction ? 80 : 8000);
 
 var ejs = require('ejs');
 var express = require('express');
+var _ = require('underscore');
 var app = express();
 var config = {};
 
@@ -60,7 +61,7 @@ player.getPosition();
 
 
 
-players = [];
+players = {};
 
 var server = app.listen(port);
 var io = require('socket.io').listen(server);
@@ -72,15 +73,29 @@ app.get('/', function (reseq, res) {
 io.sockets.on('connection', function (socket) {
 
 
-  socket.on('play',function(x,y) {
+  socket.on('play',function() {
 
-    players.push({ id: socket.id, x: x, y: y });
+    players[socket.id] = { x: 0, y: 0 };
 
   });
 
   socket.on('pm',function(x,y) {
 
-    socket.broadcast.emit('pm', players);
+
+
+    players[socket.id] = { x: x, y: y};
+
+
+
+
+    var _tmp_players = [];
+
+    _.each(players,function(v,k) {
+      _tmp_players.push(_.extend({ id: k },v));
+    })
+
+
+    socket.broadcast.emit('pm', _tmp_players);
 
 
   }); // player move

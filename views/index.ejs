@@ -41,6 +41,21 @@
 
 
 
+        player = false;
+        exports.player = player;
+
+
+        socket.emit('play')
+
+
+        socket.on('play',function(id,x,y) {
+			
+			player = app.addPlayer(id,true);
+			socket.emit('pm', player.tile.x , player.tile.y);
+
+        });
+
+
         exports.player_move = function(x,y) {
         	console.log('emit-player-x-'+x+'-y-'+y);
         	socket.emit('pm',x,y);
@@ -48,6 +63,7 @@
 
 
         socket.on('pm',function(players) {
+        	console.log(players);
         	players.forEach(function(player) {
 
         		console.log('player-'+player.id+'-x-'+player.x+'-y-'+player.y);

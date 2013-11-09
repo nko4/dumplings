@@ -15,7 +15,8 @@
     "mongodb" : "*",
     "ejs" : "*",
     "socket.io" : "*",
-    "express" : "*"
+    "express" : "*",
+    "underscore" : "*"
   },
   "engines": {
     "node": "0.10.x"
