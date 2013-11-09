@@ -38,11 +38,11 @@
         exports.log = log;
         exports.current_player = current_player;
 
-        exports.player_move = function(x,y) {
-            socket.emit('pm',parseInt(x),parseInt(y));
+        exports.player_move = function(x, y) {
+            socket.emit('pm', parseInt(x, 10), parseInt(y, 10));
         };
 
-        exports.chuj = function () {
+        exports.connect_to_server = function () {
 
             socket.emit('play');
 
@@ -51,7 +51,7 @@
     			socket.emit('pm', current_player.tile.x , current_player.tile.y);
             });
             socket.on('join', function(player) {
-                log('opponent '+player.id+' joined');
+                log('opponent '+player.id+' joined', 1);
             });
             socket.on('leave', function(player) {
                 app.terminateOpponent(player.id);

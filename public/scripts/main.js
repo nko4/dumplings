@@ -20,7 +20,7 @@ require([
     // creating application
     window.app = new App(function () {
         // this.addPlayer('pika!');
-        chuj();
+        connect_to_server();
     });
 });
 
