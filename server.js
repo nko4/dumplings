@@ -93,7 +93,7 @@ io.sockets.on('connection', function (socket) {
     var _tmp_players = [];
 
     _.each(players,function(v,k) {
-      _tmp_players.push(_.extend({ id: k },v));
+      if (k != socket.id) { _tmp_players.push(_.extend({ id: k },v)); };
     })
 
 
@@ -105,7 +105,8 @@ io.sockets.on('connection', function (socket) {
 
 
   socket.on('disconnect', function() {
-
+    delete players[socket.id];
+    socket.broadcast.emit('leave',socket.id)
   });
 
 });

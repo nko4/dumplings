@@ -60,18 +60,27 @@
 
 
             exports.player_move = function(x,y) {
-            	console.log('emit-player-x-'+x+'-y-'+y);
             	socket.emit('pm',x,y);
             }
 
+
+            socket.on('leave', function(player) {
+                app.terminateOpponent(player);
+                console.log('oponent '+player+' terminated');
+            });
 
             socket.on('pm',function(players) {
             	console.log(players);
             	players.forEach(function(player) {
 
             		// console.log('player-'+player.id+'-x-'+player.x+'-y-'+player.y);
+                    try {
+                        var obj = app.getPlayerById(player.id);
+                    } catch(err) {
+                        var obj = app.addOpponent(player.id);
+                    }
 
-                    var obj = app.getPlayerById(player.id);
+
                     obj.move(player.x,player.y);
 
 
