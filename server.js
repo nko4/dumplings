@@ -57,11 +57,11 @@ Game = (function() {
     // 2 - brick
     // 3 - bomb
 
-    // MAP_X = 44;
-    // MAP_Y = 30;
+    MAP_X = 44;
+    MAP_Y = 30;
 
-    MAP_X = 24;
-    MAP_Y = 13;
+    // MAP_X = 24;
+    // MAP_Y = 13;
 
     this.MAP_X = MAP_X;
     this.MAP_Y = MAP_Y;
@@ -102,7 +102,6 @@ Game = (function() {
     this.wallCount += 1;
     this.maxCount -= this.wallCount;
     
-
     _.times(parseInt(MAP_X*MAP_Y*0.50),function() {
       var x = Math.floor(Math.random() * MAP_X-1) + 1;
       var y = Math.floor(Math.random() * MAP_Y-1) + 1;
@@ -114,11 +113,9 @@ Game = (function() {
       }
     });
 
-
     this.map = map;
     this.players = {};
     this.nextId = 0;
-
 
   }
 
@@ -219,6 +216,11 @@ io.sockets.on('connection', function (socket) {
     game.set(x,y,type);
     socket.broadcast.emit('mc',x,y,type)
   });
+
+  socket.on('kill',function(id) {
+    delete game.players[id];
+    socket.broadcast.emit('killed',{ id: id, by_id: socket.id })
+  })
 
   socket.on('pm',function(x,y) {
     
