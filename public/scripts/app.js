@@ -19,7 +19,7 @@ define([
 
     App.prototype = {
         initialize: function () {
-            log('* initialize game');
+            log('* initialize game', 1);
 
             this.game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, 'phaser-example', {
                 preload: this.preload.bind(this),
@@ -44,7 +44,7 @@ define([
             this._addHeader("Welcome in nko World!"); // any header?
 
             this._buildWalls();
-            // this._buildBricks();
+            this._buildBricks();
             // this._buildOpponents();
             this._buildBomb();
 
