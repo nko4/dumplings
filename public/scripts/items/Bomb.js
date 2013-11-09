@@ -18,10 +18,10 @@ define([], function () {
         create: function () {
             // this.tile = this.game.add.sprite(this.x, this.y, 'bomb');
             this.tile = this.bombs.create(this.x, this.y, 'bomb');
-            // this.tile.body.immovable = true; // disable, more fun
+            // this.tile.body.immovable = true; // disable, more fun!
             setTimeout(function () {
                 this.destroy();
-            }.bind(this), 3000);
+            }.bind(this), 2000);
         },
         destroy: function () {
             this.tile.animations.add('destroy');

@@ -50,7 +50,7 @@ define([
             this.bombs = this.game.add.group();
 
             this.game.stage.backgroundColor = "#0c0c0c"; // world color
-            this._addHeader("Welcome in \"nko\" World!"); // any header?
+            this._addHeader("Welcome in \"NKO\" World!"); // any header?
 
             // this._generateOpponents();
 
@@ -148,6 +148,8 @@ define([
             this.game.physics.collide(player.tile, this.bricks, this._collisionBrickHandler, null, this);
             this.game.physics.collide(player.tile, this.walls, this._collisionWallHandler, null, this);
             this.game.physics.collide(player.tile, this.bombs, this._collisionWallHandler, null, this);
+            this.game.physics.collide(this.bricks, this.bombs, this._collisionWallHandler, null, this);
+            this.game.physics.collide(this.walls, this.bombs, this._collisionWallHandler, null, this);
         },
         _collisionBrickHandler: function (s, t) {
             t.kill();
