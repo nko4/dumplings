@@ -18,9 +18,10 @@ define([], function () {
         create: function () {
             // this.tile = this.game.add.sprite(this.x, this.y, 'bomb');
             this.tile = this.bombs.create(this.x, this.y, 'bomb');
+            // this.tile.body.immovable = true; // disable, more fun!
             setTimeout(function () {
                 this.destroy();
-            }.bind(this), _.random(2000, 10000));
+            }.bind(this), 2000);
         },
         destroy: function () {
             this.tile.animations.add('destroy');
@@ -31,7 +32,7 @@ define([], function () {
                 setTimeout(function () {
                     this.tile.destroy();
                 }.bind(this), 400);
-            }.bind(this), _.random(500, 2000));
+            }.bind(this), 500);
         }
     };
     return Bomb;

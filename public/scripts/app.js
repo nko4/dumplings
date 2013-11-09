@@ -39,6 +39,7 @@ define([
             // log('* preload process');
             this.game.load.image('pikatchu', 'assets/pikatchu.png');
             this.game.load.image('mewtwo', 'assets/mewtwo.png');
+            this.game.load.image('fighter', 'assets/fighter.png');
             this.game.load.spritesheet('bomb', 'assets/bomb.png', 50, 50, 3);
             this.game.load.spritesheet('wall', 'assets/wall.png', 50, 50, 1);
             this.game.load.spritesheet('brick', 'assets/brick.png', 50, 50, 4);
@@ -50,11 +51,15 @@ define([
             this.bombs = this.game.add.group();
 
             this.game.stage.backgroundColor = "#0c0c0c"; // world color
-            this._addHeader("Welcome in \"nko\" World!"); // any header?
+            this._addHeader("Welcome in \"NKO\" World!"); // any header?
 
             // this._generateOpponents();
 
             this.cursors = this.game.input.keyboard.createCursorKeys();
+            this.game.input.keyboard.addKeyCapture(32, this._spaceHandler);
+
+            var spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+            spaceKey.onDown.add(this._spaceHandler, this);
 
             this._callback.call(this);
         },
@@ -144,12 +149,25 @@ define([
             this.game.physics.collide(player.tile, this.bricks, this._collisionBrickHandler, null, this);
             this.game.physics.collide(player.tile, this.walls, this._collisionWallHandler, null, this);
             this.game.physics.collide(player.tile, this.bombs, this._collisionWallHandler, null, this);
+            this.game.physics.collide(this.bricks, this.bombs, this._collisionWallHandler, null, this);
+            this.game.physics.collide(this.walls, this.bombs, this._collisionWallHandler, null, this);
         },
         _collisionBrickHandler: function (s, t) {
             t.kill();
         },
         _collisionWallHandler: function (s, t) {
             // do nothing
+        },
+        _spaceHandler: function () {
+            var x = Math.round(player.tile.x / Wall.WIDTH);
+            var y = Math.round(player.tile.y / Wall.HEIGHT);
+
+            new Bomb({
+                game: this.game,
+                bombs: this.bombs,
+                x: x * Wall.WIDTH,
+                y: y * Wall.HEIGHT
+            });
         },
         updatePosition: function () {
             player_move(player.tile.x, player.tile.y);
@@ -163,7 +181,7 @@ define([
             player = new Player({
                 game: this.game,
                 id: id,
-                sprite: 'pikatchu'
+                sprite: 'fighter'
             });
             player.tile.body.collideWorldBounds = true; // disable go out of world
             this.game.camera.follow(player.tile); // main player (camera is following)

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<title>nko</title>
+<title>NKO</title>
 <link href="styles/default.css" type="text/css" rel="stylesheet"/>
 
 <script src="scripts/utils.js"></script>
@@ -35,6 +35,10 @@
             socket.emit('pm', parseInt(x, 10), parseInt(y, 10));
         };
 
+        exports.broadcasting = function (x, y, type) {
+            // rozglasza wszystkim zmiane
+        };
+
         exports.connect_to_server = function () {
 
             socket.emit('play');
@@ -42,7 +46,7 @@
             socket.on('play', function (id, x, y) {
     			current_player = app.addPlayer(id, true);
     			socket.emit('pm', current_player.tile.x , current_player.tile.y);
-                info('Welcome to yet not named project by dumplings!')
+                info('Welcome to yet not named project by <em>dumplings</em>!')
             });
             socket.on('join', function (player) {
                 var msg = 'Opponent <em>' + player.id + '</em> joined';
