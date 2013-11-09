@@ -44,6 +44,7 @@ define([
             this._addHeader("Welcome in nko World!"); // any header?
 
             this._buildWalls();
+            this._buildOpponents();
             this._buildBomb();
 
             this.cursors = this.game.input.keyboard.createCursorKeys();
@@ -108,17 +109,28 @@ define([
                 y: Bomb.HEIGHT
             });
         },
-        addPlayer: function (id, isMaster) {
+        addPlayer: function (id) {
             player = new Player({
                 game: this.game,
                 id: id,
-                name: 'test',
-                sprite: (isMaster ? 'pikatchu' : 'mewtwo')
+                // name: 'test',
+                sprite: 'pikatchu'
             });
             player.tile.body.collideWorldBounds = true; // disable go out of world
-            if (isMaster) this.game.camera.follow(player.tile); // main player
+            this.game.camera.follow(player.tile); // main player (camera is following)
             this.list[id] = player;
             return player;
+        },
+        addOpponent: function (id) {
+            var opponent = new Player({
+                game: this.game,
+                id: id,
+                // name: 'test',
+                sprite: 'mewtwo'
+            });
+            opponent.tile.body.collideWorldBounds = true; // disable go out of world
+            this.list[id] = opponent;
+            return opponent;
         },
         getPlayerById: function (id) {
             var player = this.list[id];
@@ -127,12 +139,12 @@ define([
         },
         _addHeader: function (text) {
             var style = { font: "70px Arial", fill: "#696969" };
-            this.game.add.text(this.game.world.width / 2 - 100, 50, text, style);
+            this.game.add.text(this.game.world.width / 2 - 300, 50, text, style);
         },
         _buildOpponents: function () {
             var self = this;
-            _.times(50, function () {
-                self.game.add.sprite(self.game.world.randomX, self.game.world.randomY, 'pikatchu');
+            _.times(50, function (n) {
+                self.addOpponent('opponent_' + n);
             });
         }
     };

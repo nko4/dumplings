@@ -4,11 +4,11 @@ define([
     'use strict';
 
     var Player = function (settings) {
-        log('* create new player="' + name + '"');
+        log('* create new player="' + settings.id + '"');
         this.tile = null;
         this.id = settings.id;
         this.game = settings.game;
-        this.name = settings.name;
+        // this.name = settings.name;
         this.sprite = settings.sprite;
 
         this.create();
