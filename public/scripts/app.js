@@ -24,6 +24,8 @@ define([
         create: function () {
             log('create process');
 
+            this.game.add.sprite(50, 50, 'pikatchu');
+
             this.callback.call(this);
         },
         addActor: function (name) {
