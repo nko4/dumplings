@@ -25,8 +25,6 @@ define([
             this.tile.body.immovable = true;
         },
         destroy: function () {
-            log('Brick@destroy');
-
             var x = Math.round(this.x / Wall.WIDTH);
             var y = Math.round(this.y / Wall.HEIGHT);
 
