@@ -41,8 +41,16 @@ app.configure(function(){
   // app.use(require('connect-assets')());
 });
 
+var globalDb = null;
+globalUri = 'mongodb://nko:nko@paulo.mongohq.com:10006/nko';
 
-
+MongoClient.connect(globalUri, function(err, db) {
+  if(err) throw err;
+  db.collection('stats').update({ stats: 'here'}, {$set: {hi: 'there'}}, {w:1}, function(err) {
+    if (err) console.warn(err.message);
+    else console.log('successfully updated');
+  });
+});
 
 
 var Game;
@@ -55,7 +63,7 @@ Game = (function() {
     // 0 - space
     // 1 - wall
     // 2 - brick
-    // 3 - bomb
+    // 3 - power
 
     MAP_X = 44;
     MAP_Y = 30;
@@ -68,6 +76,7 @@ Game = (function() {
 
     this.brickCount = 0;
     this.wallCount = 0;
+    this.powerCount = 0;
     this.maxCount = MAP_X*MAP_Y;
 
 
@@ -113,6 +122,17 @@ Game = (function() {
       }
     });
 
+    _.times(parseInt(MAP_X*MAP_Y*0.10),function() {
+      var x = Math.floor(Math.random() * MAP_X-1) + 1;
+      var y = Math.floor(Math.random() * MAP_Y-1) + 1;
+      var elem = map[x][y];
+
+      if (map[x][y] == 0) {
+        map[x][y] = 3;
+        this.powerCount += 1;
+      }
+    });
+
     this.map = map;
     this.players = {};
     this.nextId = 0;
@@ -137,10 +157,34 @@ Game = (function() {
     return false;
   }
 
+
+  Game.prototype.randNewPower = function() {
+    if ( this.powerCount < (this.maxCount/5) ) {
+      
+      var x = Math.floor(Math.random() * this.MAP_X-1) + 1;
+      var y = Math.floor(Math.random() * this.MAP_Y-1) + 1;
+      var elem = map[x][y];
+
+      if (map[x][y] == 0) {
+        map[x][y] = 3;
+        this.powerCount += 1;
+        return [x,y];
+      }
+
+    }
+
+    return false;
+  }
+
+
   Game.prototype.set = function(x,y,value) {
     
     if (this.map[x][y] == 2) {
       this.brickCount -= 1;
+    }
+
+    if (this.map[x][y] == 3) {
+      this.powerCount -= 1;
     }
 
     this.map[x][y] = value;
@@ -257,6 +301,13 @@ setInterval(function() {
 
   if (new_brick) {
     io.sockets.emit('mc',new_brick[0],new_brick[1],2); 
+  }
+
+  var new_brick = game.randNewPower();
+
+
+  if (new_brick) {
+    io.sockets.emit('mc',new_brick[0],new_brick[1],3); 
   }
 
 
