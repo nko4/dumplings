@@ -19,7 +19,7 @@ define([
 
     App.prototype = {
         initialize: function () {
-            log('initialize game');
+            log('* initialize game');
 
             this.game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, 'phaser-example', {
                 preload: this.preload.bind(this),
@@ -29,7 +29,7 @@ define([
             });
         },
         preload: function () {
-            log('preload process');
+            log('* preload process');
             this.game.load.image('pikatchu', 'assets/pikatchu.png');
             this.game.load.image('mewtwo', 'assets/mewtwo.png');
             this.game.load.spritesheet('bomb', 'assets/bomb.png', 50, 50, 3);
@@ -37,17 +37,19 @@ define([
             this.game.load.spritesheet('dynamic-wall', 'assets/dynamic-wall.png', 50, 50, 4);
         },
         create: function () {
-            log('create process');
+            log('* create process');
 
             this.game.world.setBounds(0, 0, 1500, 700); // world size
             this.game.stage.backgroundColor = "#0c0c0c"; // world color
             this._addHeader("Welcome in nko World!"); // any header?
 
             this._buildWalls();
-            // this._buildOpponents();
+            this._buildOpponents();
             this._buildBomb();
 
             this.cursors = this.game.input.keyboard.createCursorKeys();
+
+            console.groupEnd();
 
             this.callback.call(this);
         },
@@ -82,7 +84,7 @@ define([
                 this.cursors.down.isDown ||
                 this.cursors.left.isDown ||
                 this.cursors.right.isDown) {
-                // player_move(player.tile.x, player.tile.y);
+                player_move(player.tile.x, player.tile.y);
             }
         },
         // run per each mouse move on game board

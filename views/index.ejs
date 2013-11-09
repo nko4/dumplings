@@ -27,11 +27,11 @@
         nko_vote = '<iframe src="http://nodeknockout.com/iframe/dumplings" frameborder=0 scrolling=no allowtransparency=true width=115 height=25></iframe>';
 
         if (<%= isProduction %>) {
-            log('Start "nko" application in production', true);
+            console.groupCollapsed('Start "nko" application in production');
             socket = io.connect('http://dumplings.2013.nodeknockout.com/');
         } else {
         	var socket_path = location.protocol + '//' + location.hostname + ':' + location.port + '/';
-            log('Start "nko" application in development on ' + socket_path);
+            console.groupCollapsed('Start "nko" application in development on ' + socket_path);
             socket = io.connect(socket_path);
         }
 

@@ -19,7 +19,8 @@ require([
 ], function (_, App) {
     // creating application
     window.app = new App(function () {
-        this.addPlayer('pika!');
+        // this.addPlayer('pika!');
+        chuj();
     });
 });
 
