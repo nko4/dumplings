@@ -74,8 +74,10 @@ io.sockets.on('connection', function (socket) {
 
 
   socket.on('play',function() {
-
     players[socket.id] = { x: 0, y: 0 };
+
+
+    socket.emit('play',socket.id,0,0);
 
   });
 
