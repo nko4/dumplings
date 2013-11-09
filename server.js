@@ -34,8 +34,18 @@ var server = app.listen(port);
 var io = require('socket.io').listen(server);
 
 app.get('/', function (reseq, res) {
-    res.render('index.ejs')
+    res.render('index', { isProduction: isProduction })
 });
+
+io.sockets.on('connection', function (socket) {
+
+  
+  socket.on('disconnect', function() {
+
+  });
+
+});
+
 
 // http.createServer(function (req, res) {
 //   // http://blog.nodeknockout.com/post/35364532732/protip-add-the-vote-ko-badge-to-your-app
