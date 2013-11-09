@@ -5,6 +5,7 @@ define([
 
     var Brick = function (settings) {
         this.game = settings.game;
+        this.bricks = settings.bricks;
         this.x = settings.x;
         this.y = settings.y;
         this.tile = null;
@@ -12,15 +13,15 @@ define([
         this.create();
     };
     Brick.WIDTH = 50;
-    Brick.MAX_WIDTH = 250;
     Brick.HEIGHT = 50;
-    Brick.MAX_HEIGHT = 50;
 
     Brick.prototype = {
         create: function () {
-            this.tile = this.game.add.sprite(this.x, this.y, 'brick');
+            // this.tile = this.game.add.sprite(this.x, this.y, 'brick');
+            this.tile = this.bricks.create(this.x, this.y, 'brick');
+            this.tile.body.immovable = true;
             setTimeout(function () {
-                this.destroy();
+                // this.destroy();
             }.bind(this), _.random(200, 1000));
         },
         destroy: function () {

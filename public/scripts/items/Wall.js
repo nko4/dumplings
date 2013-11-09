@@ -3,6 +3,7 @@ define([], function () {
 
     var Wall = function (settings) {
         this.game = settings.game;
+        this.walls = settings.walls;
         this.x = settings.x;
         this.y = settings.y;
         this.tile = null;
@@ -10,13 +11,13 @@ define([], function () {
         this.create();
     };
     Wall.WIDTH = 50;
-    Wall.MAX_WIDTH = 250;
     Wall.HEIGHT = 50;
-    Wall.MAX_HEIGHT = 50;
 
     Wall.prototype = {
         create: function () {
-            this.tile = this.game.add.sprite(this.x, this.y, 'wall');
+            // this.tile = this.game.add.sprite(this.x, this.y, 'wall');
+            this.tile = this.walls.create(this.x, this.y, 'wall');
+            this.tile.body.immovable = true;
         }
     };
     return Wall;

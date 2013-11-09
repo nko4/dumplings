@@ -12,8 +12,9 @@ define([
     var App = function (callback) {
         this.callback = callback;
         this.cursors = null;
+        this.bricks = null;
+        this.walls = null;
         this.list = {};
-        this.bricks = {};
 
         this.initialize();
     };
@@ -43,6 +44,9 @@ define([
         create: function () {
             log('* create process');
 
+            this.bricks = this.game.add.group();
+            this.walls = this.game.add.group();
+
             this.game.world.setBounds(0, 0, 1850, 1150); // world size
             this.game.stage.backgroundColor = "#0c0c0c"; // world color
             this._addHeader("Welcome in nko World!"); // any header?
@@ -54,7 +58,7 @@ define([
             this._buildBomb(width, height);
             this._buildBorderWalls(width, height);
             this._buildInsideWalls(width, height);
-            // this._buildOpponents();
+            // this._generateOpponents();
 
             this.cursors = this.game.input.keyboard.createCursorKeys();
 
@@ -102,7 +106,14 @@ define([
                     }, 100);
                 }
             }
-            // this.game.physics.collide(sprite, tiles, collisionHandler, null, this);
+            this.game.physics.collide(player.tile, this.bricks, this._collisionBrickHandler, null, this);
+            this.game.physics.collide(player.tile, this.walls, this._collisionWallHandler, null, this);
+        },
+        _collisionBrickHandler: function (s, t) {
+            t.kill();
+        },
+        _collisionWallHandler: function (s, t) {
+            // do nothing
         },
         updatePosition: function () {
             player_move(player.tile.x, player.tile.y);
@@ -115,14 +126,42 @@ define([
         _buildBorderWalls: function (width, height) {
             var self = this;
             // top
-            _.times(width, function (n) { new Wall({ game: self.game, x: n * Wall.WIDTH, y: 0 })});
+            _.times(width, function (n) {
+                new Wall({
+                    game: self.game,
+                    walls: self.walls,
+                    x: n * Wall.WIDTH,
+                    y: 0
+                });
+            });
             // bottom
-            _.times(width, function (n) { new Wall({ game: self.game, x: n * Wall.WIDTH, y: self.game.world.height - Wall.HEIGHT })});
+            _.times(width, function (n) {
+                new Wall({
+                    game: self.game,
+                    walls: self.walls,
+                    x: n * Wall.WIDTH,
+                    y: self.game.world.height - Wall.HEIGHT
+                });
+            });
 
             // left
-            _.times(height, function (n) { new Wall({ game: self.game, x: 0, y: n * Wall.WIDTH })});
+            _.times(height, function (n) {
+                new Wall({
+                    game: self.game,
+                    walls: self.walls,
+                    x: 0,
+                    y: n * Wall.WIDTH
+                });
+            });
             // right
-            _.times(height, function (n) { new Wall({ game: self.game, x: self.game.world.width - Wall.WIDTH, y: n * Wall.WIDTH })});
+            _.times(height, function (n) {
+                new Wall({
+                    game: self.game,
+                    walls: self.walls,
+                    x: self.game.world.width - Wall.WIDTH,
+                    y: n * Wall.WIDTH
+                });
+            });
         },
         _buildInsideWalls: function (width, height) {
             var self = this;
@@ -139,6 +178,7 @@ define([
 
                     new Wall({
                         game: self.game,
+                        walls: self.walls,
                         x: n * Brick.WIDTH,
                         y: m * Brick.HEIGHT
                     });
@@ -149,10 +189,9 @@ define([
             var self = this;
 
             _.times(300, function () {
-                var id = 'brick_' + _.random(0, 1000);
-                self.bricks[id] = new Brick({
-                    id: id,
+                new Brick({
                     game: self.game,
+                    bricks: self.bricks,
                     x: Bomb.WIDTH * _.random(0, width),
                     y: Bomb.HEIGHT * _.random(0, height)
                 });
@@ -204,7 +243,7 @@ define([
             var style = { font: "70px Arial", fill: "#696969" };
             this.game.add.text(this.game.world.width / 2 - 300, 50, text, style);
         },
-        _buildOpponents: function () {
+        _generateOpponents: function () {
             var self = this;
             _.times(50, function (n) {
                 self.addOpponent('opponent_' + n);

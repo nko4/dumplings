@@ -10,9 +10,7 @@ define([], function () {
         this.create();
     };
     Bomb.WIDTH = 50;
-    Bomb.MAX_WIDTH = 150;
     Bomb.HEIGHT = 50;
-    Bomb.MAX_HEIGHT = 50;
 
     Bomb.prototype = {
         create: function () {
