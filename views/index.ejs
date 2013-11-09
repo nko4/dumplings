@@ -69,7 +69,11 @@
             	console.log(players);
             	players.forEach(function(player) {
 
-            		console.log('player-'+player.id+'-x-'+player.x+'-y-'+player.y);
+            		// console.log('player-'+player.id+'-x-'+player.x+'-y-'+player.y);
+
+                    var obj = app.getPlayerById(player.id);
+                    obj.move(player.x,player.y);
+
 
             	});
             })
