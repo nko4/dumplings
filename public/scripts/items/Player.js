@@ -27,8 +27,9 @@ define([
             this.tile = this.players.create(this.x, this.y, this.sprite);
         },
         move: function (x, y) {
-            this.tile.x = x;
-            this.tile.y = y;
+            this.tile.setTo(x, y);
+            // this.tile.x = x;
+            // this.tile.y = y;
         },
         random: function () {
             var x = _.random(0, this.game.world.width / Wall.WIDTH - 2);
