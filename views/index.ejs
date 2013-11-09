@@ -24,8 +24,6 @@
             return console.log.apply(console, args);
         }
 
-        nko_vote = '<iframe src="http://nodeknockout.com/iframe/dumplings" frameborder=0 scrolling=no allowtransparency=true width=115 height=25></iframe>';
-
         if (<%= isProduction %>) {
             console.groupCollapsed('Start "nko" application in production');
             socket = io.connect('http://dumplings.2013.nodeknockout.com/');
@@ -36,7 +34,6 @@
         }
 
         // make public
-        exports.nko_vote = nko_vote;
         exports.socket = socket;
         exports.log = log;
 
@@ -101,3 +98,7 @@
 
 </script>
 <script data-main="scripts/main" src="scripts/vendor/require.js"></script>
+
+<div id="vote">
+    <iframe src="http://nodeknockout.com/iframe/dumplings" frameborder=0 scrolling=no allowtransparency=true width=115 height=25></iframe>
+</div>

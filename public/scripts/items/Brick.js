@@ -1,7 +1,7 @@
 define([], function () {
     'use strict';
 
-    var DynamicWall = function (settings) {
+    var Brick = function (settings) {
         this.game = settings.game;
         this.x = settings.x;
         this.y = settings.y;
@@ -9,17 +9,17 @@ define([], function () {
 
         this.create();
     };
-    DynamicWall.WIDTH = 50;
-    DynamicWall.MAX_WIDTH = 250;
-    DynamicWall.HEIGHT = 50;
-    DynamicWall.MAX_HEIGHT = 50;
+    Brick.WIDTH = 50;
+    Brick.MAX_WIDTH = 250;
+    Brick.HEIGHT = 50;
+    Brick.MAX_HEIGHT = 50;
 
-    DynamicWall.prototype = {
+    Brick.prototype = {
         create: function () {
             this.tile = this.game.add.sprite(this.x, this.y, 'dynamic-wall');
             this.tile.animations.add('destroy');
             this.tile.animations.play('destroy', 2, true);
         }
     };
-    return DynamicWall;
+    return Brick;
 });

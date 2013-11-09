@@ -2,10 +2,10 @@ define([
     'underscore',
     'phaser',
     'items/Player',
-    'items/StaticWall',
+    'items/Wall',
     'items/Bomb',
-    'items/DynamicWall'
-], function (_, Phaser, Player, StaticWall, Bomb, DynamicWall) {
+    'items/Brick'
+], function (_, Phaser, Player, Wall, Bomb, Brick) {
     'use strict';
 
     var App = function (callback) {
@@ -44,6 +44,7 @@ define([
             this._addHeader("Welcome in nko World!"); // any header?
 
             this._buildWalls();
+            // this._buildBricks();
             // this._buildOpponents();
             this._buildBomb();
 
@@ -86,6 +87,8 @@ define([
                 this.cursors.right.isDown) {
                 player_move(player.tile.x, player.tile.y);
             }
+
+            // this.game.physics.collide(sprite, tiles, collisionHandler, null, this);
         },
         // run per each mouse move on game board
         render: function () {
@@ -94,24 +97,39 @@ define([
         },
         _buildWalls: function () {
             var self = this;
-            var width = self.game.world.width / StaticWall.WIDTH;
-            var height = self.game.world.height / StaticWall.HEIGHT;
+            var width = self.game.world.width / Wall.WIDTH;
+            var height = self.game.world.height / Wall.HEIGHT;
 
             // top
-            _.times(width, function (n) { new StaticWall({ game: self.game, x: n * StaticWall.WIDTH, y: 0 })});
+            _.times(width, function (n) { new Wall({ game: self.game, x: n * Wall.WIDTH, y: 0 })});
             // bottom
-            _.times(width, function (n) { new StaticWall({ game: self.game, x: n * StaticWall.WIDTH, y: self.game.world.height - StaticWall.HEIGHT })});
+            _.times(width, function (n) { new Wall({ game: self.game, x: n * Wall.WIDTH, y: self.game.world.height - Wall.HEIGHT })});
 
             // left
-            _.times(width, function (n) { new StaticWall({ game: self.game, x: 0, y: n * StaticWall.WIDTH })});
+            _.times(height, function (n) { new Wall({ game: self.game, x: 0, y: n * Wall.WIDTH })});
             // right
-            _.times(width, function (n) { new StaticWall({ game: self.game, x: self.game.world.width - StaticWall.WIDTH, y: n * StaticWall.WIDTH })});
+            _.times(height, function (n) { new Wall({ game: self.game, x: self.game.world.width - Wall.WIDTH, y: n * Wall.WIDTH })});
 
-            new DynamicWall({
-                game: this.game,
-                x: DynamicWall.WIDTH * 3,
-                y: DynamicWall.HEIGHT
-            })
+        },
+        _buildBricks: function () {
+            var self = this;
+            var width = self.game.world.width / Wall.WIDTH;
+            var height = self.game.world.height / Wall.HEIGHT;
+
+            _.times(width, function (n) {
+                if (!n) return;
+                if (n % 2) return;
+                _.times(height, function (m) {
+                    if (!m) return;
+                    if (m % 2) return;
+
+                    new Brick({
+                        game: self.game,
+                        x: n * Brick.WIDTH,
+                        y: m * Brick.HEIGHT
+                    });
+                });
+            });
         },
         _buildBomb: function () {
             var bomb = new Bomb({
