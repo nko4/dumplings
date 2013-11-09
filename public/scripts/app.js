@@ -44,7 +44,7 @@ define([
             this._addHeader("Welcome in nko World!"); // any header?
 
             this._buildWalls();
-            this._buildOpponents();
+            // this._buildOpponents();
             this._buildBomb();
 
             this.cursors = this.game.input.keyboard.createCursorKeys();
