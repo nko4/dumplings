@@ -30,6 +30,25 @@ app.configure(function(){
 });
 
 
+if (isProduction) {
+  io.enable('browser client minification');  // send minified client
+  io.enable('browser client etag');          // apply etag caching logic based on version number
+  io.enable('browser client gzip');          // gzip the file
+  io.set('log level', 1);                    // reduce logging
+
+  // enable all transports (optional if you want flashsocket support, please note that some hosting
+  // providers do not allow you to create servers that listen on a port different than 80 or their
+  // default port)
+  io.set('transports', [
+      'websocket'
+    , 'flashsocket'
+    , 'htmlfile'
+    , 'xhr-polling'
+    , 'jsonp-polling'
+  ]);
+}
+
+
 var Game;
 
 Game = (function() {
@@ -85,6 +104,8 @@ Game = (function() {
 
 
     this.map = map;
+    this.players = {};
+    this.nextId = 0;
 
 
   }
@@ -120,26 +141,6 @@ Player = (function() {
 
 })();
 
-
-
-ids = 0;
-
-player = new Player(1, 2);
-
-player.getPosition();
-
-function nextId() {
-  ids+=1;
-  return ids;
-}
-
-
-
-
-
-
-
-players = {};
 move_block = false;
 
 var server = app.listen(port);
@@ -154,7 +155,7 @@ io.sockets.on('connection', function (socket) {
   var ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address.address;
 
   socket.on('play',function() {
-    players[socket.id] = { x: 0, y: 0 };
+    game.players[socket.id] = { x: 0, y: 0 };
     socket.emit('play',socket.id,0,0);
     socket.emit('map',game.map);
     socket.broadcast.emit('join',{ id: socket.id, ip: ip })
@@ -167,7 +168,7 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('pm',function(x,y) {
     
-    players[socket.id] = { x: x, y: y};
+    game.players[socket.id] = { x: x, y: y};
 
     if (!move_block) {
       // move_block = true;
@@ -187,7 +188,7 @@ io.sockets.on('connection', function (socket) {
   }); // player move
 
   socket.on('disconnect', function() {
-    delete players[socket.id];
+    delete game.players[socket.id];
     socket.broadcast.emit('leave',{ id: socket.id })
   });
 
