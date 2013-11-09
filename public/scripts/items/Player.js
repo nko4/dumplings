@@ -14,8 +14,8 @@ define([
 
         this.create();
     };
-    Player.WIDTH = 50;
-    Player.HEIGHT = 50;
+    Player.WIDTH = 35;
+    Player.HEIGHT = 40;
 
     Player.prototype = {
         create: function () {
