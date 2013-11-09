@@ -124,7 +124,6 @@ define([
             player = new Player({
                 game: this.game,
                 id: id,
-                // name: 'test',
                 sprite: 'pikatchu'
             });
             player.tile.body.collideWorldBounds = true; // disable go out of world
@@ -136,7 +135,6 @@ define([
             var opponent = new Player({
                 game: this.game,
                 id: id,
-                // name: 'test',
                 sprite: 'mewtwo'
             });
             opponent.tile.body.collideWorldBounds = true; // disable go out of world
