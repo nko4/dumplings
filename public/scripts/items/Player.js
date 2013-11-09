@@ -4,7 +4,7 @@ define([
     'use strict';
 
     var Player = function (settings) {
-        // log('* create new player="' + settings.id + '"');
+        log('* new Player="' + settings.id + '"');
         this.game = settings.game;
         this.x = settings.x || this.random().x;
         this.y = settings.y || this.random().y;
