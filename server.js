@@ -89,6 +89,10 @@ Game = (function() {
 
   }
 
+  Game.prototype.set = function(x,y,value) {
+    this.map[x][y] = value;
+  };
+
   return Game;
   // Game.prototype.
 
@@ -154,6 +158,11 @@ io.sockets.on('connection', function (socket) {
     socket.emit('play',socket.id,0,0);
     socket.emit('map',game.map);
     socket.broadcast.emit('join',{ id: socket.id, ip: ip })
+  });
+
+  socket.on('mc',function(x,y,type) {
+    game.set(x,y,type);
+    socket.broadcast.emit('mc',x,y,type)
   });
 
   socket.on('pm',function(x,y) {

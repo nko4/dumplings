@@ -37,11 +37,16 @@
 
         exports.broadcasting = function (x, y, type) {
             // rozglasza wszystkim zmiane
+            socket.emit('mc', x, y, type);
         };
 
         exports.connect_to_server = function () {
 
             socket.emit('play');
+
+            socket.on('mc',function(x,y,type) {
+                app.updateMap(x,y,type);
+            });
 
             socket.on('play', function (id, x, y) {
     			current_player = app.addPlayer(id, true);
