@@ -141,6 +141,11 @@ define([
             this.list[id] = opponent;
             return opponent;
         },
+        terminateOpponent: function (id) {
+            var opponent = this.getPlayerById(id);
+            if (!opponent) throw 'opponent "' + id + '" doesn\'t exists';
+            opponent.kill();
+        },
         getPlayerById: function (id) {
             var player = this.list[id];
             if (!player) throw 'player "' + id + '" doesn\'t exists';
