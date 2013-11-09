@@ -14,11 +14,12 @@ require.config({
 });
 
 require([
-    "app"
-], function (App) {
+    'underscore',
+    'app'
+], function (_, App) {
     // creating application
     window.app = new App(function () {
-        this.addActor('test');
+        this.addPlayer(_.uniqueId('user_'));
     });
 });
 
