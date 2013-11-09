@@ -10,6 +10,7 @@ define([
         this.x = settings.x;
         this.y = settings.y;
         this.tile = null;
+        this.isDestroyed = false;
 
         this.create();
     };
@@ -28,6 +29,8 @@ define([
             }.bind(this), 2000);
         },
         destroy: function () {
+            this.isDestroyed = true;
+
             var x = Math.round(this.x / Wall.WIDTH);
             var y = Math.round(this.y / Wall.HEIGHT);
 

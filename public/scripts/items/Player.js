@@ -36,8 +36,7 @@ define([
             return {x: x * Wall.WIDTH, y: y * Wall.HEIGHT};
         },
         destroy: function () {
-            // this.tile.destroy();
-            throw 'destroy Player: you can\'t do this'
+            this.tile.destroy();
         }
     };
     return Player;

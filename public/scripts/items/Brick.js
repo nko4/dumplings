@@ -11,6 +11,7 @@ define([
         this.x = settings.x;
         this.y = settings.y;
         this.tile = null;
+        this.isDestroyed = false;
 
         this.create();
     };
@@ -25,6 +26,8 @@ define([
             this.tile.body.immovable = true;
         },
         destroy: function () {
+            this.isDestroyed = true;
+
             var x = Math.round(this.x / Wall.WIDTH);
             var y = Math.round(this.y / Wall.HEIGHT);
 

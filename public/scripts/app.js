@@ -174,7 +174,8 @@ define([
         _collisionBrickHandler: function (s, t) {
             var x = t.x / Wall.WIDTH;
             var y = t.y / Wall.WIDTH;
-            this.map[x][y].destroy();
+            var item = this.map[x][y];
+            if (item && !item.isDestroyed) item.destroy();
         },
         _collisionWallHandler: function (s, t) {
             // do nothing
