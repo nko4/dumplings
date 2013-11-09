@@ -38,7 +38,7 @@ require([
     log('Start "Share" application', true);
     // creating application
     window.app = new App(function () {
-
+        this.addActor('test');
     });
 });
 

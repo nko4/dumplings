@@ -18,6 +18,10 @@ define([
         },
         create: function () {
             log('create process');
+            this.callback.call(this);
+        },
+        addActor: function (name) {
+            console.log('add actor %s', name);
         }
     };
 
