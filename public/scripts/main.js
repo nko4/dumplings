@@ -1,7 +1,8 @@
 require.config({
     paths: {
         "phaser": 'vendor/phaser',
-        "underscore": 'vendor/underscore'
+        "underscore": 'vendor/underscore',
+        "jquery": 'vendor/jquery.min'
     },
     shim: {
         "phaser": {
@@ -9,6 +10,9 @@ require.config({
         },
         "underscore": {
             exports: "_"
+        },
+        "jquery": {
+            exports: "$"
         }
     }
 });

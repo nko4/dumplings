@@ -1,11 +1,12 @@
 define([
     'underscore',
+    'jquery',
     'phaser',
     'items/Player',
     'items/Wall',
     'items/Bomb',
     'items/Brick'
-], function (_, Phaser, Player, Wall, Bomb, Brick) {
+], function (_, $, Phaser, Player, Wall, Bomb, Brick) {
     'use strict';
 
     var App = function (callback) {
@@ -24,7 +25,7 @@ define([
         initialize: function () {
             log('* initialize game', 1);
 
-            this.game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, 'phaser-example', {
+            this.game = new Phaser.Game(window.innerWidth, window.innerHeight - $('#communication').height(), Phaser.CANVAS, 'phaser-example', {
                 preload: this.preload.bind(this),
                 create: this.create.bind(this),
                 update: this.update.bind(this),

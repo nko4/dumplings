@@ -3,6 +3,7 @@
 <title>nko</title>
 <link href="styles/default.css" type="text/css" rel="stylesheet"/>
 
+<script src="scripts/utils.js"></script>
 <script src="scripts/vendor/jquery.min.js"></script>
 <script src="scripts/vendor/jquery-ui.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
@@ -10,19 +11,6 @@
     // self-invoke function expr - start loading...
     (function (exports) {
         var socket, current_player = false;
-
-        // define colorful logger
-        function log(string, type) {
-            var args = [
-                '%c %c %c ' + string + ' %c %c ',
-                'background: ' + (type ? '#FFB819' : '#343434'),
-                'background: ' + (type ? '#E85D0C' : '#4e4e4e'),
-                'color: ' + (type ? '#fff' : '#eee') + '; background: ' + (type ? '#E83C10' : '#696969'),
-                'background: ' + (type ? '#E85D0C' : '#4e4e4e'),
-                'background: ' + (type ? '#FFB819' : '#343434')
-            ];
-            return console.log.apply(console, args);
-        }
 
         if (<%= isProduction %>) {
             console.groupCollapsed('Start "nko" application in production');
@@ -38,7 +26,7 @@
         exports.log = log;
         exports.current_player = current_player;
 
-        exports.player_move = function(x, y) {
+        exports.player_move = function (x, y) {
             socket.emit('pm', parseInt(x, 10), parseInt(y, 10));
         };
 
@@ -46,20 +34,24 @@
 
             socket.emit('play');
 
-            socket.on('play',function(id,x,y) {
-    			current_player = app.addPlayer(id,true);
+            socket.on('play', function (id, x, y) {
+    			current_player = app.addPlayer(id, true);
     			socket.emit('pm', current_player.tile.x , current_player.tile.y);
             });
-            socket.on('join', function(player) {
-                log('opponent '+player.id+' joined', 1);
+            socket.on('join', function (player) {
+                var msg = 'opponent '+player.id+' joined';
+                log(msg, 1);
+                info(msg, 1);
             });
-            socket.on('leave', function(player) {
+            socket.on('leave', function (player) {
                 app.terminateOpponent(player.id);
-                log('opponent '+player.id+' terminated');
+                var msg = 'opponent ' + player.id + ' terminated';
+                log(msg);
+                info(msg);
             });
 
-            socket.on('pm',function(players) {
-            	players.forEach(function(player) {
+            socket.on('pm',function (players) {
+            	players.forEach(function (player) {
                     var obj;
             		// console.log('player-'+player.id+'-x-'+player.x+'-y-'+player.y);
 
@@ -72,12 +64,9 @@
                     if (current_player.id != player.id) {
                         obj.move(player.x,player.y);
                     }
-
-
             	});
             });
         };
-
     }(this));
 
 </script>
@@ -86,3 +75,5 @@
 <div id="vote">
     <iframe src="http://nodeknockout.com/iframe/dumplings" frameborder=0 scrolling=no allowtransparency=true width=115 height=25></iframe>
 </div>
+
+<div id="communication"></div>
