@@ -14,10 +14,10 @@ define([
         this.list = {};
 
         this.initialize();
-        this.synchro();
     };
 
     var player;
+    var block = false;
 
     App.prototype = {
         initialize: function () {
@@ -41,7 +41,7 @@ define([
         create: function () {
             log('* create process');
 
-            this.game.world.setBounds(0, 0, 1500, 700); // world size
+            this.game.world.setBounds(0, 0, 1550, 750); // world size
             this.game.stage.backgroundColor = "#0c0c0c"; // world color
             this._addHeader("Welcome in nko World!"); // any header?
 
@@ -67,28 +67,39 @@ define([
             var max_right = this.game.world.width - Player.WIDTH * 2;
 
             if (this.cursors.up.isDown) {
-                if (player.tile.y < max_top) { player.tile.y = max_top; return; }
+                if (player.tile.y < max_top) { return; }
                 player.tile.body.velocity.y = -200;
             } else if (this.cursors.down.isDown) {
-                if (player.tile.y > max_bottom) { player.tile.y = max_bottom; return; }
+                if (player.tile.y > max_bottom) { return; }
                 player.tile.body.velocity.y = 200;
             }
 
             if (this.cursors.left.isDown) {
-                if (player.tile.x < max_left) { player.tile.x = max_left; return; }
+                if (player.tile.x < max_left) { return; }
                 player.tile.body.velocity.x = -200;
             } else if (this.cursors.right.isDown) {
-                if (player.tile.x > max_right) { player.tile.x = max_right; return; }
+                if (player.tile.x > max_right) { return; }
                 player.tile.body.velocity.x = 200;
             }
 
+            if (this.cursors.up.isDown ||
+                this.cursors.down.isDown ||
+                this.cursors.left.isDown ||
+                this.cursors.right.isDown
+            ) {
+                if (!block) {
+                    block = true;
+                    this.updatePosition();
+
+                    setTimeout(function () {
+                        block = false;
+                    }, 100);
+                }
+            }
             // this.game.physics.collide(sprite, tiles, collisionHandler, null, this);
         },
-        synchro: function () {
-            setInterval(function () {
-                if (!player) return;
-                player_move(player.tile.x, player.tile.y);
-            }, 100);
+        updatePosition: function () {
+            player_move(player.tile.x, player.tile.y);
         },
         // run per each mouse move on game board
         render: function () {
@@ -119,9 +130,12 @@ define([
             _.times(width, function (n) {
                 if (!n) return;
                 if (n % 2) return;
+                if (n === width - 1) return;
+
                 _.times(height, function (m) {
                     if (!m) return;
                     if (m % 2) return;
+                    if (m === height - 1) return;
 
                     new Brick({
                         game: self.game,
