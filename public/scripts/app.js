@@ -36,8 +36,8 @@ define([
             this.game.load.image('pikatchu', 'assets/pikatchu.png');
             this.game.load.image('mewtwo', 'assets/mewtwo.png');
             this.game.load.spritesheet('bomb', 'assets/bomb.png', 50, 50, 3);
-            this.game.load.spritesheet('static-wall', 'assets/static-wall.png', 50, 50, 1);
-            this.game.load.spritesheet('dynamic-wall', 'assets/dynamic-wall.png', 50, 50, 4);
+            this.game.load.spritesheet('wall', 'assets/wall.png', 50, 50, 1);
+            this.game.load.spritesheet('brick', 'assets/brick.png', 50, 50, 4);
         },
         create: function () {
             log('* create process');

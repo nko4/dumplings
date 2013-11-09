@@ -16,7 +16,7 @@ define([], function () {
 
     Wall.prototype = {
         create: function () {
-            this.tile = this.game.add.sprite(this.x, this.y, 'static-wall');
+            this.tile = this.game.add.sprite(this.x, this.y, 'wall');
         }
     };
     return Wall;

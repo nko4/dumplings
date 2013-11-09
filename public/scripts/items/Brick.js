@@ -1,4 +1,6 @@
-define([], function () {
+define([
+    'underscore'
+], function (_) {
     'use strict';
 
     var Brick = function (settings) {
@@ -16,7 +18,7 @@ define([], function () {
 
     Brick.prototype = {
         create: function () {
-            this.tile = this.game.add.sprite(this.x, this.y, 'dynamic-wall');
+            this.tile = this.game.add.sprite(this.x, this.y, 'brick');
             setTimeout(function () {
                 this.destroy();
             }.bind(this), _.random(200, 1000));
