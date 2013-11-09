@@ -12,7 +12,9 @@ define([
         this.callback = callback;
         this.cursors = null;
         this.list = {};
+
         this.initialize();
+        this.synchro();
     };
 
     var player;
@@ -80,15 +82,12 @@ define([
                 player.tile.body.velocity.x = 200;
             }
 
-            // run backend API when button pressed
-            if (this.cursors.up.isDown ||
-                this.cursors.down.isDown ||
-                this.cursors.left.isDown ||
-                this.cursors.right.isDown) {
-                player_move(player.tile.x, player.tile.y);
-            }
-
             // this.game.physics.collide(sprite, tiles, collisionHandler, null, this);
+        },
+        synchro: function () {
+            setInterval(function () {
+                player_move(player.tile.x, player.tile.y);
+            }, 100);
         },
         // run per each mouse move on game board
         render: function () {
