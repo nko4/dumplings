@@ -181,10 +181,7 @@ define([
             this.game.physics.collide(this.walls, this.bombs, this._collisionWallHandler, null, this);
         },
         _collisionBrickHandler: function (s, t) {
-            var x = t.x / Wall.WIDTH;
-            var y = t.y / Wall.WIDTH;
-            var item = this.map[x][y];
-            if (item && !item.isDestroyed) item.destroy();
+            // do nothing
         },
         _collisionWallHandler: function (s, t) {
             // do nothing

@@ -21,7 +21,7 @@ define([
         create: function () {
             // this.tile = this.game.add.sprite(this.x, this.y, 'bomb');
             this.tile = this.bombs.create(this.x, this.y, 'bomb');
-            // this.tile.body.immovable = true; // disable, more fun!
+            this.tile.body.immovable = true;
 
             setTimeout(function () {
                 // auto destruction
@@ -40,9 +40,43 @@ define([
                 this.tile.animations.stop('destroy');
                 setTimeout(function () {
                     this.tile.kill();
+                    if (y % 2 === 1) this._lineX.call(this, x, y, 2);
+                    if (x % 2 === 1) this._lineY.call(this, x, y, 2);
                     broadcasting(x, y, 0);
                 }.bind(this), 400);
             }.bind(this), 500);
+        },
+        _lineX: function (x, y, power) {
+            var graphics = this.game.add.graphics((x * Wall.WIDTH) - (power * Wall.WIDTH), y * Wall.HEIGHT + Wall.HEIGHT / 2);
+
+            // set a fill and line style
+            graphics.beginFill(0xFF0000);
+            graphics.lineStyle(10, 0xFF0000, 1);
+
+            // draw a shape
+            graphics.moveTo((x * Wall.WIDTH) - (power * Wall.WIDTH), y * Wall.HEIGHT + Wall.HEIGHT / 2);
+            graphics.lineTo((x * Wall.WIDTH) + ((power + 1) * Wall.WIDTH), y * Wall.HEIGHT + Wall.HEIGHT / 2);
+            graphics.endFill();
+
+            setTimeout(function () {
+                graphics.destroy();
+            }, 200);
+        },
+        _lineY: function (x, y, power) {
+            var graphics = this.game.add.graphics((x * Wall.WIDTH) + Wall.WIDTH / 2, (y * Wall.HEIGHT) - (power * Wall.HEIGHT));
+
+            // set a fill and line style
+            graphics.beginFill(0xFF0000);
+            graphics.lineStyle(10, 0xFF0000, 1);
+
+            // draw a shape
+            graphics.moveTo((x * Wall.WIDTH) + Wall.WIDTH / 2, (y * Wall.HEIGHT) - (power * Wall.WIDTH));
+            graphics.lineTo((x * Wall.WIDTH) + Wall.WIDTH / 2, (y * Wall.HEIGHT) + ((power + 1) * Wall.WIDTH));
+            graphics.endFill();
+
+            setTimeout(function () {
+                graphics.destroy();
+            }, 200);
         }
     };
     return Bomb;
