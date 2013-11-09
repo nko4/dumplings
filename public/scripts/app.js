@@ -56,15 +56,24 @@ define([
 
             player.tile.body.velocity.setTo(0, 0);
 
+            var max_top = Player.HEIGHT;
+            var max_bottom = this.game.world.height - Player.HEIGHT * 2;
+            var max_left = Player.WIDTH;
+            var max_right = this.game.world.width - Player.WIDTH * 2;
+
             if (this.cursors.up.isDown) {
+                if (player.tile.y < max_top) { player.tile.y = max_top; return; }
                 player.tile.body.velocity.y = -200;
             } else if (this.cursors.down.isDown) {
+                if (player.tile.y > max_bottom) { player.tile.y = max_bottom; return; }
                 player.tile.body.velocity.y = 200;
             }
 
             if (this.cursors.left.isDown) {
+                if (player.tile.x < max_left) { player.tile.x = max_left; return; }
                 player.tile.body.velocity.x = -200;
             } else if (this.cursors.right.isDown) {
+                if (player.tile.x > max_right) { player.tile.x = max_right; return; }
                 player.tile.body.velocity.x = 200;
             }
 
@@ -73,7 +82,7 @@ define([
                 this.cursors.down.isDown ||
                 this.cursors.left.isDown ||
                 this.cursors.right.isDown) {
-                player_move(player.tile.x, player.tile.y);
+                // player_move(player.tile.x, player.tile.y);
             }
         },
         // run per each mouse move on game board
@@ -98,8 +107,8 @@ define([
 
             new DynamicWall({
                 game: this.game,
-                x: DynamicWall.WIDTH * 2,
-                y: DynamicWall.HEIGHT * 2
+                x: DynamicWall.WIDTH * 3,
+                y: DynamicWall.HEIGHT
             })
         },
         _buildBomb: function () {
