@@ -45,12 +45,15 @@ define([
         },
         preload: function () {
             // log('* preload process');
-            this.game.load.spritesheet('enemy', 'assets/enemy.png', 35, 35, 4);
-            this.game.load.spritesheet('ghost', 'assets/ghost.png', 35, 35, 4);
             this.game.load.spritesheet('bomb', 'assets/bomb.png', 50, 50, 3);
             this.game.load.spritesheet('wall', 'assets/wall.png', 50, 50, 1);
             this.game.load.spritesheet('brick', 'assets/brick.png', 50, 50, 4);
-            this.game.load.spritesheet('mixture', 'assets/mixture.png', 20, 35, 3);
+            this.game.load.spritesheet('mixture', 'assets/mixture.png', 50, 50, 3);
+
+            this.game.load.spritesheet('ghost', 'assets/ghost.png', 35, 35, 4);
+            this.game.load.spritesheet('opponent', 'assets/fighter-yellow.png', 35, 35, 4);
+            this.game.load.spritesheet('player', 'assets/fighter-blue.png', 35, 35, 4);
+            this.game.load.spritesheet('special', 'assets/fighter-white.png', 35, 35, 4);
         },
         create: function () {
             // log('* create process');
@@ -62,9 +65,6 @@ define([
 
             var grays = ['181818', '313131', '494949'];
             this.game.stage.backgroundColor = grays[_.random(0, grays - 1)]; // world color
-            // this._addHeader("Welcome in \"NKO\" World!"); // any header?
-
-            // this._generateOpponents();
 
             this.cursors = this.game.input.keyboard.createCursorKeys();
             this.game.input.keyboard.addKeyCapture(32, this._spaceHandler);
@@ -87,12 +87,16 @@ define([
                 });
             });
         },
+        updateMap: function (x, y, type) {
+            this._setTile(x, y, type);
+        },
         _setTile: function (x, y, type) {
             var tile;
             switch (type) {
                 // space
                 case 0:
                     if (this.map[x] && this.map[x][y]) {
+                        // console.log(this.map[x][y]);
                         this.map[x][y].destroy();
                     }
                     break;
@@ -132,9 +136,6 @@ define([
             }
             if (!this.map[x]) this.map[x] = [];
             this.map[x][y] = tile;
-        },
-        updateMap: function (x, y, type) {
-            this._setTile(x, y, type);
         },
         update: function () {
             if (!player) return; // unless one player should be create
@@ -182,14 +183,20 @@ define([
             this.game.physics.collide(player.tile, this.bricks, emptyHandler, null, this);
             this.game.physics.collide(player.tile, this.walls, emptyHandler, null, this);
             this.game.physics.collide(player.tile, this.bombs, emptyHandler, null, this);
-            this.game.physics.collide(player.tile, this.mixtures, emptyHandler, null, this);
+            this.game.physics.collide(player.tile, this.mixtures, this._catchMixtureHandler, null, this);
 
             if (opponent) {
                 this.game.physics.collide(opponent.tile, this.bricks, emptyHandler, null, this);
                 this.game.physics.collide(opponent.tile, this.walls, emptyHandler, null, this);
                 this.game.physics.collide(opponent.tile, this.bombs, emptyHandler, null, this);
-                this.game.physics.collide(opponent.tile, this.mixtures, emptyHandler, null, this);
+                this.game.physics.collide(opponent.tile, this.mixtures, this._catchMixtureHandler, null, this);
             }
+        },
+        _catchMixtureHandler: function (s, t) {
+            t.destroy();
+            var currentPlayer = this.list[s.id];
+            currentPlayer.power++;
+            updatePlayer(s.id, { power: currentPlayer.power});
         },
         _spaceHandler: function () {
             var x = Math.round(player.tile.x / Wall.WIDTH);
@@ -219,7 +226,7 @@ define([
                 players: this.players,
                 power: 2,
                 id: id,
-                sprite: 'ghost'
+                sprite: 'special'
             });
             player.tile.body.collideWorldBounds = true; // disable go out of world
             this.game.camera.follow(player.tile); // main player (camera is following)
@@ -232,7 +239,7 @@ define([
                 players: this.players,
                 power: 2,
                 id: id,
-                sprite: 'enemy'
+                sprite: 'opponent'
             });
             opponent.tile.body.collideWorldBounds = true; // disable go out of world
             this.list[id] = opponent;
@@ -267,16 +274,6 @@ define([
             var player = this.list[id];
             if (!player) throw 'player "' + id + '" doesn\'t exists';
             return player;
-        },
-        _addHeader: function (text) {
-            var style = { font: "50px Arial", fill: "#696969" };
-            this.game.add.text(this.game.world.width / 2 - 300, 50, text, style);
-        },
-        _generateOpponents: function () {
-            var self = this;
-            _.times(50, function (n) {
-                self.addOpponent('opponent_' + n);
-            });
         },
         _getUserName: function () {
             var name = cookie.get('username');

@@ -29,8 +29,9 @@ define([
         create: function () {
             // this.tile = this.game.add.sprite(this.x, this.y, this.sprite);
             this.tile = this.players.create(this.x, this.y, this.sprite);
-            this.tile.animations.add('scary');
-            this.tile.animations.play('scary', 10, true, true);
+            this.tile.id = this.id;
+            this.tile.animations.add('walk');
+            this.tile.animations.play('walk', 10, true, true);
         },
         move: function (x, y) {
             this.tile.body.velocity.y = this.tile.x - x;

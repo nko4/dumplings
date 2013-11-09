@@ -40,7 +40,12 @@
         };
 
         exports.killPlayer = function (id) {
-            socket.emit('kill',id);
+            socket.emit('kill', id);
+        };
+
+        exports.updatePlayer = function (id, settings) {
+            var player = app.getPlayerById(id);
+            // TODO: aktualizacja playera o id i rozgloszenie innym tej zmiany
         };
 
         exports.connect_to_server = function () {

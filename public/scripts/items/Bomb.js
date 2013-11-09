@@ -37,8 +37,11 @@ define([
 
             this.tile.animations.add('destroy');
             this.tile.animations.play('destroy', 5, true);
+
             setTimeout(function () {
-                this.tile.animations.stop('destroy');
+                // this.tile.animations.stop('destroy');
+                this.tile.animations.destroy();
+
                 setTimeout(function () {
                     this.tile.kill();
                     if (y % 2 === 1) this._lineX.call(this, x, y, this.power);

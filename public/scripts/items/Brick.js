@@ -32,6 +32,7 @@ define([
 
             this.tile.animations.add('destroy');
             this.tile.animations.play('destroy', 5, true);
+
             setTimeout(function () {
                 this.tile.animations.stop('destroy');
                 setTimeout(function () {
