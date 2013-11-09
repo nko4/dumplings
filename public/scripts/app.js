@@ -2,8 +2,10 @@ define([
     'underscore',
     'phaser',
     'items/Player',
-    'items/StaticWall'
-], function (_, Phaser, Player, StaticWall) {
+    'items/StaticWall',
+    'items/Bomb',
+    'items/DynamicWall'
+], function (_, Phaser, Player, StaticWall, Bomb, DynamicWall) {
     'use strict';
 
     var App = function (callback) {
@@ -30,17 +32,19 @@ define([
             log('preload process');
             this.game.load.image('pikatchu', 'assets/pikatchu.png');
             this.game.load.image('mewtwo', 'assets/mewtwo.png');
-            this.game.load.image('wall', 'assets/pikatchu.png');
-            // this.game.load.spritesheet('wall', 'assets/bomb.png', 50, 50, 4);
+            this.game.load.spritesheet('bomb', 'assets/bomb.png', 50, 50, 3);
+            this.game.load.spritesheet('static-wall', 'assets/static-wall.png', 50, 50, 1);
+            this.game.load.spritesheet('dynamic-wall', 'assets/dynamic-wall.png', 50, 50, 1);
         },
         create: function () {
             log('create process');
 
-            this.game.world.setBounds(0, 0, 2000, 1000); // world size
+            this.game.world.setBounds(0, 0, 1500, 700); // world size
             this.game.stage.backgroundColor = "#0c0c0c"; // world color
             this._addHeader("Welcome in nko World!"); // any header?
 
             this._buildWalls();
+            this._buildBomb();
 
             this.cursors = this.game.input.keyboard.createCursorKeys();
 
@@ -82,14 +86,27 @@ define([
             var height = self.game.world.height / StaticWall.HEIGHT;
 
             // top
-            // _.times(width, function (n) { self.game.add.sprite(n * StaticWall.WIDTH, 0, 'wall')});
+            _.times(width, function (n) { new StaticWall({ game: self.game, x: n * StaticWall.WIDTH, y: 0 })});
             // bottom
-            // _.times(width, function (n) { self.game.add.sprite(n * StaticWall.WIDTH, self.game.world.height - StaticWall.HEIGHT, 'wall')});
+            _.times(width, function (n) { new StaticWall({ game: self.game, x: n * StaticWall.WIDTH, y: self.game.world.height - StaticWall.HEIGHT })});
 
             // left
-            // _.times(height, function (n) { self.game.add.sprite(0, n * StaticWall.WIDTH, 'wall')});
+            _.times(width, function (n) { new StaticWall({ game: self.game, x: 0, y: n * StaticWall.WIDTH })});
             // right
-            // _.times(height, function (n) { self.game.add.sprite(self.game.world.width - StaticWall.WIDTH, n * StaticWall.WIDTH, 'wall')});
+            _.times(width, function (n) { new StaticWall({ game: self.game, x: self.game.world.width - StaticWall.WIDTH, y: n * StaticWall.WIDTH })});
+
+            new DynamicWall({
+                game: this.game,
+                x: DynamicWall.WIDTH * 3,
+                y: DynamicWall.HEIGHT * 3
+            })
+        },
+        _buildBomb: function () {
+            var bomb = new Bomb({
+                game: this.game,
+                x: Bomb.WIDTH,
+                y: Bomb.HEIGHT
+            });
         },
         addPlayer: function (id, isMaster) {
             player = new Player({
@@ -99,7 +116,7 @@ define([
                 sprite: (isMaster ? 'pikatchu' : 'mewtwo')
             });
             player.tile.body.collideWorldBounds = true; // disable go out of world
-            if (isMaster) this.game.camera.follow(player.tile); // main player (camera is
+            if (isMaster) this.game.camera.follow(player.tile); // main player
             this.list[id] = player;
             return player;
         },
