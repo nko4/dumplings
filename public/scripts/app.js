@@ -86,6 +86,7 @@ define([
         },
         synchro: function () {
             setInterval(function () {
+                if (!player) return;
                 player_move(player.tile.x, player.tile.y);
             }, 100);
         },
