@@ -41,11 +41,6 @@
 
 
 
-        
-
-
-
-
         exports.player_move = function(x,y) {
         	console.log('emit-player-x-'+x+'-y-'+y);
         	socket.emit('pm',x,y);
@@ -55,7 +50,7 @@
         socket.on('pm',function(players) {
         	players.forEach(function(player) {
 
-        		console.log('player-move-x-'+player.x+'-y-'+player.y);
+        		console.log('player-'+player.id+'-x-'+player.x+'-y-'+player.y);
 
         	});
         })

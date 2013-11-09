@@ -28,7 +28,39 @@ app.configure(function(){
   // app.use(require('connect-assets')());
 });
 
-players = {};
+
+var Player, player;
+
+Player = (function() {
+  function Player(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  Player.prototype.getPosition = function() {
+    return {
+      x: this.x,
+      y: this.y
+    };
+  };
+
+  return Player;
+
+})();
+
+player = new Player(1, 2);
+
+player.getPosition();
+
+
+
+
+
+
+
+
+
+players = [];
 
 var server = app.listen(port);
 var io = require('socket.io').listen(server);
@@ -40,13 +72,15 @@ app.get('/', function (reseq, res) {
 io.sockets.on('connection', function (socket) {
 
 
-  socket.on('play',function() {
+  socket.on('play',function(x,y) {
+
+    players.push( id: socket.id, x: x, y: y };
 
   });
 
   socket.on('pm',function(x,y) {
 
-    socket.broadcast.emit('pm', []);
+    socket.broadcast.emit('pm', players);
 
 
   }); // player move
