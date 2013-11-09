@@ -9,8 +9,11 @@ define([
 ], function (_, $, Phaser, Player, Wall, Bomb, Brick) {
     'use strict';
 
-    var App = function (callback) {
+    var App = function (width, height, callback) {
+        this._width = width;
+        this._height = height;
         this.callback = callback;
+
         this.cursors = null;
         this.bricks = null; // collection of bricks
         this.walls = null; // collection of walls
@@ -49,7 +52,7 @@ define([
             this.walls = this.game.add.group();
             this.bombs = this.game.add.group();
 
-            this.game.world.setBounds(0, 0, 1850, 1150); // world size
+            this.game.world.setBounds(0, 0, this._width * Wall.WIDTH, this._height * Wall.HEIGHT); // world size
             this.game.stage.backgroundColor = "#0c0c0c"; // world color
             this._addHeader("Welcome in \"nko\" World!"); // any header?
 
@@ -63,8 +66,6 @@ define([
             // this._generateOpponents();
 
             this.cursors = this.game.input.keyboard.createCursorKeys();
-
-            console.groupEnd();
 
             this.callback.call(this);
         },

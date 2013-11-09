@@ -7,17 +7,52 @@
 <script src="scripts/vendor/jquery.min.js"></script>
 <script src="scripts/vendor/jquery-ui.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
+<script src="scripts/vendor/require.js"></script>
 <script type="text/javascript">
-    // self-invoke function expr - start loading...
+    // self-invoke function expression - start loading...
     (function (exports) {
+        'use strict';
+
+        require.config({
+            baseUrl: 'scripts',
+            paths: {
+                "phaser": 'vendor/phaser',
+                "underscore": 'vendor/underscore',
+                "jquery": 'vendor/jquery.min'
+            },
+            shim: {
+                "phaser": {
+                    exports: "Phaser"
+                },
+                "underscore": {
+                    exports: "_"
+                },
+                "jquery": {
+                    exports: "$"
+                }
+            }
+        });
+
+        function bootstrap(width, height, callback) {
+            require([
+                'underscore',
+                'app'
+            ], function (_, App) {
+                // creating application
+                window.app = new App(width, height, callback);
+            });
+        }
+
+/******************************************************************************/
+
         var socket, current_player = false;
 
         if (<%= isProduction %>) {
-            console.groupCollapsed('Start "nko" application in production');
+            console.log('Start "nko" application in production');
             socket = io.connect('http://dumplings.2013.nodeknockout.com/');
         } else {
         	var socket_path = location.protocol + '//' + location.hostname + ':' + location.port + '/';
-            console.groupCollapsed('Start "nko" application in development on ' + socket_path);
+            console.log('Start "nko" application in development on ' + socket_path);
             socket = io.connect(socket_path);
         }
 
@@ -30,7 +65,7 @@
             socket.emit('pm', parseInt(x, 10), parseInt(y, 10));
         };
 
-        exports.connect_to_server = function () {
+        var connect_to_server = exports.connect_to_server = function () {
 
             socket.emit('play');
 
@@ -68,10 +103,10 @@
             	});
             });
         };
-    }(this));
 
+        bootstrap(40, 30, connect_to_server);
+    }(this));
 </script>
-<script data-main="scripts/main" src="scripts/vendor/require.js"></script>
 
 <div id="vote">
     <iframe src="http://nodeknockout.com/iframe/dumplings" frameborder=0 scrolling=no allowtransparency=true width=115 height=25></iframe>
