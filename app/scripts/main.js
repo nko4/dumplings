@@ -32,6 +32,13 @@ require.config({
     exports.log = log;
 }(this));
 
-require([], function () {
+require([
+    "app"
+], function (App) {
     log('Start "Share" application', true);
+    // creating application
+    window.app = new App(function () {
+        this.addActor('test');
+    });
 });
+
