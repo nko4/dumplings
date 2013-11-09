@@ -74,7 +74,7 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('play',function(x,y) {
 
-    players.push( id: socket.id, x: x, y: y };
+    players.push({ id: socket.id, x: x, y: y });
 
   });
 
