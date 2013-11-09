@@ -13,8 +13,6 @@ define([
         this.id = settings.id;
         this.sprite = settings.sprite;
 
-        console.log(this.x, this.y);
-
         this.create();
     };
     Player.WIDTH = 35;
@@ -31,7 +29,6 @@ define([
         random: function () {
             var x = _.random(0, this.game.world.width / Wall.WIDTH - 2);
             var y = _.random(0, this.game.world.height / Wall.HEIGHT - 2);
-            console.log(x, y);
             return {x: x * Wall.WIDTH, y: y * Wall.HEIGHT};
         },
         kill: function () {
