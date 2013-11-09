@@ -47,6 +47,8 @@ define([
             this.callback.call(this);
         },
         update: function () {
+            if (!player) return; // unless one player should be create
+
             player.tile.body.velocity.setTo(0, 0);
 
             if (this.cursors.up.isDown) {
@@ -72,7 +74,7 @@ define([
         // run per each mouse move on game board
         render: function () {
             this.game.debug.renderCameraInfo(this.game.camera, 60, 75);
-            this.game.debug.renderSpriteCoords(player.tile, 60, 180);
+            if (player) this.game.debug.renderSpriteCoords(player.tile, 60, 180);
         },
         _buildWalls: function () {
             var self = this;
