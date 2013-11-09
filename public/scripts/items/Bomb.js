@@ -3,6 +3,7 @@ define([], function () {
 
     var Bomb = function (settings) {
         this.game = settings.game;
+        this.bombs = settings.bombs;
         this.x = settings.x;
         this.y = settings.y;
         this.tile = null;
@@ -14,9 +15,22 @@ define([], function () {
 
     Bomb.prototype = {
         create: function () {
-            this.tile = this.game.add.sprite(this.x, this.y, 'bomb');
-            this.tile.animations.add('explode');
-            this.tile.animations.play('explode', 2, true);
+            // this.tile = this.game.add.sprite(this.x, this.y, 'bomb');
+            this.tile = this.bombs.create(this.x, this.y, 'bomb');
+            setTimeout(function () {
+                this.destroy();
+            }.bind(this), _.random(2000, 10000));
+        },
+        destroy: function () {
+            this.tile.animations.add('destroy');
+            this.tile.animations.play('destroy', 2, true);
+            setTimeout(function () {
+                this.tile.animations.stop('destroy');
+                this.tile.animations.destroy();
+                setTimeout(function () {
+                    this.tile.destroy();
+                }.bind(this), 400);
+            }.bind(this), _.random(500, 2000));
         }
     };
     return Bomb;

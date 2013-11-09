@@ -12,8 +12,9 @@ define([
     var App = function (callback) {
         this.callback = callback;
         this.cursors = null;
-        this.bricks = null;
-        this.walls = null;
+        this.bricks = null; // collection of bricks
+        this.walls = null; // collection of walls
+        this.bombs = null; // collection of bombs
         this.list = {};
 
         this.initialize();
@@ -46,16 +47,17 @@ define([
 
             this.bricks = this.game.add.group();
             this.walls = this.game.add.group();
+            this.bombs = this.game.add.group();
 
             this.game.world.setBounds(0, 0, 1850, 1150); // world size
             this.game.stage.backgroundColor = "#0c0c0c"; // world color
-            this._addHeader("Welcome in nko World!"); // any header?
+            this._addHeader("Welcome in \"nko\" World!"); // any header?
 
             var width = this.game.world.width / Wall.WIDTH;
             var height = this.game.world.height / Wall.HEIGHT;
 
-            this._buildBricks(width, height);
             this._buildBomb(width, height);
+            this._buildBricks(width, height);
             this._buildBorderWalls(width, height);
             this._buildInsideWalls(width, height);
             // this._generateOpponents();
@@ -108,6 +110,7 @@ define([
             }
             this.game.physics.collide(player.tile, this.bricks, this._collisionBrickHandler, null, this);
             this.game.physics.collide(player.tile, this.walls, this._collisionWallHandler, null, this);
+            this.game.physics.collide(player.tile, this.bombs, this._collisionWallHandler, null, this);
         },
         _collisionBrickHandler: function (s, t) {
             t.kill();
@@ -203,6 +206,7 @@ define([
             _.times(10, function () {
                 new Bomb({
                     game: self.game,
+                    bombs: self.bombs,
                     x: Bomb.WIDTH * _.random(0, width),
                     y: Bomb.HEIGHT * _.random(0, height)
                 });
@@ -240,7 +244,7 @@ define([
             return player;
         },
         _addHeader: function (text) {
-            var style = { font: "70px Arial", fill: "#696969" };
+            var style = { font: "50px Arial", fill: "#696969" };
             this.game.add.text(this.game.world.width / 2 - 300, 50, text, style);
         },
         _generateOpponents: function () {
