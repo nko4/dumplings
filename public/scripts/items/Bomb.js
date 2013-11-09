@@ -32,12 +32,12 @@ define([
             var y = Math.round(this.y / Wall.HEIGHT);
 
             this.tile.animations.add('destroy');
-            this.tile.animations.play('destroy', 2, true);
+            this.tile.animations.play('destroy', 5, true);
             setTimeout(function () {
                 this.tile.animations.stop('destroy');
                 this.tile.animations.destroy();
                 setTimeout(function () {
-                    this.tile.destroy();
+                    this.tile.kill();
                     broadcasting(x, y, 0);
                 }.bind(this), 400);
             }.bind(this), 500);

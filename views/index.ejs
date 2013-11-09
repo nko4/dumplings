@@ -36,8 +36,7 @@
         };
 
         exports.broadcasting = function (x, y, type) {
-            // rozglasza wszystkim zmiane
-            console.log('broadcasting');
+            console.log('broadcasting ... ', x, y, type);
             socket.emit('mc', x, y, type);
         };
 
