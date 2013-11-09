@@ -73,41 +73,47 @@ define([
 
             _.each(map, function (row, n) {
                 _.each(row, function (tile, m) {
-                    switch (tile) {
-                        // space
-                        case 0: break;
-                        // wall
-                        case 1:
-                            new Wall({
-                                game: self.game,
-                                walls: self.walls,
-                                x: n * Wall.WIDTH,
-                                y: m * Wall.HEIGHT
-                            });
-                            break;
-                        // brick
-                        case 2:
-                            new Brick({
-                                game: self.game,
-                                bricks: self.bricks,
-                                x: n * Wall.WIDTH,
-                                y: m * Wall.HEIGHT
-                            });
-                            break;
-                        // bomb
-                        case 3:
-                            new Bomb({
-                                game: self.game,
-                                bombs: self.bombs,
-                                x: n * Wall.WIDTH,
-                                y: y * Wall.HEIGHT
-                            });
-                            break;
-                        default:
-                            throw 'unexpected ' + tile;
-                    }
+                    self._setTile.call(self, n, m, tile);
                 });
             });
+        },
+        _setTile: function (x, y, tile) {
+            switch (tile) {
+                // space
+                case 0: break;
+                // wall
+                case 1:
+                    new Wall({
+                        game: this.game,
+                        walls: this.walls,
+                        x: x * Wall.WIDTH,
+                        y: y * Wall.HEIGHT
+                    });
+                    break;
+                // brick
+                case 2:
+                    new Brick({
+                        game: this.game,
+                        bricks: this.bricks,
+                        x: x * Wall.WIDTH,
+                        y: y * Wall.HEIGHT
+                    });
+                    break;
+                // bomb
+                case 3:
+                    new Bomb({
+                        game: this.game,
+                        bombs: this.bombs,
+                        x: x * Wall.WIDTH,
+                        y: y * Wall.HEIGHT
+                    });
+                    break;
+                default:
+                    throw 'unexpected ' + tile;
+            }
+        },
+        updateMap: function (x, y, type) {
+            this._setTile(x, y, tile);
         },
         update: function () {
             if (!player) return; // unless one player should be create
