@@ -122,7 +122,7 @@ Game = (function() {
       }
     });
 
-    _.times(parseInt(MAP_X*MAP_Y*0.10),function() {
+    _.times(parseInt(MAP_X*MAP_Y*0.05),function() {
       var x = Math.floor(Math.random() * MAP_X-1) + 1;
       var y = Math.floor(Math.random() * MAP_Y-1) + 1;
       var elem = map[x][y];
