@@ -36,7 +36,6 @@
         };
 
         exports.broadcasting = function (x, y, type) {
-            // console.log('broadcasting ... ', x, y, type);
             socket.emit('mc', x, y, type);
         };
 
@@ -45,11 +44,9 @@
         };
 
         exports.connect_to_server = function () {
-
             socket.emit('play');
 
             socket.on('mc',function(x,y,type) {
-                // console.log('updateMap ... ', x, y, type);
                 app.updateMap(x, y, type);
             });
 
@@ -57,6 +54,7 @@
     			current_player = app.addPlayer(id, true);
     			socket.emit('pm', current_player.tile.x , current_player.tile.y);
                 info('Welcome to yet not named project by <em>dumplings</em>!');
+                current_player.setName(app._getUserName());
             });
             socket.on('join', function (player) {
                 log('Opponent "' + player.id + '" joined', 1);

@@ -1,12 +1,13 @@
 define([
     'underscore',
     'jquery',
+    'cookie',
     'phaser',
     'items/Player',
     'items/Wall',
     'items/Bomb',
     'items/Brick'
-], function (_, $, Phaser, Player, Wall, Bomb, Brick) {
+], function (_, $, cookie, Phaser, Player, Wall, Bomb, Brick) {
     'use strict';
 
     var App = function (callback) {
@@ -169,6 +170,9 @@ define([
                     }, 20);
                 }
             }
+
+            player._moveLabel(player.tile.x, player.tile.y);
+
             this.game.physics.collide(player.tile, this.bricks, this._collisionBrickHandler, null, this);
             this.game.physics.collide(player.tile, this.walls, this._collisionWallHandler, null, this);
             this.game.physics.collide(player.tile, this.bombs, this._collisionWallHandler, null, this);
@@ -274,6 +278,18 @@ define([
             _.times(50, function (n) {
                 self.addOpponent('opponent_' + n);
             });
+        },
+        _getUserName: function () {
+            var name = cookie.get('username');
+            if (!name) {
+                name = prompt('Pick your name:');
+                if (!name) {
+                    alert('Name is mandatory, please tell us, what is your name?');
+                    name = app._getUserName();
+                }
+            }
+            cookie.set('username', name);
+            return name;
         }
     };
 
