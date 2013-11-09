@@ -39,6 +39,7 @@ define([
             // log('* preload process');
             this.game.load.image('pikatchu', 'assets/pikatchu.png');
             this.game.load.image('mewtwo', 'assets/mewtwo.png');
+            this.game.load.image('fighter', 'assets/fighter.png');
             this.game.load.spritesheet('bomb', 'assets/bomb.png', 50, 50, 3);
             this.game.load.spritesheet('wall', 'assets/wall.png', 50, 50, 1);
             this.game.load.spritesheet('brick', 'assets/brick.png', 50, 50, 4);
@@ -180,7 +181,7 @@ define([
             player = new Player({
                 game: this.game,
                 id: id,
-                sprite: 'pikatchu'
+                sprite: 'fighter'
             });
             player.tile.body.collideWorldBounds = true; // disable go out of world
             this.game.camera.follow(player.tile); // main player (camera is following)
