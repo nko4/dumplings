@@ -71,7 +71,18 @@ Game = (function() {
       });
     });
 
-    map[MAP_X][MAP_Y] = 1;
+    map[MAP_X][MAP_Y] = 1; //hack :)
+
+    _.times(parseInt(MAP_X*MAP_Y*0.20),function() {
+      var x = Math.floor(Math.random() * MAP_X-1) + 1;
+      var y = Math.floor(Math.random() * MAP_Y-1) + 1;
+      var elem = map[x][y];
+
+      if (map[x][y] == 0) {
+        map[x][y] = 2;
+      }
+    });
+
 
     this.map = map;
 
