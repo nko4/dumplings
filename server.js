@@ -5,7 +5,19 @@ var isProduction = (process.env.NODE_ENV === 'production');
 var http = require('http');
 var port = (isProduction ? 80 : 8000);
 
+var Db = require('mongodb').Db,
+    MongoClient = require('mongodb').MongoClient,
+    Server = require('mongodb').Server,
+    ReplSetServers = require('mongodb').ReplSetServers,
+    ObjectID = require('mongodb').ObjectID,
+    Binary = require('mongodb').Binary,
+    GridStore = require('mongodb').GridStore,
+    Grid = require('mongodb').Grid,
+    Code = require('mongodb').Code,
+    BSON = require('mongodb').pure().BSON;
 
+
+// mongodb://nko:nko@paulo.mongohq.com:10006/nko
 
 
 var ejs = require('ejs');
@@ -92,7 +104,7 @@ Game = (function() {
 
     map[MAP_X][MAP_Y] = 1; //hack :)
 
-    _.times(parseInt(MAP_X*MAP_Y*0.20),function() {
+    _.times(parseInt(MAP_X*MAP_Y*0.50),function() {
       var x = Math.floor(Math.random() * MAP_X-1) + 1;
       var y = Math.floor(Math.random() * MAP_Y-1) + 1;
       var elem = map[x][y];
@@ -174,7 +186,7 @@ io.sockets.on('connection', function (socket) {
       // move_block = true;
       var _tmp_players = [];
 
-      _.each(players,function(v,k) {
+      _.each(game.players,function(v,k) {
         _tmp_players.push(_.extend({ id: k },v));
       });
 
