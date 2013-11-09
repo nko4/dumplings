@@ -72,23 +72,16 @@ app.get('/', function (reseq, res) {
 
 io.sockets.on('connection', function (socket) {
 
+  var ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address.address;
 
   socket.on('play',function() {
     players[socket.id] = { x: 0, y: 0 };
-
-
     socket.emit('play',socket.id,0,0);
-
+    socket.broadcast.emit('join',{ id: socket.id, ip: ip })
   });
 
   socket.on('pm',function(x,y) {
-
-
-
     players[socket.id] = { x: x, y: y};
-
-
-
 
     var _tmp_players = [];
 
@@ -102,11 +95,9 @@ io.sockets.on('connection', function (socket) {
 
   }); // player move
 
-
-
   socket.on('disconnect', function() {
     delete players[socket.id];
-    socket.broadcast.emit('leave',socket.id)
+    socket.broadcast.emit('leave',{ id: socket.id })
   });
 
 });
