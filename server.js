@@ -69,6 +69,7 @@ function nextId() {
 
 
 players = {};
+move_block = false;
 
 var server = app.listen(port);
 var io = require('socket.io').listen(server);
@@ -88,18 +89,24 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('pm',function(x,y) {
+    
     players[socket.id] = { x: x, y: y};
 
-    var _tmp_players = [];
+    if (!move_block) {
+      // move_block = true;
+      var _tmp_players = [];
 
-    _.each(players,function(v,k) {
-      _tmp_players.push(_.extend({ id: k },v));
-    });
+      _.each(players,function(v,k) {
+        _tmp_players.push(_.extend({ id: k },v));
+      });
 
+      socket.broadcast.emit('pm',_tmp_players);
 
-    socket.broadcast.emit('pm',_tmp_players);
-
-
+      // setTimeout(function() {
+      //   move_block = false;
+      // },50);
+      
+    }
   }); // player move
 
   socket.on('disconnect', function() {
@@ -108,24 +115,3 @@ io.sockets.on('connection', function (socket) {
   });
 
 });
-
-
-// http.createServer(function (req, res) {
-//   // http://blog.nodeknockout.com/post/35364532732/protip-add-the-vote-ko-badge-to-your-app
-//   var voteko = '<iframe src="http://nodeknockout.com/iframe/dumplings" frameborder=0 scrolling=no allowtransparency=true width=115 height=25></iframe>';
-
-//   res.writeHead(200, {'Content-Type': 'text/html'});
-//   res.end('<html><body>' + voteko + '</body></html>\n');
-// }).listen(port, function(err) {
-//   if (err) { console.error(err); process.exit(-1); }
-
-//   // if run as root, downgrade to the owner of this file
-//   if (process.getuid() === 0) {
-//     require('fs').stat(__filename, function(err, stats) {
-//       if (err) { return console.error(err); }
-//       process.setuid(stats.uid);
-//     });
-//   }
-
-//   console.log('Server running at http://0.0.0.0:' + port + '/');
-// });
