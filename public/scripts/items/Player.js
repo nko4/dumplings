@@ -43,6 +43,7 @@ define([
         },
         destroy: function () {
             this.tile.kill();
+            killPlayer(this.id);
         }
     };
     return Player;
