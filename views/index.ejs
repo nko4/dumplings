@@ -18,11 +18,11 @@
         var socket, current_player = false;
 
         if (<%= isProduction %>) {
-            console.log('Start "nko" application in production');
+            console.log('Start "NKO" application in production');
             socket = io.connect('http://dumplings.2013.nodeknockout.com/');
         } else {
         	var socket_path = location.protocol + '//' + location.hostname + ':' + location.port + '/';
-            console.log('Start "nko" application in development on ' + socket_path);
+            console.log('Start "NKO" application in development on ' + socket_path);
             socket = io.connect(socket_path);
         }
 
@@ -56,18 +56,16 @@
             socket.on('play', function (id, x, y) {
     			current_player = app.addPlayer(id, true);
     			socket.emit('pm', current_player.tile.x , current_player.tile.y);
-                info('Welcome to yet not named project by <em>dumplings</em>!')
+                info('Welcome to yet not named project by <em>dumplings</em>!');
             });
             socket.on('join', function (player) {
-                var msg = 'Opponent <em>' + player.id + '</em> joined';
-                log(msg, 1);
+                log('Opponent "' + player.id + '" joined', 1);
                 info('Player <em>' + player.id + '</em> joined from <img src="http://www.geojoe.co.uk/api/flag/?ip=' + player.ip + '" alt="-" />', 1);
             });
             socket.on('leave', function (player) {
                 app.terminateOpponent(player.id);
-                var msg = 'Opponent <em>' + player.id + '</em> terminated';
-                log(msg);
-                info(msg);
+                log('Opponent "' + player.id + '" terminated');
+                info('Opponent <em>' + player.id + '</em> terminated');
             });
 
             socket.on('map', function(map) {
