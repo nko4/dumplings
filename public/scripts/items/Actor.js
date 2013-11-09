@@ -15,6 +15,7 @@ define([
     };
     Actor.WIDTH = 50;
     Actor.HEIGHT = 50;
+
     Actor.prototype = {
         create: function () {
             this.tile = this.game.add.sprite(Actor.WIDTH, Actor.HEIGHT, 'pikatchu');
