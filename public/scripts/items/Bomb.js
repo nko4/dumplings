@@ -17,8 +17,9 @@ define([], function () {
     Bomb.prototype = {
         create: function () {
             this.tile = this.game.add.sprite(this.x, this.y, 'bomb');
+            this.tile.animations.add('explode');
+            this.tile.animations.play('explode', 2, true);
         }
     };
-
     return Bomb;
 });

@@ -17,8 +17,8 @@ define([], function () {
     DynamicWall.prototype = {
         create: function () {
             this.tile = this.game.add.sprite(this.x, this.y, 'dynamic-wall');
-            this.tile.animations.add('walk');
-            this.tile.animations.play('walk', 4, true);
+            this.tile.animations.add('destroy');
+            this.tile.animations.play('destroy', 2, true);
         }
     };
     return DynamicWall;

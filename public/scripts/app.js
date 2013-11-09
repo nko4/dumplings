@@ -34,7 +34,7 @@ define([
             this.game.load.image('mewtwo', 'assets/mewtwo.png');
             this.game.load.spritesheet('bomb', 'assets/bomb.png', 50, 50, 3);
             this.game.load.spritesheet('static-wall', 'assets/static-wall.png', 50, 50, 1);
-            this.game.load.spritesheet('dynamic-wall', 'assets/dynamic-wall.png', 50, 50, 1);
+            this.game.load.spritesheet('dynamic-wall', 'assets/dynamic-wall.png', 50, 50, 4);
         },
         create: function () {
             log('create process');
@@ -44,7 +44,7 @@ define([
             this._addHeader("Welcome in nko World!"); // any header?
 
             this._buildWalls();
-            this._buildOpponents();
+            // this._buildOpponents();
             this._buildBomb();
 
             this.cursors = this.game.input.keyboard.createCursorKeys();
@@ -78,8 +78,8 @@ define([
         },
         // run per each mouse move on game board
         render: function () {
-            this.game.debug.renderCameraInfo(this.game.camera, 60, 75);
-            if (player) this.game.debug.renderSpriteCoords(player.tile, 60, 180);
+            // this.game.debug.renderCameraInfo(this.game.camera, 60, 75);
+            // if (player) this.game.debug.renderSpriteCoords(player.tile, 60, 180);
         },
         _buildWalls: function () {
             var self = this;
@@ -98,8 +98,8 @@ define([
 
             new DynamicWall({
                 game: this.game,
-                x: DynamicWall.WIDTH * 3,
-                y: DynamicWall.HEIGHT * 3
+                x: DynamicWall.WIDTH * 2,
+                y: DynamicWall.HEIGHT * 2
             })
         },
         _buildBomb: function () {
