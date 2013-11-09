@@ -39,8 +39,8 @@
 
 
 
-        player = false;
-        exports.player = player;
+        current_player = false;
+        exports.current_player = current_player;
 
 
         exports.chuj = function() {
@@ -50,8 +50,8 @@
 
             socket.on('play',function(id,x,y) {
     			
-    			player = app.addPlayer(id,true);
-    			socket.emit('pm', player.tile.x , player.tile.y);
+    			current_player = app.addPlayer(id,true);
+    			socket.emit('pm', current_player.tile.x , current_player.tile.y);
 
             });
 
@@ -63,7 +63,7 @@
 
             socket.on('leave', function(player) {
                 app.terminateOpponent(player);
-                console.log('oponent '+player+' terminated');
+                console.log('opponent '+player+' terminated');
             });
 
             socket.on('pm',function(players) {
@@ -77,8 +77,9 @@
                         var obj = app.addOpponent(player.id);
                     }
 
-
-                    obj.move(player.x,player.y);
+                    if (current_player.id != player.id) {
+                        obj.move(player.x,player.y);
+                    }
 
 
             	});
