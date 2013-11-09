@@ -6,8 +6,8 @@ define([
     var Player = function (settings) {
         // log('* create new player="' + settings.id + '"');
         this.game = settings.game;
-        this.x = settings.x || this.game.world.randomX;
-        this.y = settings.y || this.game.world.randomY;
+        this.x = settings.x || this.random().x;
+        this.y = settings.y || this.random().y;
         this.tile = null;
         this.id = settings.id;
         this.sprite = settings.sprite;
@@ -24,6 +24,11 @@ define([
         move: function (x, y) {
             this.tile.x = x;
             this.tile.y = y;
+        },
+        random: function () {
+            var x = _.random(Player.WIDTH, this.game.world.width - Player.WIDTH * 2);
+            var y = _.random(Player.HEIGHT, this.game.world.height - Player.HEIGHT * 2);
+            return {x:x, y:y};
         }
     };
     return Player;
