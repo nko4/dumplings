@@ -143,7 +143,7 @@ define([
         },
         getPlayerById: function (id) {
             var player = this.list[id];
-            if (!player) throw 'player doesn\'t exists';
+            if (!player) throw 'player "' + id + '" doesn\'t exists';
             return player;
         },
         _addHeader: function (text) {
