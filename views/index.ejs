@@ -40,13 +40,13 @@
                 info('Welcome to yet not named project by dumplings!')
             });
             socket.on('join', function (player) {
-                var msg = 'opponent <em>' + player.id + '</em> joined';
+                var msg = 'Opponent <em>' + player.id + '</em> joined';
                 log(msg, 1);
                 info('Player <em>' + player.id + '</em> joined from <img src="http://www.geojoe.co.uk/api/flag/?ip=' + player.ip + '" alt="-" />', 1);
             });
             socket.on('leave', function (player) {
                 app.terminateOpponent(player.id);
-                var msg = 'opponent <em>' + player.id + '</em> terminated';
+                var msg = 'Opponent <em>' + player.id + '</em> terminated';
                 log(msg);
                 info(msg);
             });
