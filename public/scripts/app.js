@@ -55,6 +55,10 @@ define([
             // this._generateOpponents();
 
             this.cursors = this.game.input.keyboard.createCursorKeys();
+            this.game.input.keyboard.addKeyCapture(32, this._spaceHandler);
+
+            var spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+            spaceKey.onDown.add(this._spaceHandler, this);
 
             this._callback.call(this);
         },
@@ -150,6 +154,17 @@ define([
         },
         _collisionWallHandler: function (s, t) {
             // do nothing
+        },
+        _spaceHandler: function () {
+            var x = Math.round(player.tile.x / Wall.WIDTH);
+            var y = Math.round(player.tile.y / Wall.HEIGHT);
+
+            new Bomb({
+                game: this.game,
+                bombs: this.bombs,
+                x: x * Wall.WIDTH,
+                y: y * Wall.HEIGHT
+            });
         },
         updatePosition: function () {
             player_move(player.tile.x, player.tile.y);

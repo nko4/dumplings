@@ -20,7 +20,7 @@ define([], function () {
             this.tile = this.bombs.create(this.x, this.y, 'bomb');
             setTimeout(function () {
                 this.destroy();
-            }.bind(this), _.random(2000, 10000));
+            }.bind(this), 3000);
         },
         destroy: function () {
             this.tile.animations.add('destroy');
@@ -31,7 +31,7 @@ define([], function () {
                 setTimeout(function () {
                     this.tile.destroy();
                 }.bind(this), 400);
-            }.bind(this), _.random(500, 2000));
+            }.bind(this), 500);
         }
     };
     return Bomb;
