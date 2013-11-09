@@ -18,6 +18,7 @@ define([], function () {
         create: function () {
             // this.tile = this.game.add.sprite(this.x, this.y, 'wall');
             this.tile = this.walls.create(this.x, this.y, 'wall');
+
             this.tile.body.immovable = true;
         }
     };

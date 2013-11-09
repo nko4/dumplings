@@ -1,4 +1,6 @@
-define([], function () {
+define([
+    'items/Wall'
+], function (Wall) {
     'use strict';
 
     var Bomb = function (settings) {
@@ -18,12 +20,17 @@ define([], function () {
         create: function () {
             // this.tile = this.game.add.sprite(this.x, this.y, 'bomb');
             this.tile = this.bombs.create(this.x, this.y, 'bomb');
+
             // this.tile.body.immovable = true; // disable, more fun!
             setTimeout(function () {
+                // auto destruction
                 this.destroy();
             }.bind(this), 2000);
         },
         destroy: function () {
+            var x = Math.round(this.x / Wall.WIDTH);
+            var y = Math.round(this.y / Wall.HEIGHT);
+
             this.tile.animations.add('destroy');
             this.tile.animations.play('destroy', 2, true);
             setTimeout(function () {
@@ -31,6 +38,7 @@ define([], function () {
                 this.tile.animations.destroy();
                 setTimeout(function () {
                     this.tile.destroy();
+                    broadcasting(x, y, 0);
                 }.bind(this), 400);
             }.bind(this), 500);
         }

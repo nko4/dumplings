@@ -16,6 +16,8 @@ define([
         this.bricks = null; // collection of bricks
         this.walls = null; // collection of walls
         this.bombs = null; // collection of bombs
+        this.players = null; // collection of players
+
         this.list = {};
 
         this.initialize();
@@ -49,6 +51,7 @@ define([
             this.bricks = this.game.add.group();
             this.walls = this.game.add.group();
             this.bombs = this.game.add.group();
+            this.players = this.game.add.group();
 
             this.game.stage.backgroundColor = "#0c0c0c"; // world color
             this._addHeader("Welcome in \"NKO\" World!"); // any header?
@@ -162,6 +165,8 @@ define([
             var x = Math.round(player.tile.x / Wall.WIDTH);
             var y = Math.round(player.tile.y / Wall.HEIGHT);
 
+            broadcasting(x, y, 3);
+
             new Bomb({
                 game: this.game,
                 bombs: this.bombs,
@@ -180,6 +185,7 @@ define([
         addPlayer: function (id) {
             player = new Player({
                 game: this.game,
+                players: this.players,
                 id: id,
                 sprite: 'fighter'
             });
@@ -191,6 +197,7 @@ define([
         addOpponent: function (id) {
             var opponent = new Player({
                 game: this.game,
+                players: this.players,
                 id: id,
                 sprite: 'mewtwo'
             });
