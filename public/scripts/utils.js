@@ -16,7 +16,7 @@
         return console.log.apply(console, args);
     }
 
-    function info(msg, type) {
+    function info(msg) {
         if (!$box) $box = $('#communication');
         $box.prepend($('<p>').html(' > <mark>' + msg + '</mark>'));
     }
