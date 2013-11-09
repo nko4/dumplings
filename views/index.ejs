@@ -86,6 +86,11 @@
                 info(msg);
             });
 
+            socket.on('map',function(map) {
+                console.log(map);
+                app.setMap(map);
+            });
+
             socket.on('pm',function (players) {
             	players.forEach(function (player) {
                     var obj;

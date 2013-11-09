@@ -39,6 +39,8 @@ Game = (function() {
 
     // 0 - space
     // 1 - wall
+    // 2 - brick
+    // 3 - bomb
 
     MAP_X = 20;
     MAP_Y = 35;
@@ -137,6 +139,7 @@ io.sockets.on('connection', function (socket) {
   socket.on('play',function() {
     players[socket.id] = { x: 0, y: 0 };
     socket.emit('play',socket.id,0,0);
+    socket.emit('map',game.map);
     socket.broadcast.emit('join',{ id: socket.id, ip: ip })
   });
 
