@@ -2,7 +2,7 @@ define([], function () {
     'use strict';
 
     var Bomb = function (settings) {
-        log('* new Bomb');
+        // log('* new Bomb');
         this.game = settings.game;
         this.bombs = settings.bombs;
         this.x = settings.x;

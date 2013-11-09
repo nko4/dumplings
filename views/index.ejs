@@ -7,41 +7,11 @@
 <script src="scripts/vendor/jquery.min.js"></script>
 <script src="scripts/vendor/jquery-ui.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
-<script src="scripts/vendor/require.js"></script>
+<script data-main="scripts/main" src="scripts/vendor/require.js"></script>
 <script type="text/javascript">
     // self-invoke function expression - start loading...
     (function (exports) {
         'use strict';
-
-        require.config({
-            baseUrl: 'scripts',
-            paths: {
-                "phaser": 'vendor/phaser',
-                "underscore": 'vendor/underscore',
-                "jquery": 'vendor/jquery.min'
-            },
-            shim: {
-                "phaser": {
-                    exports: "Phaser"
-                },
-                "underscore": {
-                    exports: "_"
-                },
-                "jquery": {
-                    exports: "$"
-                }
-            }
-        });
-
-        function bootstrap(width, height, callback) {
-            require([
-                'underscore',
-                'app'
-            ], function (_, App) {
-                // creating application
-                window.app = new App(width, height, callback);
-            });
-        }
 
 /******************************************************************************/
 
@@ -65,7 +35,7 @@
             socket.emit('pm', parseInt(x, 10), parseInt(y, 10));
         };
 
-        var connect_to_server = exports.connect_to_server = function () {
+        exports.connect_to_server = function () {
 
             socket.emit('play');
 
@@ -87,7 +57,6 @@
             });
 
             socket.on('map', function(map) {
-                // console.log(map);
                 app.setMap(map);
             });
 
@@ -108,8 +77,6 @@
             	});
             });
         };
-
-        bootstrap(40, 30, connect_to_server);
     }(this));
 </script>
 

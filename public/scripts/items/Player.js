@@ -1,16 +1,19 @@
 define([
-    'underscore'
-], function (_) {
+    'underscore',
+    'items/Wall'
+], function (_, Wall) {
     'use strict';
 
     var Player = function (settings) {
-        log('* new Player="' + settings.id + '"');
+        // log('* new Player="' + settings.id + '"');
         this.game = settings.game;
         this.x = settings.x || this.random().x;
         this.y = settings.y || this.random().y;
         this.tile = null;
         this.id = settings.id;
         this.sprite = settings.sprite;
+
+        console.log(this.x, this.y);
 
         this.create();
     };
@@ -26,9 +29,10 @@ define([
             this.tile.y = y;
         },
         random: function () {
-            var x = _.random(Player.WIDTH, this.game.world.width - Player.WIDTH * 2);
-            var y = _.random(Player.HEIGHT, this.game.world.height - Player.HEIGHT * 2);
-            return {x:x, y:y};
+            var x = _.random(0, this.game.world.width / Wall.WIDTH - 2);
+            var y = _.random(0, this.game.world.height / Wall.HEIGHT - 2);
+            console.log(x, y);
+            return {x: x * Wall.WIDTH, y: y * Wall.HEIGHT};
         },
         kill: function () {
             this.tile.destroy();

@@ -9,9 +9,7 @@ define([
 ], function (_, $, Phaser, Player, Wall, Bomb, Brick) {
     'use strict';
 
-    var App = function (width, height, callback) {
-        this._width = width;
-        this._height = height;
+    var App = function (callback) {
         this._callback = callback;
 
         this.cursors = null;
@@ -51,7 +49,6 @@ define([
             this.walls = this.game.add.group();
             this.bombs = this.game.add.group();
 
-            this.game.world.setBounds(0, 0, this._width * Wall.WIDTH, this._height * Wall.HEIGHT); // world size
             this.game.stage.backgroundColor = "#0c0c0c"; // world color
             this._addHeader("Welcome in \"nko\" World!"); // any header?
 
@@ -62,13 +59,12 @@ define([
             this._callback.call(this);
         },
         setMap: function (map) {
-            log('setMap', map);
             var self = this;
+
+            this.game.world.setBounds(0, 0, _.size(map) * Wall.WIDTH, _.size(map[0]) * Wall.HEIGHT); // world size
 
             _.each(map, function (row, n) {
                 _.each(row, function (tile, m) {
-                    console.log(tile);
-
                     switch (tile) {
                         // space
                         case 0: break;
@@ -100,7 +96,7 @@ define([
                             });
                             break;
                         default:
-                            console.error(tile);
+                            throw 'unexpected ' + tile;
                     }
                 });
             });
