@@ -58,6 +58,8 @@ define([
             } else if (this.cursors.right.isDown) {
                 player.tile.body.velocity.x = 200;
             }
+
+            player_move(player.tile.x, player.tile.y);
         },
         // run per each mouse move on game board
         render: function () {
