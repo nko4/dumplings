@@ -42,8 +42,8 @@ Game = (function() {
     // 2 - brick
     // 3 - bomb
 
-    MAP_X = 20;
-    MAP_Y = 35;
+    MAP_X = 35;
+    MAP_Y = 20;
 
     for (var x = MAP_X; x >= 0; x--) {
       map[x] = [];
