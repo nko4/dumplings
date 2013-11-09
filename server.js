@@ -30,6 +30,58 @@ app.configure(function(){
 });
 
 
+var Game;
+
+Game = (function() {
+  function Game (argument) {
+
+    map = [];
+
+    // 0 - space
+    // 1 - wall
+
+    MAP_X = 20;
+    MAP_Y = 35;
+
+    for (var x = MAP_X; x >= 0; x--) {
+      map[x] = [];
+      for (var y = MAP_Y; y >= 0; y--) {
+        map[x].push(0);
+      };
+    };
+
+    _.times(MAP_X, function (x) { map[x][0] = 1;  });
+    _.times(MAP_X, function (x) { map[x][MAP_Y] = 1; });
+    _.times(MAP_Y, function (y) { map[0][y] = 1; });
+    _.times(MAP_Y, function (y) { map[MAP_X][y] = 1; });
+    _.times(MAP_X, function (n) {
+      if (!n) return;
+      if (n % 2) return;
+      if (n === MAP_X - 1) return;
+      
+      _.times(MAP_Y, function (m) {
+        if (!m) return;
+        if (m % 2) return;
+        if (m === MAP_Y - 1) return;
+
+        map[n][m] = 1;
+                    
+      });
+    });
+
+    this.map = map;
+
+
+  }
+
+  return Game;
+  // Game.prototype.
+
+})();
+
+var game = new Game(1);
+
+
 var Player, player;
 
 Player = (function() {
@@ -105,7 +157,7 @@ io.sockets.on('connection', function (socket) {
       // setTimeout(function() {
       //   move_block = false;
       // },50);
-      
+
     }
   }); // player move
 
