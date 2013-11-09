@@ -42,23 +42,7 @@ app.configure(function(){
 });
 
 
-if (isProduction) {
-  io.enable('browser client minification');  // send minified client
-  io.enable('browser client etag');          // apply etag caching logic based on version number
-  io.enable('browser client gzip');          // gzip the file
-  io.set('log level', 1);                    // reduce logging
 
-  // enable all transports (optional if you want flashsocket support, please note that some hosting
-  // providers do not allow you to create servers that listen on a port different than 80 or their
-  // default port)
-  io.set('transports', [
-      'websocket'
-    , 'flashsocket'
-    , 'htmlfile'
-    , 'xhr-polling'
-    , 'jsonp-polling'
-  ]);
-}
 
 
 var Game;
@@ -73,8 +57,19 @@ Game = (function() {
     // 2 - brick
     // 3 - bomb
 
-    MAP_X = 44;
-    MAP_Y = 30;
+    // MAP_X = 44;
+    // MAP_Y = 30;
+
+    MAP_X = 24;
+    MAP_Y = 13;
+
+    this.MAP_X = MAP_X;
+    this.MAP_Y = MAP_Y;
+
+    this.brickCount = 0;
+    this.wallCount = 0;
+    this.maxCount = MAP_X*MAP_Y;
+
 
     for (var x = MAP_X; x >= 0; x--) {
       map[x] = [];
@@ -83,10 +78,10 @@ Game = (function() {
       };
     };
 
-    _.times(MAP_X, function (x) { map[x][0] = 1;  });
-    _.times(MAP_X, function (x) { map[x][MAP_Y] = 1; });
-    _.times(MAP_Y, function (y) { map[0][y] = 1; });
-    _.times(MAP_Y, function (y) { map[MAP_X][y] = 1; });
+    _.times(MAP_X, function (x) { map[x][0] = 1;      this.wallCount += 1; });
+    _.times(MAP_X, function (x) { map[x][MAP_Y] = 1;  this.wallCount += 1; });
+    _.times(MAP_Y, function (y) { map[0][y] = 1;      this.wallCount += 1; });
+    _.times(MAP_Y, function (y) { map[MAP_X][y] = 1;  this.wallCount += 1; });
     _.times(MAP_X, function (n) {
       if (!n) return;
       if (n % 2) return;
@@ -98,19 +93,24 @@ Game = (function() {
         if (m === MAP_Y - 1) return;
 
         map[n][m] = 1;
+        this.wallCount += 1;
                     
       });
     });
 
     map[MAP_X][MAP_Y] = 1; //hack :)
+    this.wallCount += 1;
+    this.maxCount -= this.wallCount;
+    
 
-    _.times(parseInt(MAP_X*MAP_Y*0.60),function() {
+    _.times(parseInt(MAP_X*MAP_Y*0.50),function() {
       var x = Math.floor(Math.random() * MAP_X-1) + 1;
       var y = Math.floor(Math.random() * MAP_Y-1) + 1;
       var elem = map[x][y];
 
       if (map[x][y] == 0) {
         map[x][y] = 2;
+        this.brickCount += 1;
       }
     });
 
@@ -122,8 +122,32 @@ Game = (function() {
 
   }
 
+  Game.prototype.randNewBrick = function() {
+    if ( this.brickCount < (this.maxCount/2) ) {
+      
+      var x = Math.floor(Math.random() * this.MAP_X-1) + 1;
+      var y = Math.floor(Math.random() * this.MAP_Y-1) + 1;
+      var elem = map[x][y];
+
+      if (map[x][y] == 0) {
+        map[x][y] = 2;
+        this.brickCount += 1;
+        return [x,y];
+      }
+
+    }
+
+    return false;
+  }
+
   Game.prototype.set = function(x,y,value) {
+    
+    if (this.map[x][y] == 2) {
+      this.brickCount -= 1;
+    }
+
     this.map[x][y] = value;
+
   };
 
   return Game;
@@ -157,6 +181,24 @@ move_block = false;
 
 var server = app.listen(port);
 var io = require('socket.io').listen(server);
+
+if (isProduction) {
+  io.enable('browser client minification');  // send minified client
+  io.enable('browser client etag');          // apply etag caching logic based on version number
+  io.enable('browser client gzip');          // gzip the file
+  io.set('log level', 1);                    // reduce logging
+
+  // enable all transports (optional if you want flashsocket support, please note that some hosting
+  // providers do not allow you to create servers that listen on a port different than 80 or their
+  // default port)
+  io.set('transports', [
+      'websocket'
+    , 'flashsocket'
+    , 'htmlfile'
+    , 'xhr-polling'
+    , 'jsonp-polling'
+  ]);
+}
 
 app.get('/', function (reseq, res) {
     res.render('index', { isProduction: isProduction })
@@ -205,3 +247,20 @@ io.sockets.on('connection', function (socket) {
   });
 
 });
+
+setInterval(function() {
+
+  var new_brick = game.randNewBrick();
+
+
+  if (new_brick) {
+    io.sockets.emit('mc',new_brick[0],new_brick[1],2); 
+  }
+
+
+},1000 * 5);
+
+
+
+
+
