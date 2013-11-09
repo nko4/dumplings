@@ -30,8 +30,9 @@
             log('Start "nko" application in production', true);
             socket = io.connect('http://dumplings.2013.nodeknockout.com/');
         } else {
-            log('Start "nko" application in development');
-            socket = io.connect('http://localhost:8000');
+        	var socket_path = location.protocol + '//' + location.hostname + ':' + location.port + '/';
+            log('Start "nko" application in development on ' + socket_path);
+            socket = io.connect(socket_path);
         }
 
         // make public
