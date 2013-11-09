@@ -55,7 +55,8 @@ define([
             this.bombs = this.game.add.group();
             this.players = this.game.add.group();
 
-            this.game.stage.backgroundColor = "#0c0c0c"; // world color
+            var grays = ['181818', '313131', '494949'];
+            this.game.stage.backgroundColor = grays[_.random(0, grays - 1)]; // world color
             this._addHeader("Welcome in \"NKO\" World!"); // any header?
 
             // this._generateOpponents();
