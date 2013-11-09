@@ -45,9 +45,7 @@ define([
         },
         preload: function () {
             // log('* preload process');
-            this.game.load.image('pikatchu', 'assets/pikatchu.png');
-            this.game.load.image('mewtwo', 'assets/mewtwo.png');
-            this.game.load.image('fighter', 'assets/fighter.png');
+            this.game.load.spritesheet('enemy', 'assets/enemy.png', 35, 35, 4);
             this.game.load.spritesheet('ghost', 'assets/ghost.png', 35, 35, 4);
             this.game.load.spritesheet('bomb', 'assets/bomb.png', 50, 50, 3);
             this.game.load.spritesheet('wall', 'assets/wall.png', 50, 50, 1);
@@ -234,7 +232,7 @@ define([
                 players: this.players,
                 power: 2,
                 id: id,
-                sprite: 'mewtwo'
+                sprite: 'enemy'
             });
             opponent.tile.body.collideWorldBounds = true; // disable go out of world
             this.list[id] = opponent;
