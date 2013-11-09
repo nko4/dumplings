@@ -40,11 +40,21 @@
         exports.log = log;
 
 
-        exports.player_move = function(direction) {
-        	console.log('emit-player-'+direction);
+
+
+        exports.player_move = function(x,y) {
+        	console.log('emit-player-x-'+x+'-y-'+y);
+        	socket.emit('pm',x,y);
         }
 
 
+        socket.on('pm',function(players) {
+        	players.forEach(function(player) {
+
+        		console.log('player-move-x-'+player.x+'-y-'+player.y);
+
+        	});
+        })
 
 
 

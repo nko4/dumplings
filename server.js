@@ -28,7 +28,7 @@ app.configure(function(){
   // app.use(require('connect-assets')());
 });
 
-
+players = {};
 
 var server = app.listen(port);
 var io = require('socket.io').listen(server);
@@ -39,7 +39,20 @@ app.get('/', function (reseq, res) {
 
 io.sockets.on('connection', function (socket) {
 
-  
+
+  socket.on('play',function() {
+
+  });
+
+  socket.on('pm',function(x,y) {
+
+    socket.broadcast.emit('pm', []);
+
+
+  }); // player move
+
+
+
   socket.on('disconnect', function() {
 
   });
