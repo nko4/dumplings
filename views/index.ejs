@@ -40,6 +40,10 @@
             socket.emit('mc', x, y, type);
         };
 
+        exports.killPlaya = function (id) {
+            socket.emit('kill',id);
+        }
+
         exports.connect_to_server = function () {
 
             socket.emit('play');

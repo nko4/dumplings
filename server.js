@@ -5,7 +5,19 @@ var isProduction = (process.env.NODE_ENV === 'production');
 var http = require('http');
 var port = (isProduction ? 80 : 8000);
 
+var Db = require('mongodb').Db,
+    MongoClient = require('mongodb').MongoClient,
+    Server = require('mongodb').Server,
+    ReplSetServers = require('mongodb').ReplSetServers,
+    ObjectID = require('mongodb').ObjectID,
+    Binary = require('mongodb').Binary,
+    GridStore = require('mongodb').GridStore,
+    Grid = require('mongodb').Grid,
+    Code = require('mongodb').Code,
+    BSON = require('mongodb').pure().BSON;
 
+
+// mongodb://nko:nko@paulo.mongohq.com:10006/nko
 
 
 var ejs = require('ejs');
@@ -28,6 +40,25 @@ app.configure(function(){
   app.use(express.static(__dirname + '/public'));
   // app.use(require('connect-assets')());
 });
+
+
+if (isProduction) {
+  io.enable('browser client minification');  // send minified client
+  io.enable('browser client etag');          // apply etag caching logic based on version number
+  io.enable('browser client gzip');          // gzip the file
+  io.set('log level', 1);                    // reduce logging
+
+  // enable all transports (optional if you want flashsocket support, please note that some hosting
+  // providers do not allow you to create servers that listen on a port different than 80 or their
+  // default port)
+  io.set('transports', [
+      'websocket'
+    , 'flashsocket'
+    , 'htmlfile'
+    , 'xhr-polling'
+    , 'jsonp-polling'
+  ]);
+}
 
 
 var Game;
@@ -73,7 +104,7 @@ Game = (function() {
 
     map[MAP_X][MAP_Y] = 1; //hack :)
 
-    _.times(parseInt(MAP_X*MAP_Y*0.20),function() {
+    _.times(parseInt(MAP_X*MAP_Y*0.50),function() {
       var x = Math.floor(Math.random() * MAP_X-1) + 1;
       var y = Math.floor(Math.random() * MAP_Y-1) + 1;
       var elem = map[x][y];
@@ -85,6 +116,8 @@ Game = (function() {
 
 
     this.map = map;
+    this.players = {};
+    this.nextId = 0;
 
 
   }
@@ -120,26 +153,6 @@ Player = (function() {
 
 })();
 
-
-
-ids = 0;
-
-player = new Player(1, 2);
-
-player.getPosition();
-
-function nextId() {
-  ids+=1;
-  return ids;
-}
-
-
-
-
-
-
-
-players = {};
 move_block = false;
 
 var server = app.listen(port);
@@ -154,7 +167,7 @@ io.sockets.on('connection', function (socket) {
   var ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address.address;
 
   socket.on('play',function() {
-    players[socket.id] = { x: 0, y: 0 };
+    game.players[socket.id] = { x: 0, y: 0 };
     socket.emit('play',socket.id,0,0);
     socket.emit('map',game.map);
     socket.broadcast.emit('join',{ id: socket.id, ip: ip })
@@ -167,13 +180,13 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('pm',function(x,y) {
     
-    players[socket.id] = { x: x, y: y};
+    game.players[socket.id] = { x: x, y: y};
 
     if (!move_block) {
       // move_block = true;
       var _tmp_players = [];
 
-      _.each(players,function(v,k) {
+      _.each(game.players,function(v,k) {
         _tmp_players.push(_.extend({ id: k },v));
       });
 
@@ -187,7 +200,7 @@ io.sockets.on('connection', function (socket) {
   }); // player move
 
   socket.on('disconnect', function() {
-    delete players[socket.id];
+    delete game.players[socket.id];
     socket.broadcast.emit('leave',{ id: socket.id })
   });
 
