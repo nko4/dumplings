@@ -37,11 +37,12 @@
             socket.on('play', function (id, x, y) {
     			current_player = app.addPlayer(id, true);
     			socket.emit('pm', current_player.tile.x , current_player.tile.y);
+                info('Welcome to yet not named project by dumplings!')
             });
             socket.on('join', function (player) {
                 var msg = 'opponent '+player.id+' joined';
                 log(msg, 1);
-                info(msg, 1);
+                info('Player '+player.id+' joined from <img src="http://www.geojoe.co.uk/api/flag/?ip='+player.ip+'"/>', 1);
             });
             socket.on('leave', function (player) {
                 app.terminateOpponent(player.id);
