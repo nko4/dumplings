@@ -30,5 +30,15 @@ define([
             this.tile.y = y;
         }
     };
+
+    Object.defineProperty(Player.prototype, 'x', {
+        get: function () { return this.tile.x; },
+        set: function () { throw 'don\'t do this'; }
+    });
+    Object.defineProperty(Player.prototype, 'y', {
+        get: function () { return this.tile.y; },
+        set: function () { throw 'don\'t do this'; }
+    });
+
     return Player;
 });

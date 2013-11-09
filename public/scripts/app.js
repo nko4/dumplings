@@ -29,7 +29,9 @@ define([
         preload: function () {
             log('preload process');
             this.game.load.image('pikatchu', 'assets/pikatchu.png');
+            this.game.load.image('mewtwo', 'assets/mewtwo.png');
             this.game.load.image('wall', 'assets/pikatchu.png');
+            // this.game.load.spritesheet('wall', 'assets/bomb.png', 50, 50, 4);
         },
         create: function () {
             log('create process');
@@ -78,7 +80,7 @@ define([
             var height = self.game.world.height / StaticWall.HEIGHT;
 
             // top
-            _.times(width, function (n) { self.game.add.sprite(n * StaticWall.WIDTH, 0, 'wall')});
+            // _.times(width, function (n) { self.game.add.sprite(n * StaticWall.WIDTH, 0, 'wall')});
             // bottom
             // _.times(width, function (n) { self.game.add.sprite(n * StaticWall.WIDTH, self.game.world.height - StaticWall.HEIGHT, 'wall')});
 
@@ -87,15 +89,15 @@ define([
             // right
             // _.times(height, function (n) { self.game.add.sprite(self.game.world.width - StaticWall.WIDTH, n * StaticWall.WIDTH, 'wall')});
         },
-        addPlayer: function (id) {
+        addPlayer: function (id, isMaster) {
             player = new Player({
                 game: this.game,
                 id: id,
                 name: 'test',
-                sprite: 'pikatchu'
+                sprite: (isMaster ? 'pikatchu' : 'mewtwo')
             });
             player.tile.body.collideWorldBounds = true; // disable go out of world
-            this.game.camera.follow(player.tile);
+            if (isMaster) this.game.camera.follow(player.tile); // main player (camera is
             this.list[id] = player;
             return player;
         },
