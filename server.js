@@ -93,7 +93,7 @@ io.sockets.on('connection', function (socket) {
     var _tmp_players = [];
 
     _.each(players,function(v,k) {
-      if (k != socket.id) { _tmp_players.push(_.extend({ id: k },v)); };
+      _tmp_players.push(_.extend({ id: k },v));
     })
 
 
