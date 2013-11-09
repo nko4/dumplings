@@ -35,6 +35,10 @@
             socket.emit('pm', parseInt(x, 10), parseInt(y, 10));
         };
 
+        exports.broadcasting = function (x, y, type) {
+            // rozglasza wszystkim zmiane
+        };
+
         exports.connect_to_server = function () {
 
             socket.emit('play');
