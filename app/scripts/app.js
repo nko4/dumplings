@@ -13,11 +13,17 @@ define([
             log('initialize game');
 
             this.game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, 'phaser-example', {
+                preload: this.preload.bind(this),
                 create: this.create.bind(this)
             });
         },
+        preload: function () {
+            log('preload process');
+            this.game.load.image('pikatchu', 'assets/pikatchu.png');
+        },
         create: function () {
             log('create process');
+
             this.callback.call(this);
         },
         addActor: function (name) {
