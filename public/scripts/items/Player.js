@@ -29,6 +29,9 @@ define([
             var x = _.random(Player.WIDTH, this.game.world.width - Player.WIDTH * 2);
             var y = _.random(Player.HEIGHT, this.game.world.height - Player.HEIGHT * 2);
             return {x:x, y:y};
+        },
+        kill: function () {
+            this.tile.destroy();
         }
     };
     return Player;

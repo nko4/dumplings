@@ -44,7 +44,7 @@ define([
             this._addHeader("Welcome in nko World!"); // any header?
 
             this._buildWalls();
-            this._buildOpponents();
+            // this._buildOpponents();
             this._buildBomb();
 
             this.cursors = this.game.input.keyboard.createCursorKeys();
@@ -140,6 +140,11 @@ define([
             opponent.tile.body.collideWorldBounds = true; // disable go out of world
             this.list[id] = opponent;
             return opponent;
+        },
+        terminateOpponent: function (id) {
+            var opponent = this.getPlayerById(id);
+            if (!opponent) throw 'opponent "' + id + '" doesn\'t exists';
+            opponent.kill();
         },
         getPlayerById: function (id) {
             var player = this.list[id];
