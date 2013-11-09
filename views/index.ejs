@@ -57,7 +57,7 @@
 
 
             exports.player_move = function(x,y) {
-            	socket.emit('pm',x,y);
+            	socket.emit('pm',parseInt(x),parseInt(y));
             }
 
 
