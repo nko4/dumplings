@@ -1,7 +1,8 @@
 define([
+    'underscore',
     'phaser',
     'items/Actor'
-], function (Phaser, Actor) {
+], function (_, Phaser, Actor) {
     'use strict';
 
     var App = function (callback) {
@@ -33,6 +34,8 @@ define([
             this.game.world.setBounds(0, 0, 2000, 1000); // world size
             this.game.stage.backgroundColor = "#0c0c0c"; // world color
 
+            this._buildOpponents();
+
             this.cursors = this.game.input.keyboard.createCursorKeys();
 
             this.callback.call(this);
@@ -57,8 +60,13 @@ define([
             this.game.debug.renderCameraInfo(this.game.camera, 32, 32);
             this.game.debug.renderSpriteCoords(player.tile, 32, 200);
         },
+        _buildOpponents: function () {
+            var self = this;
+            _.times(50, function () {
+                self.game.add.sprite(self.game.world.randomX, self.game.world.randomY, 'pikatchu');
+            });
+        },
         addActor: function (name, sprite) {
-            console.log('add actor %s', name);
             sprite = sprite || 'pikatchu';
             player = new Actor(this.game, name, sprite);
             player.tile.body.collideWorldBounds = true; // disable go out of world

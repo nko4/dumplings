@@ -1,26 +1,44 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <title>nko</title>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-<script src="/socket.io/socket.io.js"></script>
-
 <link href="styles/default.css" type="text/css" rel="stylesheet"/>
 
+<script src="scripts/vendor/jquery.min.js"></script>
+<script src="scripts/vendor/jquery-ui.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script type="text/javascript">
+    // self-invoke function expr - start loading...
+    (function (exports) {
+        var nko_vote, socket;
 
-var nko_vote = '<iframe src="http://nodeknockout.com/iframe/dumplings" frameborder=0 scrolling=no allowtransparency=true width=115 height=25></iframe>';
+        // define colorful logger
+        function log(string, type) {
+            var args = [
+                '%c %c %c ' + string + ' %c %c ',
+                'background: ' + (type ? '#FFB819' : '#343434'),
+                'background: ' + (type ? '#E85D0C' : '#4e4e4e'),
+                'color: ' + (type ? '#fff' : '#eee') + '; background: ' + (type ? '#E83C10' : '#696969'),
+                'background: ' + (type ? '#E85D0C' : '#4e4e4e'),
+                'background: ' + (type ? '#FFB819' : '#343434')
+            ];
+            return console.log.apply(console, args);
+        }
 
-	if (<%= isProduction %>) {
-		var socket = io.connect('http://dumplings.2013.nodeknockout.com/');
-	} else {
-		console.log('debug')
-		var socket = io.connect('http://localhost:8000');
-	}
+        nko_vote = '<iframe src="http://nodeknockout.com/iframe/dumplings" frameborder=0 scrolling=no allowtransparency=true width=115 height=25></iframe>';
 
-	
+        if (<%= isProduction %>) {
+            log('Start "nko" application in production', true);
+            socket = io.connect('http://dumplings.2013.nodeknockout.com/');
+        } else {
+            log('Start "nko" application in development');
+            socket = io.connect('http://localhost:8000');
+        }
 
-	
+        // make public
+        exports.nko_vote = nko_vote;
+        exports.socket = socket;
+        exports.log = log;
+    }(this));
+
 </script>
-
 <script data-main="scripts/main" src="scripts/vendor/require.js"></script>

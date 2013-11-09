@@ -4,6 +4,7 @@ define([
     'use strict';
 
     var Actor = function (game, name, sprite) {
+        log('* create new actor="' + name + '"' + (sprite ? (' (sprite="' + sprite + '")') : ""));
         this.tile = null;
         this.game = game;
         this.name = name;
@@ -16,7 +17,6 @@ define([
     Actor.HEIGHT = 50;
     Actor.prototype = {
         create: function () {
-            log('actor create');
             this.tile = this.game.add.sprite(Actor.WIDTH, Actor.HEIGHT, 'pikatchu');
         },
         randomPosition: function () {
