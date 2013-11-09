@@ -42,7 +42,7 @@ Game = (function() {
     // 2 - brick
     // 3 - bomb
 
-    MAP_X = 35;
+    MAP_X = 34;
     MAP_Y = 20;
 
     for (var x = MAP_X; x >= 0; x--) {
@@ -70,6 +70,8 @@ Game = (function() {
                     
       });
     });
+
+    map[MAP_X][MAP_Y] = 1;
 
     this.map = map;
 
