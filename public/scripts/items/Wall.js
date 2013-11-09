@@ -20,6 +20,9 @@ define([], function () {
             this.tile = this.walls.create(this.x, this.y, 'wall');
 
             this.tile.body.immovable = true;
+        },
+        destroy: function () {
+            throw 'you can\'t do this';
         }
     };
     return Wall;

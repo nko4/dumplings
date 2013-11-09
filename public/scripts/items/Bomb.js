@@ -28,6 +28,8 @@ define([
             }.bind(this), 2000);
         },
         destroy: function () {
+            log('Brick@destroy');
+
             var x = Math.round(this.x / Wall.WIDTH);
             var y = Math.round(this.y / Wall.HEIGHT);
 

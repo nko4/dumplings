@@ -35,7 +35,7 @@ define([
             var y = _.random(0, this.game.world.height / Wall.HEIGHT - 2);
             return {x: x * Wall.WIDTH, y: y * Wall.HEIGHT};
         },
-        kill: function () {
+        destroy: function () {
             this.tile.destroy();
         }
     };

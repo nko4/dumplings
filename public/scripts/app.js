@@ -19,6 +19,7 @@ define([
         this.players = null; // collection of players
 
         this.list = {};
+        this.map = [];
 
         this.initialize();
     };
@@ -71,19 +72,26 @@ define([
 
             this.game.world.setBounds(0, 0, _.size(map) * Wall.WIDTH, _.size(map[0]) * Wall.HEIGHT); // world size
 
-            _.each(map, function (row, n) {
-                _.each(row, function (tile, m) {
-                    self._setTile.call(self, n, m, tile);
+            _.each(map, function (row, x) {
+                _.each(row, function (type, y) {
+                    if (!self.map[x]) self.map[x] = [];
+                    self.map[x][y] = type;
+                    self._setTile.call(self, x, y, type);
                 });
             });
         },
-        _setTile: function (x, y, tile) {
-            switch (tile) {
+        _setTile: function (x, y, type) {
+            var tile;
+            switch (type) {
                 // space
-                case 0: break;
+                case 0:
+                    if (this.map[x] && this.map[x][y]) {
+                        this.map[x][y].destroy();
+                    }
+                    break;
                 // wall
                 case 1:
-                    new Wall({
+                    tile = new Wall({
                         game: this.game,
                         walls: this.walls,
                         x: x * Wall.WIDTH,
@@ -92,7 +100,7 @@ define([
                     break;
                 // brick
                 case 2:
-                    new Brick({
+                    tile = new Brick({
                         game: this.game,
                         bricks: this.bricks,
                         x: x * Wall.WIDTH,
@@ -101,7 +109,7 @@ define([
                     break;
                 // bomb
                 case 3:
-                    new Bomb({
+                    tile = new Bomb({
                         game: this.game,
                         bombs: this.bombs,
                         x: x * Wall.WIDTH,
@@ -109,11 +117,13 @@ define([
                     });
                     break;
                 default:
-                    throw 'unexpected ' + tile;
+                    throw 'unexpected ' + type;
             }
+            if (!this.map[x]) this.map[x] = [];
+            this.map[x][y] = tile;
         },
         updateMap: function (x, y, type) {
-            this._setTile(x, y, tile);
+            this._setTile(x, y, type);
         },
         update: function () {
             if (!player) return; // unless one player should be create
@@ -162,7 +172,7 @@ define([
             this.game.physics.collide(this.walls, this.bombs, this._collisionWallHandler, null, this);
         },
         _collisionBrickHandler: function (s, t) {
-            t.kill();
+            t.destroy();
         },
         _collisionWallHandler: function (s, t) {
             // do nothing
@@ -214,7 +224,7 @@ define([
         terminateOpponent: function (id) {
             var opponent = this.getPlayerById(id);
             if (!opponent) throw 'opponent "' + id + '" doesn\'t exists';
-            opponent.kill();
+            opponent.destroy();
         },
         getPlayerById: function (id) {
             var player = this.list[id];
