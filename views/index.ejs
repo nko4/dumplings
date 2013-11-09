@@ -36,7 +36,7 @@
         };
 
         exports.broadcasting = function (x, y, type) {
-            console.log('broadcasting ... ', x, y, type);
+            // console.log('broadcasting ... ', x, y, type);
             socket.emit('mc', x, y, type);
         };
 
@@ -45,7 +45,7 @@
             socket.emit('play');
 
             socket.on('mc',function(x,y,type) {
-                console.log('updateMap ... ', x, y, type);
+                // console.log('updateMap ... ', x, y, type);
                 app.updateMap(x, y, type);
             });
 

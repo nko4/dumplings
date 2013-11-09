@@ -21,7 +21,7 @@ define([], function () {
             this.tile.body.immovable = true;
         },
         destroy: function () {
-            throw 'destroy Wall: you can\'t do this';
+            // throw 'destroy Wall: you can\'t do this';
         }
     };
     return Wall;

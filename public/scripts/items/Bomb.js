@@ -7,6 +7,7 @@ define([
         // log('* new Bomb');
         this.game = settings.game;
         this.bombs = settings.bombs;
+        this.power = settings.power || 1;
         this.x = settings.x;
         this.y = settings.y;
         this.tile = null;
@@ -40,8 +41,8 @@ define([
                 this.tile.animations.stop('destroy');
                 setTimeout(function () {
                     this.tile.kill();
-                    if (y % 2 === 1) this._lineX.call(this, x, y, 2);
-                    if (x % 2 === 1) this._lineY.call(this, x, y, 2);
+                    if (y % 2 === 1) this._lineX.call(this, x, y, this.power);
+                    if (x % 2 === 1) this._lineY.call(this, x, y, this.power);
                     broadcasting(x, y, 0);
                 }.bind(this), 400);
             }.bind(this), 500);
@@ -60,6 +61,12 @@ define([
 
             setTimeout(function () {
                 graphics.destroy();
+
+                _.times(power * 2 + 1, function (n) {
+                    app.updateMap(x + n - 2, y, 0);
+                    app.tryKillOpponent(x - power + n, y);
+                    app.tryKillPlayer(x - power + n, y);
+                });
             }, 200);
         },
         _lineY: function (x, y, power) {
@@ -76,6 +83,12 @@ define([
 
             setTimeout(function () {
                 graphics.destroy();
+
+                _.times(power * 2 + 1, function (n) {
+                    app.updateMap(x, y + n - 2, 0);
+                    app.tryKillOpponent(x, y - power + n);
+                    app.tryKillPlayer(x, y - power + n);
+                });
             }, 200);
         }
     };

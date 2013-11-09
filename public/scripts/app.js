@@ -44,6 +44,7 @@ define([
             this.game.load.image('pikatchu', 'assets/pikatchu.png');
             this.game.load.image('mewtwo', 'assets/mewtwo.png');
             this.game.load.image('fighter', 'assets/fighter.png');
+            this.game.load.image('ghost', 'assets/ghost.png');
             this.game.load.spritesheet('bomb', 'assets/bomb.png', 50, 50, 3);
             this.game.load.spritesheet('wall', 'assets/wall.png', 50, 50, 1);
             this.game.load.spritesheet('brick', 'assets/brick.png', 50, 50, 4);
@@ -57,7 +58,7 @@ define([
 
             var grays = ['181818', '313131', '494949'];
             this.game.stage.backgroundColor = grays[_.random(0, grays - 1)]; // world color
-            this._addHeader("Welcome in \"NKO\" World!"); // any header?
+            // this._addHeader("Welcome in \"NKO\" World!"); // any header?
 
             // this._generateOpponents();
 
@@ -114,6 +115,7 @@ define([
                     tile = new Bomb({
                         game: this.game,
                         bombs: this.bombs,
+                        power: player.power,
                         x: x * Wall.WIDTH,
                         y: y * Wall.HEIGHT
                     });
@@ -195,6 +197,7 @@ define([
             new Bomb({
                 game: this.game,
                 bombs: this.bombs,
+                power: player.power,
                 x: x * Wall.WIDTH,
                 y: y * Wall.HEIGHT
             });
@@ -211,8 +214,9 @@ define([
             player = new Player({
                 game: this.game,
                 players: this.players,
+                power: 2,
                 id: id,
-                sprite: 'fighter'
+                sprite: 'ghost'
             });
             player.tile.body.collideWorldBounds = true; // disable go out of world
             this.game.camera.follow(player.tile); // main player (camera is following)
@@ -223,6 +227,7 @@ define([
             opponent = new Player({
                 game: this.game,
                 players: this.players,
+                power: 2,
                 id: id,
                 sprite: 'mewtwo'
             });
@@ -234,6 +239,26 @@ define([
             var opponent = this.getPlayerById(id);
             if (!opponent) throw 'opponent "' + id + '" doesn\'t exists';
             opponent.destroy();
+        },
+        tryKillOpponent: function (x, y) {
+            _.each(this.list, function (opponent) {
+                var px = Math.round(opponent.tile.x / Wall.WIDTH);
+                var py = Math.round(opponent.tile.y / Wall.HEIGHT);
+
+                if (x === px && y === py) {
+                    opponent.destroy();
+                }
+            });
+        },
+        tryKillPlayer: function (x, y) {
+            var px = Math.round(player.tile.x / Wall.WIDTH);
+            var py = Math.round(player.tile.y / Wall.HEIGHT);
+            // console.log('tryKillPlayer', {x:x, y:y}, {px: px, py:py});
+            if (px === x && py === y) {
+                player.destroy();
+                alert('You are dead.');
+                window.location.reload();
+            }
         },
         getPlayerById: function (id) {
             var player = this.list[id];

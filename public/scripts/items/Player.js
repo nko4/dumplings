@@ -15,6 +15,7 @@ define([
         this.tile = null;
         this.id = settings.id;
         this.sprite = settings.sprite;
+        this.power = settings.power;
 
         this.create();
     };
@@ -41,7 +42,7 @@ define([
             return {x: x * Wall.WIDTH, y: y * Wall.HEIGHT};
         },
         destroy: function () {
-            this.tile.destroy();
+            this.tile.kill();
         }
     };
     return Player;
