@@ -44,7 +44,7 @@ define([
             this.game.load.image('pikatchu', 'assets/pikatchu.png');
             this.game.load.image('mewtwo', 'assets/mewtwo.png');
             this.game.load.image('fighter', 'assets/fighter.png');
-            this.game.load.image('ghost', 'assets/ghost.png');
+            this.game.load.spritesheet('ghost', 'assets/ghost.png', 35, 35, 4);
             this.game.load.spritesheet('bomb', 'assets/bomb.png', 50, 50, 3);
             this.game.load.spritesheet('wall', 'assets/wall.png', 50, 50, 1);
             this.game.load.spritesheet('brick', 'assets/brick.png', 50, 50, 4);
