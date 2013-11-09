@@ -16,7 +16,10 @@ define([
         this.bricks = null; // collection of bricks
         this.walls = null; // collection of walls
         this.bombs = null; // collection of bombs
+        this.players = null; // collection of players
+
         this.list = {};
+        this.map = [];
 
         this.initialize();
     };
@@ -49,6 +52,7 @@ define([
             this.bricks = this.game.add.group();
             this.walls = this.game.add.group();
             this.bombs = this.game.add.group();
+            this.players = this.game.add.group();
 
             this.game.stage.backgroundColor = "#0c0c0c"; // world color
             this._addHeader("Welcome in \"NKO\" World!"); // any header?
@@ -68,43 +72,58 @@ define([
 
             this.game.world.setBounds(0, 0, _.size(map) * Wall.WIDTH, _.size(map[0]) * Wall.HEIGHT); // world size
 
-            _.each(map, function (row, n) {
-                _.each(row, function (tile, m) {
-                    switch (tile) {
-                        // space
-                        case 0: break;
-                        // wall
-                        case 1:
-                            new Wall({
-                                game: self.game,
-                                walls: self.walls,
-                                x: n * Wall.WIDTH,
-                                y: m * Wall.HEIGHT
-                            });
-                            break;
-                        // brick
-                        case 2:
-                            new Brick({
-                                game: self.game,
-                                bricks: self.bricks,
-                                x: n * Wall.WIDTH,
-                                y: m * Wall.HEIGHT
-                            });
-                            break;
-                        // bomb
-                        case 3:
-                            new Bomb({
-                                game: self.game,
-                                bombs: self.bombs,
-                                x: n * Wall.WIDTH,
-                                y: y * Wall.HEIGHT
-                            });
-                            break;
-                        default:
-                            throw 'unexpected ' + tile;
-                    }
+            _.each(map, function (row, x) {
+                _.each(row, function (type, y) {
+                    if (!self.map[x]) self.map[x] = [];
+                    self.map[x][y] = type;
+                    self._setTile.call(self, x, y, type);
                 });
             });
+        },
+        _setTile: function (x, y, type) {
+            var tile;
+            switch (type) {
+                // space
+                case 0:
+                    if (this.map[x] && this.map[x][y]) {
+                        this.map[x][y].destroy();
+                    }
+                    break;
+                // wall
+                case 1:
+                    tile = new Wall({
+                        game: this.game,
+                        walls: this.walls,
+                        x: x * Wall.WIDTH,
+                        y: y * Wall.HEIGHT
+                    });
+                    break;
+                // brick
+                case 2:
+                    tile = new Brick({
+                        game: this.game,
+                        bricks: this.bricks,
+                        x: x * Wall.WIDTH,
+                        y: y * Wall.HEIGHT
+                    });
+                    break;
+                // bomb
+                case 3:
+                    tile = new Bomb({
+                        game: this.game,
+                        bombs: this.bombs,
+                        x: x * Wall.WIDTH,
+                        y: y * Wall.HEIGHT
+                    });
+                    break;
+                default:
+                    throw 'unexpected ' + type;
+            }
+            if (!this.map[x]) this.map[x] = [];
+            this.map[x][y] = tile;
+        },
+        updateMap: function (x, y, type) {
+            this._setTile(x, y, type);
         },
         update: function () {
             if (!player) return; // unless one player should be create
@@ -153,7 +172,7 @@ define([
             this.game.physics.collide(this.walls, this.bombs, this._collisionWallHandler, null, this);
         },
         _collisionBrickHandler: function (s, t) {
-            t.kill();
+            t.destroy();
         },
         _collisionWallHandler: function (s, t) {
             // do nothing
@@ -161,6 +180,8 @@ define([
         _spaceHandler: function () {
             var x = Math.round(player.tile.x / Wall.WIDTH);
             var y = Math.round(player.tile.y / Wall.HEIGHT);
+
+            broadcasting(x, y, 3);
 
             new Bomb({
                 game: this.game,
@@ -180,6 +201,7 @@ define([
         addPlayer: function (id) {
             player = new Player({
                 game: this.game,
+                players: this.players,
                 id: id,
                 sprite: 'fighter'
             });
@@ -191,6 +213,7 @@ define([
         addOpponent: function (id) {
             var opponent = new Player({
                 game: this.game,
+                players: this.players,
                 id: id,
                 sprite: 'mewtwo'
             });
@@ -201,7 +224,7 @@ define([
         terminateOpponent: function (id) {
             var opponent = this.getPlayerById(id);
             if (!opponent) throw 'opponent "' + id + '" doesn\'t exists';
-            opponent.kill();
+            opponent.destroy();
         },
         getPlayerById: function (id) {
             var player = this.list[id];
