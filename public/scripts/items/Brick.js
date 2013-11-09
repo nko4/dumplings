@@ -39,8 +39,8 @@ define([
                 setTimeout(function () {
                     this.tile.kill();
                     broadcasting(x, y, 0);
-                }.bind(this), 400);
-            }.bind(this), 500);
+                }.bind(this), 200);
+            }.bind(this), 300);
         }
     };
     return Brick;
