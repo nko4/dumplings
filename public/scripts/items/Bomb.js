@@ -21,8 +21,8 @@ define([
         create: function () {
             // this.tile = this.game.add.sprite(this.x, this.y, 'bomb');
             this.tile = this.bombs.create(this.x, this.y, 'bomb');
-
             // this.tile.body.immovable = true; // disable, more fun!
+
             setTimeout(function () {
                 // auto destruction
                 this.destroy();
@@ -38,7 +38,6 @@ define([
             this.tile.animations.play('destroy', 5, true);
             setTimeout(function () {
                 this.tile.animations.stop('destroy');
-                this.tile.animations.destroy();
                 setTimeout(function () {
                     this.tile.kill();
                     broadcasting(x, y, 0);

@@ -22,7 +22,6 @@ define([
         create: function () {
             // this.tile = this.game.add.sprite(this.x, this.y, 'brick');
             this.tile = this.bricks.create(this.x, this.y, 'brick');
-
             this.tile.body.immovable = true;
         },
         destroy: function () {
@@ -35,7 +34,6 @@ define([
             this.tile.animations.play('destroy', 5, true);
             setTimeout(function () {
                 this.tile.animations.stop('destroy');
-                this.tile.animations.destroy();
                 setTimeout(function () {
                     this.tile.kill();
                     broadcasting(x, y, 0);

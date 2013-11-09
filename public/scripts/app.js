@@ -25,6 +25,7 @@ define([
     };
 
     var player;
+    var opponent;
     var block = false;
 
     App.prototype = {
@@ -162,12 +163,19 @@ define([
 
                     setTimeout(function () {
                         block = false;
-                    }, 100);
+                    }, 20);
                 }
             }
             this.game.physics.collide(player.tile, this.bricks, this._collisionBrickHandler, null, this);
             this.game.physics.collide(player.tile, this.walls, this._collisionWallHandler, null, this);
             this.game.physics.collide(player.tile, this.bombs, this._collisionWallHandler, null, this);
+
+            if (opponent) {
+                this.game.physics.collide(opponent.tile, this.bricks, this._collisionBrickHandler, null, this);
+                this.game.physics.collide(opponent.tile, this.walls, this._collisionWallHandler, null, this);
+                this.game.physics.collide(opponent.tile, this.bombs, this._collisionWallHandler, null, this);
+            }
+
             this.game.physics.collide(this.bricks, this.bombs, this._collisionWallHandler, null, this);
             this.game.physics.collide(this.walls, this.bombs, this._collisionWallHandler, null, this);
         },
@@ -214,7 +222,7 @@ define([
             return player;
         },
         addOpponent: function (id) {
-            var opponent = new Player({
+            opponent = new Player({
                 game: this.game,
                 players: this.players,
                 id: id,

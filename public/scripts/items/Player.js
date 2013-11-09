@@ -27,10 +27,13 @@ define([
             this.tile = this.players.create(this.x, this.y, this.sprite);
         },
         move: function (x, y) {
-            this.tile.position.x = x;
-            this.tile.position.y = y;
-            // this.tile.x = x;
-            // this.tile.y = y;
+            this.tile.body.velocity.y = this.tile.x - x;
+            this.tile.body.velocity.x = this.tile.y - y;
+
+            this.tile.x = x;
+            this.tile.y = y;
+
+            this.tile.body.velocity.y = this.tile.body.velocity.x = 0;
         },
         random: function () {
             var x = _.random(0, this.game.world.width / Wall.WIDTH - 2);
