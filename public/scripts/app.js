@@ -6,8 +6,9 @@ define([
     'items/Player',
     'items/Wall',
     'items/Bomb',
-    'items/Brick'
-], function (_, $, cookie, Phaser, Player, Wall, Bomb, Brick) {
+    'items/Brick',
+    'items/Mixture'
+], function (_, $, cookie, Phaser, Player, Wall, Bomb, Brick, Mixture) {
     'use strict';
 
     var App = function (callback) {
@@ -18,6 +19,7 @@ define([
         this.walls = null; // collection of walls
         this.bombs = null; // collection of bombs
         this.players = null; // collection of players
+        this.mixtures = null; // collection of mixtures
 
         this.list = {};
         this.map = [];
@@ -28,6 +30,7 @@ define([
     var player;
     var opponent;
     var block = false;
+    var emptyHandler = function () {};
 
     App.prototype = {
         initialize: function () {
@@ -49,6 +52,7 @@ define([
             this.game.load.spritesheet('bomb', 'assets/bomb.png', 50, 50, 3);
             this.game.load.spritesheet('wall', 'assets/wall.png', 50, 50, 1);
             this.game.load.spritesheet('brick', 'assets/brick.png', 50, 50, 4);
+            this.game.load.spritesheet('mixture', 'assets/mixture.png', 20, 35, 3);
         },
         create: function () {
             // log('* create process');
@@ -56,6 +60,7 @@ define([
             this.walls = this.game.add.group();
             this.bombs = this.game.add.group();
             this.players = this.game.add.group();
+            this.mixtures = this.game.add.group();
 
             var grays = ['181818', '313131', '494949'];
             this.game.stage.backgroundColor = grays[_.random(0, grays - 1)]; // world color
@@ -93,6 +98,7 @@ define([
                         this.map[x][y].destroy();
                     }
                     break;
+
                 // wall
                 case 1:
                     tile = new Wall({
@@ -102,6 +108,7 @@ define([
                         y: y * Wall.HEIGHT
                     });
                     break;
+
                 // brick
                 case 2:
                     tile = new Brick({
@@ -111,18 +118,19 @@ define([
                         y: y * Wall.HEIGHT
                     });
                     break;
-                // bomb
+
+                // mixture
                 case 3:
-                    tile = new Bomb({
+                    tile = new Mixture({
                         game: this.game,
-                        bombs: this.bombs,
-                        power: player.power,
+                        mixtures: this.mixtures,
                         x: x * Wall.WIDTH,
                         y: y * Wall.HEIGHT
                     });
                     break;
+
                 default:
-                    throw 'unexpected ' + type;
+                    throw 'unexpected type: ' + type;
             }
             if (!this.map[x]) this.map[x] = [];
             this.map[x][y] = tile;
@@ -173,24 +181,17 @@ define([
 
             player._moveLabel(player.tile.x, player.tile.y);
 
-            this.game.physics.collide(player.tile, this.bricks, this._collisionBrickHandler, null, this);
-            this.game.physics.collide(player.tile, this.walls, this._collisionWallHandler, null, this);
-            this.game.physics.collide(player.tile, this.bombs, this._collisionWallHandler, null, this);
+            this.game.physics.collide(player.tile, this.bricks, emptyHandler, null, this);
+            this.game.physics.collide(player.tile, this.walls, emptyHandler, null, this);
+            this.game.physics.collide(player.tile, this.bombs, emptyHandler, null, this);
+            this.game.physics.collide(player.tile, this.mixtures, emptyHandler, null, this);
 
             if (opponent) {
-                this.game.physics.collide(opponent.tile, this.bricks, this._collisionBrickHandler, null, this);
-                this.game.physics.collide(opponent.tile, this.walls, this._collisionWallHandler, null, this);
-                this.game.physics.collide(opponent.tile, this.bombs, this._collisionWallHandler, null, this);
+                this.game.physics.collide(opponent.tile, this.bricks, emptyHandler, null, this);
+                this.game.physics.collide(opponent.tile, this.walls, emptyHandler, null, this);
+                this.game.physics.collide(opponent.tile, this.bombs, emptyHandler, null, this);
+                this.game.physics.collide(opponent.tile, this.mixtures, emptyHandler, null, this);
             }
-
-            this.game.physics.collide(this.bricks, this.bombs, this._collisionWallHandler, null, this);
-            this.game.physics.collide(this.walls, this.bombs, this._collisionWallHandler, null, this);
-        },
-        _collisionBrickHandler: function (s, t) {
-            // do nothing
-        },
-        _collisionWallHandler: function (s, t) {
-            // do nothing
         },
         _spaceHandler: function () {
             var x = Math.round(player.tile.x / Wall.WIDTH);
