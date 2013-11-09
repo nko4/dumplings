@@ -59,12 +59,18 @@ define([
                 player.tile.body.velocity.x = 200;
             }
 
-            player_move(player.tile.x, player.tile.y);
+            // run backend API when button pressed
+            if (this.cursors.up.isDown ||
+                this.cursors.down.isDown ||
+                this.cursors.left.isDown ||
+                this.cursors.right.isDown) {
+                player_move(player.tile.x, player.tile.y);
+            }
         },
         // run per each mouse move on game board
         render: function () {
-            this.game.debug.renderCameraInfo(this.game.camera, 32, 32);
-            this.game.debug.renderSpriteCoords(player.tile, 32, 200);
+            this.game.debug.renderCameraInfo(this.game.camera, 60, 75);
+            this.game.debug.renderSpriteCoords(player.tile, 60, 180);
         },
         _buildWalls: function () {
             var self = this;
@@ -74,12 +80,12 @@ define([
             // top
             _.times(width, function (n) { self.game.add.sprite(n * StaticWall.WIDTH, 0, 'wall')});
             // bottom
-            _.times(width, function (n) { self.game.add.sprite(n * StaticWall.WIDTH, self.game.world.height - StaticWall.HEIGHT, 'wall')});
+            // _.times(width, function (n) { self.game.add.sprite(n * StaticWall.WIDTH, self.game.world.height - StaticWall.HEIGHT, 'wall')});
 
             // left
-            _.times(height, function (n) { self.game.add.sprite(0, n * StaticWall.WIDTH, 'wall')});
+            // _.times(height, function (n) { self.game.add.sprite(0, n * StaticWall.WIDTH, 'wall')});
             // right
-            _.times(height, function (n) { self.game.add.sprite(self.game.world.width - StaticWall.WIDTH, n * StaticWall.WIDTH, 'wall')});
+            // _.times(height, function (n) { self.game.add.sprite(self.game.world.width - StaticWall.WIDTH, n * StaticWall.WIDTH, 'wall')});
         },
         addPlayer: function (id) {
             player = new Player({
@@ -91,12 +97,11 @@ define([
             player.tile.body.collideWorldBounds = true; // disable go out of world
             this.game.camera.follow(player.tile);
             this.list[id] = player;
+            return player;
         },
         getPlayerById: function (id) {
             var player = this.list[id];
-            if (!player) {
-                throw 'nie ma takiego playera';
-            }
+            if (!player) throw 'player doesn\'t exists';
             return player;
         },
         _addHeader: function (text) {
