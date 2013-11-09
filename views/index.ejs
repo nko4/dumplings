@@ -9,7 +9,7 @@
 <script type="text/javascript">
     // self-invoke function expr - start loading...
     (function (exports) {
-        var nko_vote, socket;
+        var socket, current_player = false;
 
         // define colorful logger
         function log(string, type) {
@@ -36,44 +36,37 @@
         // make public
         exports.socket = socket;
         exports.log = log;
-
-
-
-        current_player = false;
         exports.current_player = current_player;
 
+        exports.player_move = function(x,y) {
+            socket.emit('pm',parseInt(x),parseInt(y));
+        };
 
-        exports.chuj = function() {
+        exports.chuj = function () {
 
-            socket.emit('play')
-
+            socket.emit('play');
 
             socket.on('play',function(id,x,y) {
-    			
     			current_player = app.addPlayer(id,true);
     			socket.emit('pm', current_player.tile.x , current_player.tile.y);
-                
             });
-
-
-            exports.player_move = function(x,y) {
-            	socket.emit('pm',parseInt(x),parseInt(y));
-            }
-
-
+            socket.on('join', function(player) {
+                log('opponent '+player.id+' joined');
+            });
             socket.on('leave', function(player) {
                 app.terminateOpponent(player.id);
-                console.log('opponent '+player.id+' terminated');
+                log('opponent '+player.id+' terminated');
             });
 
             socket.on('pm',function(players) {
             	players.forEach(function(player) {
-
+                    var obj;
             		// console.log('player-'+player.id+'-x-'+player.x+'-y-'+player.y);
+
                     try {
-                        var obj = app.getPlayerById(player.id);
-                    } catch(err) {
-                        var obj = app.addOpponent(player.id);
+                        obj = app.getPlayerById(player.id);
+                    } catch (err) {
+                        obj = app.addOpponent(player.id);
                     }
 
                     if (current_player.id != player.id) {
@@ -82,15 +75,7 @@
 
 
             	});
-            })
-
-
-
-
-
-
-
-
+            });
         };
 
     }(this));
