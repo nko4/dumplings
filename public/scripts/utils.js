@@ -17,7 +17,7 @@
     }
 
     function info(msg) {
-        if (!$box) $box = $('#communication');
+        if (!$box) $box = $('#messages');
         $box.prepend($('<p>').html(' > <mark>' + msg + '</mark>'));
     }
 

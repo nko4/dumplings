@@ -200,6 +200,11 @@ define([
             var currentPlayer = this.list[s.id];
             t.destroy();
 
+            var x = Math.round(player.tile.x / Wall.WIDTH);
+            var y = Math.round(player.tile.y / Wall.HEIGHT);
+
+            broadcasting(x, y, 0);
+
             currentPlayer.power++;
             updatePlayer(s.id, { power: currentPlayer.power });
 
@@ -271,8 +276,8 @@ define([
 
             if (px === x && py === y) {
                 player.destroy();
+                killPlayer(player.id);
                 alert('You are dead.');
-                window.location.reload();
             }
         },
         getPlayerById: function (id) {
