@@ -125,6 +125,17 @@ var Game = (function() {
     return false;
   };
 
+
+  Game.prototype.getPlayer = function(uuid,cb) {
+
+    db.players.findOne({
+      uuid:uuid
+    }, function(err, doc) {
+      cb(doc)
+    });
+
+  }
+
   Game.prototype.randNewMixture = function() {
     if ( this.powerCount < (this.maxCount/5) ) {
       var x = Math.floor(Math.random() * this.MAP_X-1) + 1;
@@ -203,17 +214,14 @@ app.get('/', function (reseq, res) {
 
 
 function updatePlayer(uuid, settings) {
+
+  console.log("update player "+uuid)
+
   db.players.update(
     { uuid: uuid }, // first
     { $set: settings } ,
     { upsert: true }
   );
-
-  if (game.uuids_params[uuid] != {}) {
-    game.uuids_params[uuid] = {};
-  }
-
-  game.uuids_params[uuid] = _.extend(game.uuids_params[uuid],settings);
 }
 
 
@@ -225,30 +233,51 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('say', function(uuid,message) {
-    var uuid_params = game.uuids_params[uuid];
-    socket.broadcast.emit('log', '<em>' + uuid_params.name + '</em>: ' +  message);
+    game.getPlayer(uuid,function(player) {
+        socket.broadcast.emit('log', '<em>' + player.name + '</em>: ' +  message);
+    });
   });
 
-  socket.on('play', function(uuid, settings) {
-    socket.emit('map', game.map);
+  socket.on('play',function(uuid, settings) {
+
+    if (_.isEmpty(settings)) {
+
+      game.getPlayer(uuid,function(player) {
+        socket.broadcast.emit('join',{ id: socket.id, ip: ip, name: player.name });
+
+        socket.emit('info','Welcome <em>'+player.name+'</em>')
+        socket.broadcast.emit('info','Player <em>' + player.name + '</em> joined from <img src="http://www.geojoe.co.uk/api/flag/?ip=' + ip + '" alt="-" />')
+      });
+
+    } else {
+        socket.broadcast.emit('join',{ id: socket.id, ip: ip, name: settings.name });
+
+        socket.emit('info','Welcome <em>'+settings.name+'</em>')
+        socket.broadcast.emit('info','Player <em>' + settings.name + '</em> joined from <img src="http://www.geojoe.co.uk/api/flag/?ip=' + ip + '" alt="-" />')
+
+
+        updatePlayer(uuid, _.extend(
+          {
+            ip: ip,
+            joined: new Date()
+          
+          },settings)
+        );
+    }
+
+    socket.emit('map',game.map);
 
     game.players[socket.id] = { x: 0, y: 0 };
+    
 
     var emptyTile = game.getEmptyTile();
     socket.emit('play', socket.id, emptyTile.x, emptyTile.y);
-
-    socket.broadcast.emit('join', { id: socket.id, ip: ip, name: settings.name });
-
-    socket.emit('log', 'Player ' + settings.name + ' joined from ' + ip + '');
+    
 
     incStats('players_joins');
 
-    game.setId(uuid, socket.id);
-
-    updatePlayer(uuid, _.extend({
-      ip: ip,
-      joined: new Date()
-    },settings));
+    game.setId(uuid,socket.id);
+    
   });
 
   socket.on('mc', function(x,y,type) {
