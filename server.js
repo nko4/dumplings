@@ -133,11 +133,11 @@ var Game = (function () {
   }
 
   Game.prototype.randNewMixture = function() {
-    if ( this.powerCount < 10 ) {
+    if ( this.powerCount < 20 ) {
       var x = Math.floor(Math.random() * this.MAP_X-1) + 1;
       var y = Math.floor(Math.random() * this.MAP_Y-1) + 1;
 
-      if (this.map[x][y] == 0) {
+      if (this.map[x][y] == Game.SPACE) {
         this.map[x][y] = Game.MIXTURE;
         this.powerCount += 1;
         return [x, y];
@@ -255,7 +255,7 @@ io.sockets.on('connection', function (socket) {
     var emptyTile = game.getEmptyTile();
     socket.emit('play', socket.id, emptyTile.x, emptyTile.y, player.name);
 
-    
+
 
     if (!game.players[socket.id]) {
       game.players[socket.id] = {};
@@ -405,24 +405,25 @@ setInterval(function () {
   
 // }, Game.REVIVAL_BRICK);
 
-// setInterval(function () {
-//   var new_mixture = game.randNewMixture();
+setInterval(function () {
+  var new_mixture = game.randNewMixture();
 
-//   // build ne brick
-//   if (new_mixture) {
-//     io.sockets.emit('mc', new_mixture[0], new_mixture[1], Game.MIXTURE);
-
-
-//     setTimeout(function() {
-
-//       if (game.map[new_mixture[0]][new_mixture[1]] == Game.MIXTURE) {
-//         io.sockets.emit('mc', new_mixture[0], new_mixture[1], Game.SPACE);        
-//       }
-
-//     }, 15 * 1000);
+  // build ne brick
+  if (new_mixture) {
+    io.sockets.emit('mc', new_mixture[0], new_mixture[1], Game.MIXTURE);
 
 
-//     incStats('powerups');
-//   }
-// }, Game.REVIVAL_MIXTURE);
+    setTimeout(function() {
+
+      if (game.map[new_mixture[0]][new_mixture[1]] == Game.MIXTURE) {
+        io.sockets.emit('mc', new_mixture[0], new_mixture[1], Game.SPACE);
+        game.powerCount -= 1;      
+      }
+
+    }, 25 * 1000);
+
+
+    incStats('powerups');
+  }
+}, Game.REVIVAL_MIXTURE);
 
