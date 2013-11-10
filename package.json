@@ -12,12 +12,11 @@
   },
   "dependencies": {
     "nko": "*",
-    "mongodb" : "*",
-    "ejs" : "*",
-    "socket.io" : "*",
-    "express" : "*",
-    "underscore" : "*",
-    "mongodb" : "*"
+    "mongodb": "*",
+    "ejs": "*",
+    "socket.io": "*",
+    "express": "*",
+    "underscore": "*"
   },
   "engines": {
     "node": "0.10.x"
