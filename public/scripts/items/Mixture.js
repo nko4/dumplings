@@ -12,6 +12,8 @@ define([
 
         this.create();
     };
+    Mixture.TIME_TO_LIVE = 10 * 1000; // 10s
+
     Mixture.prototype = {
         create: function () {
             this.tile = this.game.add.sprite(this.x, this.y, 'mixture');

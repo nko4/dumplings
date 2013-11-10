@@ -53,6 +53,8 @@ define([
             return { x: x * Wall.WIDTH, y: y * Wall.HEIGHT };
         },
         plantBomb: function () {
+            if (this.bombsNum === this.bombsMax) return;
+
             this.bombsNum++;
 
             var x = Math.round(this.tile.x / Wall.WIDTH);
@@ -61,7 +63,7 @@ define([
             broadcasting(x, y, 3);
 
             // plant a bomb
-            app.buildBomb(x, y, this.power);
+            app.buildBomb(x, y, this);
         },
         destroy: function () {
             if (!this.tile.alive) return;

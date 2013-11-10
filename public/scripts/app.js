@@ -29,8 +29,6 @@ define([
         this.initialize();
     };
 
-    App.MIXTURE_TIME_TO_LIVE = 10 * 1000; // 10s
-
     var player;
     var opponent;
     var block = false;
@@ -65,23 +63,10 @@ define([
             this.game.stage.backgroundColor = '#0c0c0c'; // color of world
 
             this.cursors = this.game.input.keyboard.createCursorKeys(); // handle moving
-            this.game.input.keyboard.addKeyCapture(32, this._spaceHandler); // handle plant a bomb
             var spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-            spaceKey.onDown.add(this._spaceHandler, this);
+            spaceKey.onDown.add(function () { player.plantBomb(); }, this);
 
             this._callback.call(this);
-        },
-        setMap: function (matrix) {
-            var self = this;
-            var width = _.size(matrix) * Wall.WIDTH;
-            var height = _.size(matrix[0]) * Wall.HEIGHT;
-
-            this.game.world.setBounds(0, 0, width, height); // world size
-
-            this.map = new Map(matrix);
-        },
-        updateMap: function (x, y, type) {
-            this.map.update(x, y, type);
         },
         update: function () {
             if (!player) return; // unless one player should be create
@@ -116,7 +101,7 @@ define([
             ) {
                 if (!block) {
                     block = true;
-                    this.updatePosition();
+                    player_move(player.tile.x, player.tile.y);
 
                     setTimeout(function () {
                         block = false;
@@ -126,9 +111,6 @@ define([
 
             player._moveLabel(player.tile.x, player.tile.y);
 
-            this.collision();
-        },
-        collision: function () {
             this.game.physics.collide(player.tile, this.bricks, emptyHandler, null, this);
             this.game.physics.collide(player.tile, this.walls, emptyHandler, null, this);
             this.game.physics.collide(player.tile, this.bombs, emptyHandler, null, this);
@@ -140,6 +122,17 @@ define([
                 this.game.physics.collide(opponent.tile, this.bombs, emptyHandler, null, this);
                 this.game.physics.collide(opponent.tile, this.mixtures, this._catchMixtureHandler, null, this);
             }
+        },
+        setMap: function (matrix) {
+            var width = _.size(matrix) * Wall.WIDTH;
+            var height = _.size(matrix[0]) * Wall.HEIGHT;
+
+            this.game.world.setBounds(0, 0, width, height); // world size
+
+            this.map = new Map(matrix);
+        },
+        updateMap: function (x, y, type) {
+            this.map.update(x, y, type);
         },
         _catchMixtureHandler: function (s, t) {
             var currentPlayer = this.list[s.id];
@@ -153,14 +146,8 @@ define([
             server.update(s.id, { power: ++currentPlayer.power });
             setTimeout(function () {
                 // power is down after couple of seconds
-                server.player(s.id, { power: --currentPlayer.power });
-            }, App.MIXTURE_TIME_TO_LIVE);
-        },
-        _spaceHandler: function () {
-            player.plantBomb();
-        },
-        updatePosition: function () {
-            player_move(player.tile.x, player.tile.y);
+                server.update(s.id, { power: --currentPlayer.power });
+            }, Mixture.TIME_TO_LIVE);
         },
         addPlayer: function (id) {
             player = new Player({
@@ -265,11 +252,11 @@ define([
                 y: y * Wall.HEIGHT
             });
         },
-        buildBomb: function (x, y, power) {
+        buildBomb: function (x, y, player) {
             return new Bomb({
                 game: this.game,
                 bombs: this.bombs,
-                power: power,
+                player: player,
                 x: x * Wall.WIDTH,
                 y: y * Wall.HEIGHT
             });
