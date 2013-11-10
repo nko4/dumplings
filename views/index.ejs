@@ -43,7 +43,7 @@
         exports.killPlayer = function (id) {
             socket.emit('kill', id);
         };
-        
+
         exports.server = {
             update: function(uuid, settings) {
                 socket.emit('update', uuid, settings);
