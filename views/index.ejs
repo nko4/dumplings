@@ -82,7 +82,7 @@
     			currentPlayer = app.addPlayer(id, x, y);
                 currentPlayer.setName(name);
     			socket.emit('pm', currentPlayer.tile.x , currentPlayer.tile.y);
-                info('<em>Kill all players, <strong>use CTRL to place a bomb</strong>, <strong>ARROWs to move</strong>and keyboard to chat! GL & HF</em>');
+                info('<em>Find & kill other players, <strong>use CTRL to place a bomb</strong>, <strong>ARROWs to move</strong>and keyboard to chat! GL & HF</em>');
             });
             
             socket.on('join', function (player) {
