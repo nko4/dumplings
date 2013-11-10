@@ -2,13 +2,14 @@ define([
     'underscore',
     'jquery',
     'cookie',
+    'sha1',
     'phaser',
     'items/Player',
     'items/Wall',
     'items/Bomb',
     'items/Brick',
     'items/Mixture'
-], function (_, $, cookie, Phaser, Player, Wall, Bomb, Brick, Mixture) {
+], function (_, $, cookie, sha1, Phaser, Player, Wall, Bomb, Brick, Mixture) {
     'use strict';
 
     var App = function (callback) {
@@ -41,7 +42,7 @@ define([
 
     App.prototype = {
         initialize: function () {
-            this.game = new Phaser.Game(window.innerWidth, window.innerHeight - $('#communication').height(), Phaser.CANVAS, 'phaser-example', {
+            this.game = new Phaser.Game(window.innerWidth, window.innerHeight - $('#chat').height(), Phaser.CANVAS, 'phaser-example', {
                 preload: this.preload.bind(this),
                 create: this.create.bind(this),
                 update: this.update.bind(this)
@@ -281,16 +282,23 @@ define([
             return player;
         },
         _getUserName: function () {
-            var name = cookie.get('username');
+            var name = cookie.get('uuid');
             if (!name) {
+                // first visit
                 name = prompt('Pick your name:');
                 if (!name) {
+                    // blank user name
                     alert('Name is mandatory, please tell us, what is your name?');
                     name = app._getUserName();
                 }
+                cookie.set('uuid', sha1(navigator.userAgent + (new Date()).toString() + _.random(0, Number.MAX_VALUE - 1)));
+            } else {
+                // next visit, because uuid exists
             }
-            cookie.set('username', name);
             return name;
+        },
+        getPlayer: function () {
+            return player;
         }
     };
 
