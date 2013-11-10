@@ -51,8 +51,8 @@ define([
             this.game.load.spritesheet('brick', 'assets/pics/1/brick.png', 50, 50, 4);
             this.game.load.spritesheet('mixture', 'assets/pics/2/mixture.png', 50, 50, 3);
 
-            this.game.load.spritesheet('opponent', 'assets/pics/1/fighter-1.png', 35, 35, 4);
-            this.game.load.spritesheet('player', 'assets/pics/1/fighter-2.png', 35, 35, 4);
+            this.game.load.spritesheet('player', 'assets/pics/1/fighter-1.png', 35, 35, 4);
+            this.game.load.spritesheet('opponent', 'assets/pics/1/fighter-2.png', 35, 35, 4);
             this.game.load.spritesheet('special', 'assets/pics/1/fighter-3.png', 35, 35, 4);
 
             this.game.load.audio('music', ['assets/audio/sound.wav', 'assets/audio/sound.mp3', 'assets/audio/sound.ogg']);
@@ -167,7 +167,7 @@ define([
                 players: this.players,
                 power: 2,
                 id: id,
-                sprite: 'special',
+                sprite: 'player',
                 x: x,
                 y: y
             });
