@@ -62,6 +62,10 @@
                 socket.emit('play', cookie.get(app.COOKIE), settings);
             }());
 
+            socket.on('ranking', function(ranking) {
+                console.log(ranking);
+            });
+
             socket.on('mc',function(x, y, type) {
                 app.updateMap(x, y, type);
             });
