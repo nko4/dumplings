@@ -26,7 +26,7 @@ define([
         this.cursors = null; // up, down, left, right
         this.map = null; // Map
 
-        this.COOKIE = 'dumplings_2';
+        this.COOKIE = 'dumplings_3';
 
         this.initialize();
     };
