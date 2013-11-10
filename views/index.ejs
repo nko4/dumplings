@@ -59,7 +59,7 @@
                 if (name) {
                     settings.name = name;
                 }
-                socket.emit('play', cookie.get('session_id'), settings);
+                socket.emit('play', cookie.get(app.COOKIE), settings);
             }());
 
             socket.on('mc',function(x, y, type) {

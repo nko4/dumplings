@@ -29,6 +29,8 @@ define([
         this.initialize();
     };
 
+    App.COOKIE = 'dumplings_' + 1;
+
     var player;
     var opponent;
     var block = false;
@@ -194,7 +196,7 @@ define([
                 if (x === px && y === py) {
                     opponent.destroy();
                     killPlayer(opponent.id);
-                    server.update(cookie.get('session_id'), { 'bombsMax': ++player.bombsMax });
+                    server.update(cookie.get(App.COOKIE), { 'bombsMax': ++player.bombsMax });
                 }
             });
         },
@@ -215,7 +217,7 @@ define([
             return player;
         },
         _getUserName: function () {
-            var session_id = cookie.get('session_id');
+            var session_id = cookie.get(App.COOKIE);
             var name = null;
             if (!session_id) {
                 // first visit
@@ -225,7 +227,7 @@ define([
                     alert('Name is mandatory, please tell us, what is your name?');
                     name = app._getUserName();
                 }
-                cookie.set('session_id', sha1(navigator.userAgent + (new Date()).toString() + _.random(0, Number.MAX_VALUE - 1)));
+                cookie.set(App.COOKIE, sha1(navigator.userAgent + (new Date()).toString() + _.random(0, Number.MAX_VALUE - 1)));
             } else {
                 // next visit
             }
