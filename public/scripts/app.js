@@ -201,9 +201,8 @@ define([
 
                 if (x === px && y === py) {
                     opponent.destroy();
-                    killPlayer(opponent.id);
-                    server.update(cookie.get(app.COOKIE), { 'bombsMax': ++player.bombsMax });
                 }
+                server.update(cookie.get(app.COOKIE), { 'bombsMax': ++player.bombsMax });
             });
         },
         tryKillPlayer: function (x, y) {
@@ -212,7 +211,6 @@ define([
 
             if (px === x && py === y) {
                 player.destroy();
-                killPlayer(player.id);
                 alert('You are dead.');
                 window.location.reload(); // after death reload game
             }
