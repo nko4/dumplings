@@ -355,8 +355,10 @@ setInterval(function () {
   var new_brick = game.randNewBrick();
 
   if (new_brick) {
+    io.sockets.emit('mc', new_brick[0], new_brick[1], Game.BRICK);
     incStats('bricks');
   }
+  
 }, Game.REVIVAL_BRICK);
 
 setInterval(function () {
