@@ -63,6 +63,7 @@ var Game = (function() {
     this.powerCount = 0;
     this.maxCount = MAP_X * MAP_Y;
     this.players = {};
+    this.uuids_params = {};
     this.uuids = {};
 
     for (var x = MAP_X; x >= 0; x--) {
@@ -199,6 +200,13 @@ app.get('/', function (reseq, res) {
       { $set: settings } ,
       { upsert: true }
     );
+
+    if (game.uuids_params[uuid] != {}) {
+      game.uuids_params[uuid] = {};
+    }
+
+    game.uuids_params[uuid] = _.extend(game.uuids_params[uuid],settings);
+
   }
 
 
@@ -208,6 +216,11 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('update',function(uuid,settings) {
     updatePlayer(uuid,settings)
+  });
+
+  socket.on('say', function(uuid,message) {
+    var uuid_params = game.uuids_params[uuid];
+    socket.broadcast.emit('log', '<em>' + uuid_params.name + '</em>: ' +  message);
   });
 
   socket.on('play',function(uuid, settings) {
