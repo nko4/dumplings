@@ -37,5 +37,6 @@ require([
             info( '<em>' + cookie.get('username') + '</em>: ' + $input.val() );
             $input.val('');
         });
+        $input.focus(); // on start you can write sth
     }());
 });
