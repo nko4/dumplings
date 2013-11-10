@@ -234,7 +234,7 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('say', function (uuid,message) {
     game.getPlayer(uuid, function (player) {
-        socket.broadcast.emit('log', '<em>' + player.name + '</em>: ' +  message);
+        io.sockets.emit('info', '<em>' + player.name + '</em>: ' +  message);
     });
   });
 
