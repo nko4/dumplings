@@ -50,7 +50,7 @@ require([
 
         (function () {
             var enabled = false;
-            $("#music").on('click', function () {
+            $("#music").on('click', function (e) {
                 if (enabled = !enabled) {
                     app.getMusic().pause();
                     $(this).addClass('disabled');
@@ -58,6 +58,8 @@ require([
                     app.getMusic().resume();
                     $(this).removeClass('disabled');
                 }
+                e.preventDefault();
+                e.stopPropagation();
             });
         }());
     });

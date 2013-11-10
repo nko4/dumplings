@@ -44,7 +44,7 @@ define([
                     line.destroy();
                 });
 
-                if (typeof callback === "function") {
+                if (_.isFunction(callback)) {
                     callback();
                 }
             }, 200);
