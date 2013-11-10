@@ -26,6 +26,9 @@ define([], function () {
             });
         },
         update: function (x, y, type) {
+
+            console.log('map-update',x,y,type)
+
             var tile;
             switch (type) {
                 case Map.SPACE:

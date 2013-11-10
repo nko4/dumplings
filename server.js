@@ -133,7 +133,7 @@ var Game = (function () {
   }
 
   Game.prototype.randNewMixture = function() {
-    if ( this.powerCount < 20 ) {
+    if ( this.powerCount < 50 ) {
       var x = Math.floor(Math.random() * this.MAP_X-1) + 1;
       var y = Math.floor(Math.random() * this.MAP_Y-1) + 1;
 
@@ -148,11 +148,11 @@ var Game = (function () {
 
   Game.prototype.set = function (x,y,value) {
     if (this.map[x][y] == Game.BRICK) {
-      this.brickCount -= 1;
+      this.brickCount += 1;
     }
 
     if (this.map[x][y] == Game.MIXTURE) {
-      this.powerCount -= 1;
+      this.powerCount += 1;
     }
 
     this.map[x][y] = value;
@@ -314,12 +314,12 @@ io.sockets.on('connection', function (socket) {
     
     if (game.map[x][y] == 2 && type == 0) {
       game.getPlayer(game.getSocketIdBy(socket.id), function (player) {
-
-          db.players.update(
-            { uuid: player.uuid },
-            { $inc: { points: 1 } } ,
-            { upsert: true }
-          );
+          game.brickCount -= 1;
+          // db.players.update(
+          //   { uuid: player.uuid },
+          //   { $inc: { points: 1 } } ,
+          //   { upsert: true }
+          // );
 
       });
     }
@@ -337,12 +337,13 @@ io.sockets.on('connection', function (socket) {
 
     if (id != socket.id) {
       game.getPlayer(game.getSocketIdBy(socket.id), function (player) {
-
-          db.players.update(
-            { uuid: player.uuid },
-            { $inc: { points: 100 } } ,
-            { upsert: true }
-          );
+          if (player && player.uuid) {
+            db.players.update(
+              { uuid: player.uuid },
+              { $inc: { points: 100 } } ,
+              { upsert: true }
+            );
+          }
 
       });
     }
@@ -400,7 +401,7 @@ setInterval(function () {
 
 //   if (new_brick) {
 //     io.sockets.emit('mc', new_brick[0], new_brick[1], Game.BRICK);
-//     incStats('bricks');
+//     //incStats('bricks');
 //   }
   
 // }, Game.REVIVAL_BRICK);
@@ -420,7 +421,7 @@ setInterval(function () {
         game.powerCount -= 1;      
       }
 
-    }, 25 * 1000);
+    }, 35 * 1000);
 
 
     incStats('powerups');
