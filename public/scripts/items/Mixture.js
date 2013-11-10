@@ -12,7 +12,7 @@ define([
 
         this.create();
     };
-    Mixture.TIME_TO_LIVE = 10 * 1000; // 10s
+    Mixture.TIME_TO_LIVE = 20 * 1000; // 20s
 
     Mixture.prototype = {
         create: function () {

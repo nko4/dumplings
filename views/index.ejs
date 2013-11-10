@@ -14,8 +14,6 @@
     (function (exports) {
         'use strict';
 
-/******************************************************************************/
-
         var socket, currentPlayer = false;
 
         if (<%= isProduction %>) {
@@ -64,7 +62,7 @@
                 socket.emit('play', cookie.get('session_id'), settings);
             }());
 
-            socket.on('mc',function(x,y,type) {
+            socket.on('mc',function(x, y, type) {
                 app.updateMap(x, y, type);
             });
 
@@ -78,13 +76,16 @@
                 info('Welcome to yet not named project by <em>dumplings</em>!');
             });
             socket.on('join', function (player) {
-                // log('Opponent "' + player.id + '" joined', 1);
-                // info('Player <em>' + player.id + '</em> joined from <img src="http://www.geojoe.co.uk/api/flag/?ip=' + player.ip + '" alt="-" />', 1);
+                currentPlayer.setName(player.name);
+                var msg = 'Player ' + player.name + ' joined from ' + player.ip;
+                log(msg, 1);
+                info(msg);
             });
             socket.on('leave', function (player) {
                 app.terminateOpponent(player.id);
-                log('Opponent "' + player.id + '" terminated');
-                info('Opponent <em>' + player.id + '</em> terminated');
+                var msg = 'Opponent "' + player.name + '" terminated';
+                log(msg);
+                info(msg);
             });
 
             socket.on('map', function(map) {
