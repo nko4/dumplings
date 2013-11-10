@@ -2,7 +2,6 @@ define([], function () {
     'use strict';
 
     var Wall = function (settings) {
-        // log('* new Wall');
         this.game = settings.game;
         this.walls = settings.walls;
         this.x = settings.x;

@@ -41,8 +41,6 @@ define([
 
     App.prototype = {
         initialize: function () {
-            log('* initialize game', 1);
-
             this.game = new Phaser.Game(window.innerWidth, window.innerHeight - $('#communication').height(), Phaser.CANVAS, 'phaser-example', {
                 preload: this.preload.bind(this),
                 create: this.create.bind(this),
@@ -50,7 +48,6 @@ define([
             });
         },
         preload: function () {
-            // log('* preload process');
             this.game.load.spritesheet('bomb', 'assets/bomb.png', 50, 50, 3);
             this.game.load.spritesheet('wall', 'assets/wall.png', 50, 50, 1);
             this.game.load.spritesheet('brick', 'assets/brick.png', 50, 50, 4);
@@ -62,7 +59,6 @@ define([
             this.game.load.spritesheet('special', 'assets/fighter-white.png', 35, 35, 4);
         },
         create: function () {
-            // log('* create process');
             this.bricks = this.game.add.group();
             this.walls = this.game.add.group();
             this.bombs = this.game.add.group();

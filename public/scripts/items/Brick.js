@@ -5,7 +5,6 @@ define([
     'use strict';
 
     var Brick = function (settings) {
-        // log('* new Brick');
         this.game = settings.game;
         this.bricks = settings.bricks;
         this.x = settings.x;
