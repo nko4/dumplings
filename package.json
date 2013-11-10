@@ -16,7 +16,8 @@
     "ejs": "*",
     "socket.io": "*",
     "express": "*",
-    "underscore": "*"
+    "underscore": "*",
+    "underscore.string": "*"
   },
   "engines": {
     "node": "0.10.x"

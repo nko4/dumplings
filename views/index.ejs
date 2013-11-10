@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<title>NKO</title>
+<title>:: dumplings ::</title>
 <link href="styles/default.css" type="text/css" rel="stylesheet"/>
 
 <script src="scripts/utils.js"></script>
@@ -17,11 +17,11 @@
         var socket, currentPlayer = false;
 
         if (<%= isProduction %>) {
-            console.log('Start "NKO" application in production');
+            console.log('Start :: dumplings :: application in production');
             socket = io.connect('http://dumplings.2013.nodeknockout.com/');
         } else {
         	var socket_path = location.protocol + '//' + location.hostname + ':' + location.port + '/';
-            console.log('Start "NKO" application in development on ' + socket_path);
+            console.log('Start :: dumplings :: application in development on ' + socket_path);
             socket = io.connect(socket_path);
         }
 
