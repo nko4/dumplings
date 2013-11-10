@@ -15,9 +15,8 @@ define([
     Mixture.prototype = {
         create: function () {
             this.tile = this.game.add.sprite(this.x, this.y, 'mixture');
-            this.mixtures.add(this.tile);
-            // this.tile = this.mixtures.create(this.x, this.y, 'mixture');
             this.tile.body.immovable = true;
+            this.mixtures.add(this.tile);
 
             this.tile.animations.add('brew');
             this.tile.animations.play('brew', 5, true);
@@ -37,6 +36,5 @@ define([
             }.bind(this), 100);
         }
     };
-
     return Mixture;
 });

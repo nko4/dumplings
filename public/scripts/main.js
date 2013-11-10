@@ -4,7 +4,8 @@ require.config({
         "phaser": 'vendor/phaser',
         "underscore": 'vendor/underscore',
         "jquery": 'vendor/jquery.min',
-        "cookie": 'vendor/cookie'
+        "cookie": 'vendor/cookie',
+        "sha1": 'vendor/sha1'
     },
     shim: {
         "phaser": {
@@ -18,6 +19,9 @@ require.config({
         },
         "cookie": {
             exports: "cookie"
+        },
+        "sha1": {
+            exports: "sha1"
         }
     }
 });
@@ -28,15 +32,24 @@ require([
     'app'
 ], function (_, cookie, App) {
     // creating application
-    window.app = new App(connect_to_server);
+    window.app = new App(function () {
+        connect_to_server();
 
-    (function install_chat() {
-        var $input = $('#input');
-        $input.on('keypress', function (e) {
-            if (e.keyCode !== 13) return;
-            info( '<em>' + cookie.get('username') + '</em>: ' + $input.val() );
-            $input.val('');
-        });
-        $input.focus(); // on start you can write sth
-    }());
+        (function install_chat() {
+            var $input = $('#input');
+            $input.on('keypress', function (e) {
+                if (e.keyCode !== 13) return;
+                var player = app.getPlayer();
+                info( '<em>' + player.name + '</em>: ' + $input.val() );
+                $input.val('');
+            });
+            $input.focus(); // on start you can write sth
+        }());
+
+        var name = app._getUserName();
+        var player = app.getPlayer();
+        player.setName(name);
+        player.id = cookie.get('uuid');
+        server.update(player.id, {name: name});
+    });
 });

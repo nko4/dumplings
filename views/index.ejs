@@ -15,7 +15,7 @@
 
 /******************************************************************************/
 
-        var socket, current_player = false;
+        var socket, currentPlayer = false;
 
         if (<%= isProduction %>) {
             console.log('Start "NKO" application in production');
@@ -29,7 +29,7 @@
         // make public
         exports.socket = socket;
         exports.log = log;
-        exports.current_player = current_player;
+        exports.current_player = currentPlayer;
 
         exports.player_move = function (x, y) {
             socket.emit('pm', parseInt(x, 10), parseInt(y, 10));
@@ -44,19 +44,16 @@
         };
 
         exports.server = {
-
             update: function(uuid, settings) {
                 socket.emit('update', uuid, settings);
             },
 
-            say: function(uuid,message) {
+            say: function(uuid, message) {
                 socket.emit('say', uuid, message);
             }
-
-        }
+        };
 
         exports.connect_to_server = function () {
-
             socket.emit('play', 'UUID');
 
             socket.on('mc',function(x,y,type) {
@@ -64,10 +61,9 @@
             });
 
             socket.on('play', function (id, x, y) {
-    			current_player = app.addPlayer(id, true);
-    			socket.emit('pm', current_player.tile.x , current_player.tile.y);
+    			currentPlayer = app.addPlayer(id, true);
+    			socket.emit('pm', currentPlayer.tile.x , currentPlayer.tile.y);
                 info('Welcome to yet not named project by <em>dumplings</em>!');
-                current_player.setName(app._getUserName());
             });
             socket.on('join', function (player) {
                 log('Opponent "' + player.id + '" joined', 1);
@@ -94,7 +90,7 @@
                         obj = app.addOpponent(player.id);
                     }
 
-                    if (current_player.id != player.id) {
+                    if (currentPlayer.id != player.id) {
                         obj.move(player.x,player.y);
                     }
             	});

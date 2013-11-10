@@ -20,9 +20,8 @@ define([
     Bomb.prototype = {
         create: function () {
             this.tile = this.game.add.sprite(this.x, this.y, 'bomb');
-            this.bombs.add(this.tile);
-            // this.tile = this.bombs.create(this.x, this.y, 'bomb');
             this.tile.body.immovable = true;
+            this.bombs.add(this.tile);
 
             setTimeout(function () {
                 // auto destruction
