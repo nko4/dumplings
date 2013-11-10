@@ -68,6 +68,7 @@ define([
             }, 100);
         },
         _moveLabel: function (x, y) {
+            if (!label) return;
             label.x = x - label.width / 2 + Player.WIDTH / 2;
             label.y = y - 20;
         }

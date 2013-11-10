@@ -40,16 +40,12 @@ require([
             $input.on('keypress', function (e) {
                 if (e.keyCode !== 13) return;
                 var player = app.getPlayer();
-                info( '<em>' + player.name + '</em>: ' + $input.val() );
+                var msg = $input.val();
+                info( '<em>' + player.name + '</em>: ' +  msg);
+                server.say(cookie.get('uuid'), msg);
                 $input.val('');
             });
             $input.focus(); // on start you can write sth
         }());
-
-        var name = app._getUserName();
-        var player = app.getPlayer();
-        player.setName(name);
-        player.id = cookie.get('uuid');
-        server.update(player.id, {name: name});
     });
 });

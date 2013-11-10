@@ -202,10 +202,10 @@ define([
 
             broadcasting(x, y, 0);
 
-            updatePlayer(s.id, { power: ++currentPlayer.power });
+            server.update(s.id, { power: ++currentPlayer.power });
             setTimeout(function () {
                 // power is down after couple of seconds
-                updatePlayer(s.id, { power: --currentPlayer.power });
+                server.player(s.id, { power: --currentPlayer.power });
             }, App.MIXTURE_TIME_TO_LIVE);
         },
         _spaceHandler: function () {
@@ -298,6 +298,7 @@ define([
             return name;
         },
         getPlayer: function () {
+            if (!player) throw 'player doesn\'t exists';
             return player;
         }
     };

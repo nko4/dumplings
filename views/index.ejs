@@ -4,6 +4,7 @@
 <link href="styles/default.css" type="text/css" rel="stylesheet"/>
 
 <script src="scripts/utils.js"></script>
+<script src="scripts/vendor/cookie.js"></script>
 <script src="scripts/vendor/jquery.min.js"></script>
 <script src="scripts/vendor/jquery-ui.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
@@ -54,7 +55,9 @@
         };
 
         exports.connect_to_server = function () {
-            socket.emit('play', 'UUID');
+            var name = app._getUserName();
+
+            socket.emit('play', cookie.get('uuid'), {name: name});
 
             socket.on('mc',function(x,y,type) {
                 app.updateMap(x, y, type);
