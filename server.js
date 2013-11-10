@@ -112,7 +112,7 @@ var Game = (function() {
   }
 
   Game.prototype.randNewBrick = function() {
-    if ( this.brickCount < (this.maxCount/2) ) {
+    if ( this.brickCount < (this.maxCount/3) ) {
       var x = Math.floor(Math.random() * this.MAP_X-1) + 1;
       var y = Math.floor(Math.random() * this.MAP_Y-1) + 1;
 
@@ -137,7 +137,7 @@ var Game = (function() {
   }
 
   Game.prototype.randNewMixture = function() {
-    if ( this.powerCount < (this.maxCount/5) ) {
+    if ( this.powerCount < 10 ) {
       var x = Math.floor(Math.random() * this.MAP_X-1) + 1;
       var y = Math.floor(Math.random() * this.MAP_Y-1) + 1;
 
@@ -335,6 +335,17 @@ setInterval(function() {
   // build ne brick
   if (new_mixture) {
     io.sockets.emit('mc', new_mixture[0], new_mixture[1], Game.MIXTURE);
+
+
+    setTimeout(function() {
+
+      if (game.map[new_mixture[0]][new_mixture[1]] == Game.MIXTURE) {
+        io.sockets.emit('mc', new_mixture[0], new_mixture[1], Game.SPACE);        
+      }
+
+    }, 15 * 1000);
+
+
     incStats('powerups');
   }
 }, Game.REVIVAL_MIXTURE);
