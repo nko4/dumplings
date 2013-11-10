@@ -31,7 +31,6 @@ define([
             switch (type) {
                 case Map.SPACE:
                     if (this.map[x] && this.map[x][y]) {
-                        // console.log(this.map[x][y]);
                         this.map[x][y].destroy();
                     }
                     break;

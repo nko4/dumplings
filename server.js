@@ -49,14 +49,16 @@ var Game = (function() {
   Game.BRICK = 2;
   Game.MIXTURE = 3;
 
-  function Game ( max_x, max_y ) {
+  Game.REVIVAL_BRICK = 5000; // 5s
+  Game.REVIVAL_MIXTURE = 10000; // 10s
+
+  function Game (max_x, max_y) {
     var self = this;
 
-    var MAP_X = max_x;
-    var MAP_Y = max_y;
     this.map = [];
-    this.MAP_X = max_x;
-    this.MAP_Y = max_y;
+
+    var MAP_X = this.MAP_X = max_x;
+    var MAP_Y = this.MAP_Y = max_y;
 
     this.brickCount = 0;
     this.wallCount = 0;
@@ -73,9 +75,9 @@ var Game = (function() {
       }
     }
 
-    _.times(MAP_X, function (x) { self.map[x][0]      = Game.WALL;      self.wallCount += 1; });
+    _.times(MAP_X, function (x) { self.map[x][0]      = Game.WALL;  self.wallCount += 1; });
     _.times(MAP_X, function (x) { self.map[x][MAP_Y]  = Game.WALL;  self.wallCount += 1; });
-    _.times(MAP_Y, function (y) { self.map[0][y]      = Game.WALL;      self.wallCount += 1; });
+    _.times(MAP_Y, function (y) { self.map[0][y]      = Game.WALL;  self.wallCount += 1; });
     _.times(MAP_Y, function (y) { self.map[MAP_X][y]  = Game.WALL;  self.wallCount += 1; });
     _.times(MAP_X, function (n) {
       if (!n) return;
@@ -97,17 +99,16 @@ var Game = (function() {
     this.wallCount += 1;
     this.maxCount -= this.wallCount;
     
-    _.times(parseInt(MAP_X*MAP_Y*0.20),function() {
+    _.times(parseInt(MAP_X * MAP_Y * 0.20),function() {
 
       var x = Math.floor(Math.random() * MAP_X-1) + 1;
       var y = Math.floor(Math.random() * MAP_Y-1) + 1;
 
       if (self.map[x][y] == 0) {
-        self.map[x][y] = 2;
+        self.map[x][y] = Game.BRICK;
         self.brickCount += 1;
       }
     });
-
   }
 
   Game.prototype.randNewBrick = function() {
@@ -116,13 +117,14 @@ var Game = (function() {
       var y = Math.floor(Math.random() * this.MAP_Y-1) + 1;
 
       if (this.map[x][y] == 0) {
-        this.map[x][y] = 2;
+        this.map[x][y] = Game.BRICK;
         this.brickCount += 1;
-        return [x,y];
+        return [x, y];
       }
     }
     return false;
   };
+
 
   Game.prototype.getPlayer = function(uuid,cb) {
 
@@ -134,28 +136,26 @@ var Game = (function() {
 
   }
 
-  Game.prototype.randNewPower = function() {
+  Game.prototype.randNewMixture = function() {
     if ( this.powerCount < (this.maxCount/5) ) {
-      
       var x = Math.floor(Math.random() * this.MAP_X-1) + 1;
       var y = Math.floor(Math.random() * this.MAP_Y-1) + 1;
-      // var elem = map[x][y];
 
       if (this.map[x][y] == 0) {
-        this.map[x][y] = 3;
+        this.map[x][y] = Game.MIXTURE;
         this.powerCount += 1;
-        return [x,y];
+        return [x, y];
       }
     }
     return false;
   };
 
   Game.prototype.set = function(x,y,value) {
-    if (this.map[x][y] == 2) {
+    if (this.map[x][y] == Game.BRICK) {
       this.brickCount -= 1;
     }
 
-    if (this.map[x][y] == 3) {
+    if (this.map[x][y] == Game.MIXTURE) {
       this.powerCount -= 1;
     }
 
@@ -164,19 +164,28 @@ var Game = (function() {
 
   Game.prototype.setId = function( uuid, socket_id ) {
     this.uuids[uuid] = socket_id;
-  }
+  };
 
   Game.prototype.getSocketIdBy = function( socket_id ) {
     return _.invert(this.uuids)[socket_id];
-  }
+  };
+
+  Game.prototype.getEmptyTile = function () {
+    var emptyTiles = [];
+    _.each(this.map, function (column, x) {
+      _.each(column, function (tile, y) {
+        if (!tile) {
+          emptyTiles.push({ x: x, y: y });
+        }
+      });
+    });
+    return emptyTiles[_.random(0, emptyTiles.length - 1)];
+  };
 
   return Game;
 })();
 
-var game = new Game(44,30);
-
-
-var move_block = false;
+var game = new Game(44, 30);
 
 var server = app.listen(port);
 var io = require('socket.io').listen(server);
@@ -204,24 +213,22 @@ app.get('/', function (reseq, res) {
 });
 
 
-  function updatePlayer(uuid, settings) {
-    db.players.update(
-      { uuid: uuid }, // first
-      { $set: settings } ,
-      { upsert: true }
-    );
+function updatePlayer(uuid, settings) {
+  db.players.update(
+    { uuid: uuid }, // first
+    { $set: settings } ,
+    { upsert: true }
+  );
 
-    if (game.uuids_params[uuid] != {}) {
-      game.uuids_params[uuid] = {};
-    }
-
-    game.uuids_params[uuid] = _.extend(game.uuids_params[uuid],settings);
-
+  if (game.uuids_params[uuid] != {}) {
+    game.uuids_params[uuid] = {};
   }
+
+  game.uuids_params[uuid] = _.extend(game.uuids_params[uuid],settings);
+}
 
 
 io.sockets.on('connection', function (socket) {
-
   var ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address.address;
 
   socket.on('update',function(uuid,settings) {
@@ -251,9 +258,9 @@ io.sockets.on('connection', function (socket) {
         socket.emit('info','Welcome <em>'+settings.name+'</em>')
         socket.broadcast.emit('info','Player <em>' + settings.name + '</em> joined from <img src="http://www.geojoe.co.uk/api/flag/?ip=' + ip + '" alt="-" />')
 
+
         updatePlayer(uuid, _.extend(
           {
-
             ip: ip,
             joined: new Date()
           
@@ -265,7 +272,10 @@ io.sockets.on('connection', function (socket) {
 
     game.players[socket.id] = { x: 0, y: 0 };
     
-    socket.emit('play',socket.id,0,0);
+
+    var emptyTile = game.getEmptyTile();
+    socket.emit('play', socket.id, emptyTile.x, emptyTile.y);
+    
 
     incStats('players_joins');
 
@@ -273,38 +283,29 @@ io.sockets.on('connection', function (socket) {
     
   });
 
-  socket.on('mc',function(x,y,type) {
+  socket.on('mc', function(x,y,type) {
     game.set(x,y,type);
     socket.broadcast.emit('mc',x,y,type);
-    if (type == 2) {
+    if (type == Game.BRICK) {
       incStats('bombs');
     }
   });
 
-  socket.on('kill',function(id) {
+  socket.on('kill', function(id) {
     delete game.players[id];
-    socket.broadcast.emit('killed',{ id: id, by_id: socket.id })
+    socket.broadcast.emit('killed',{ id: id, by_id: socket.id });
     incStats('players_kills')
   });
 
-  socket.on('pm',function(x, y) {
+  socket.on('pm', function(x, y) {
     game.players[socket.id] = { x: x, y: y };
+    var temp_players = [];
 
-    if (!move_block) {
-      // move_block = true;
-      var _tmp_players = [];
+    _.each(game.players, function(v, k) {
+      temp_players.push(_.extend({ id: k }, v));
+    });
 
-      _.each(game.players, function(v, k) {
-        _tmp_players.push(_.extend({ id: k }, v));
-      });
-
-      socket.broadcast.emit('pm',_tmp_players);
-
-      // setTimeout(function() {
-      //   move_block = false;
-      // },50);
-
-    }
+    socket.broadcast.emit('pm', temp_players);
   }); // player move
 
   socket.on('disconnect', function() {
@@ -314,29 +315,21 @@ io.sockets.on('connection', function (socket) {
 });
 
 setInterval(function() {
-  var new_brick;
-
-  // build ne brick
-  new_brick = game.randNewBrick();
+  var new_brick = game.randNewBrick();
 
   if (new_brick) {
-    io.sockets.emit('mc',new_brick[0],new_brick[1],2);
+    io.sockets.emit('mc', new_brick[0], new_brick[1], Game.BRICK);
     incStats('bricks');
   }
-
-},1000 * 5);
+}, Game.REVIVAL_BRICK);
 
 setInterval(function() {
-
-  var new_brick;
-
-  new_brick = game.randNewPower();
+  var new_mixture = game.randNewMixture();
 
   // build ne brick
-  if (new_brick) {
-    io.sockets.emit('mc',new_brick[0],new_brick[1],3);
+  if (new_mixture) {
+    io.sockets.emit('mc', new_mixture[0], new_mixture[1], Game.MIXTURE);
     incStats('powerups');
   }
-
-},1000 * 10);
+}, Game.REVIVAL_MIXTURE);
 
