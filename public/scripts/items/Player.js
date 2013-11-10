@@ -1,8 +1,8 @@
 define([
     'underscore',
     'items/Wall',
-    'items/Bomb'
-], function (_, Wall, Bomb) {
+    'items/Map'
+], function (_, Wall, Map) {
     'use strict';
 
     var label;
@@ -61,7 +61,7 @@ define([
             var x = Math.round(this.tile.x / Wall.WIDTH);
             var y = Math.round(this.tile.y / Wall.HEIGHT);
 
-            broadcasting(x, y, 3);
+            broadcasting(x, y, Map.BOMB);
 
             // plant a bomb
             app.buildBomb(x, y, this);

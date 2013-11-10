@@ -1,10 +1,9 @@
-define([
-    'items/Wall'
-], function (Wall) {
+define([], function () {
     'use strict';
 
-    var Map = function (matrix) {
+    var Map = function (matrix, player) {
         this.matrix = matrix;
+        this.player = player;
         this.map = [];
 
         this.create();
@@ -14,6 +13,7 @@ define([
     Map.WALL = 1;
     Map.BRICK = 2;
     Map.MIXTURE = 3;
+    Map.BOMB = 4;
 
     Map.prototype = {
         create: function () {
@@ -47,13 +47,17 @@ define([
                     tile = app.buildMixture(x, y);
                     break;
 
+                case Map.BOMB:
+                    tile = app.buildBomb(x, y, this.player);
+                    break;
+
                 default:
                     throw 'unexpected type: ' + type;
             }
 
             if (!this.map[x]) this.map[x] = [];
             this.map[x][y] = tile;
-        },
+        }
     };
     return Map;
 });

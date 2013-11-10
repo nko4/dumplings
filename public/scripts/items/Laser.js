@@ -16,6 +16,14 @@ define([
             this.callback(this.points);
         }.bind(this));
         this.create(2, 0xFFE303);
+
+        var self = this;
+        _.times(this.power * 2 + 1, function (n) {
+            self.points.push({
+                x: self.x - self.power + n,
+                y: self.y
+            });
+        });
     };
 
     Laser.prototype = {
@@ -36,7 +44,7 @@ define([
                     line.destroy();
                 });
 
-                if (typeof callback === "function") {
+                if (_.isFunction(callback)) {
                     callback();
                 }
             }, 200);
@@ -54,12 +62,6 @@ define([
             graphics.lineTo((x * Wall.WIDTH) + ((power + 1) * Wall.WIDTH), y * Wall.HEIGHT + Wall.HEIGHT / 2);
             graphics.endFill();
 
-            _.times(power * 2 + 1, function (n) {
-                self.points.push({
-                    x: x - power + n,
-                    y: y
-                });
-            });
             return graphics;
         },
         _lineY: function (x, y, power, size, color) {
@@ -75,12 +77,6 @@ define([
             graphics.lineTo((x * Wall.WIDTH) + Wall.WIDTH / 2, (y * Wall.HEIGHT) + ((power + 1) * Wall.WIDTH));
             graphics.endFill();
 
-            _.times(power * 2 + 1, function (n) {
-                self.points.push({
-                    x: x,
-                    y: y - power + n
-                });
-            });
             return graphics;
         }
     };
