@@ -1,0 +1,21 @@
+#ranking {
+    float: left;
+    width: 50%;
+    height: 120px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    font-size: 14px;
+}
+
+#ranking ul {
+    float: left;
+    width: 150px;
+    margin: 10px 5px 0 10px;
+    line-height: 19px;
+}
+
+#ranking li em {
+    color: #954121;
+    font-weight: bold;
+}

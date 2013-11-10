@@ -26,7 +26,7 @@ define([
         this.cursors = null; // up, down, left, right
         this.map = null; // Map
 
-        this.COOKIE = 'dumplings_1';
+        this.COOKIE = 'dumplings_2';
 
         this.initialize();
     };
@@ -71,8 +71,8 @@ define([
             this.game.stage.backgroundColor = '#0c0c0c'; // color of world
 
             this.cursors = this.game.input.keyboard.createCursorKeys(); // handle moving
-            var spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-            spaceKey.onDown.add(function () { player.plantBomb(); }, this);
+            var ctrlKey = this.game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
+            ctrlKey.onDown.add(function () { player.plantBomb(); }, this);
 
             this._callback.call(this);
         },
