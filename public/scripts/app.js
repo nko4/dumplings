@@ -46,7 +46,7 @@ define([
             });
         },
         preload: function () {
-            this.game.load.spritesheet('bomb', 'assets/pics/1/bomb.png', 50, 50, 3);
+            this.game.load.spritesheet('bomb', 'assets/pics/2/bomb.png', 50, 50, 3);
             this.game.load.spritesheet('wall', 'assets/pics/2/wall-1.png', 50, 50, 1);
             this.game.load.spritesheet('brick', 'assets/pics/1/brick.png', 50, 50, 4);
             this.game.load.spritesheet('mixture', 'assets/pics/2/mixture.png', 50, 50, 3);
