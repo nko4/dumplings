@@ -88,6 +88,10 @@
                 app.getPlayer().setName(player.name);
             });
 
+            socket.on('killed', function(killed) {
+                app.terminateOpponent(killed.id);
+            })
+
             socket.on('leave', function (player) {
                 app.terminateOpponent(player.id);
             });
