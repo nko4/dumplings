@@ -149,13 +149,15 @@ define([
                 server.update(s.id, { power: --currentPlayer.power });
             }, Mixture.TIME_TO_LIVE);
         },
-        addPlayer: function (id) {
+        addPlayer: function (id, x, y) {
             player = new Player({
                 game: this.game,
                 players: this.players,
                 power: 2,
                 id: id,
-                sprite: 'special'
+                sprite: 'special',
+                x: x,
+                y: y
             });
             player.tile.body.collideWorldBounds = true; // disable go out of world
             this.game.camera.follow(player.tile); // main player (camera is following)

@@ -10,9 +10,8 @@ define([
     var Player = function (settings) {
         this.game = settings.game;
         this.players = settings.players;
-        var random = this.random();
-        this.x = settings.x || random.x;
-        this.y = settings.y || random.y;
+        this.x = settings.x;
+        this.y = settings.y;
         this.tile = null;
         this.id = settings.id;
         this.name = settings.name;
@@ -28,7 +27,9 @@ define([
 
     Player.prototype = {
         create: function () {
-            this.tile = this.game.add.sprite(this.x, this.y, this.sprite);
+            var x = this.x * Wall.WIDTH + (Wall.WIDTH - Player.WIDTH) / 2;
+            var y = this.y * Wall.HEIGHT + (Wall.HEIGHT - Player.HEIGHT) / 2;
+            this.tile = this.game.add.sprite(x, y, this.sprite);
             this.players.add(this.tile);
 
             this.tile.animations.add('walk');

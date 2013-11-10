@@ -52,11 +52,9 @@ var Game = (function() {
   function Game ( max_x, max_y ) {
     var self = this;
 
-    var MAP_X = max_x;
-    var MAP_Y = max_y;
     this.map = [];
-    this.MAP_X = max_x;
-    this.MAP_Y = max_y;
+    var MAP_X = this.MAP_X = max_x;
+    var MAP_Y = this.MAP_Y = max_y;
 
     this.brickCount = 0;
     this.wallCount = 0;
@@ -73,9 +71,9 @@ var Game = (function() {
       }
     }
 
-    _.times(MAP_X, function (x) { self.map[x][0]      = Game.WALL;      self.wallCount += 1; });
+    _.times(MAP_X, function (x) { self.map[x][0]      = Game.WALL;  self.wallCount += 1; });
     _.times(MAP_X, function (x) { self.map[x][MAP_Y]  = Game.WALL;  self.wallCount += 1; });
-    _.times(MAP_Y, function (y) { self.map[0][y]      = Game.WALL;      self.wallCount += 1; });
+    _.times(MAP_Y, function (y) { self.map[0][y]      = Game.WALL;  self.wallCount += 1; });
     _.times(MAP_Y, function (y) { self.map[MAP_X][y]  = Game.WALL;  self.wallCount += 1; });
     _.times(MAP_X, function (n) {
       if (!n) return;
@@ -107,7 +105,6 @@ var Game = (function() {
         self.brickCount += 1;
       }
     });
-
   }
 
   Game.prototype.randNewBrick = function() {
@@ -129,7 +126,6 @@ var Game = (function() {
       
       var x = Math.floor(Math.random() * this.MAP_X-1) + 1;
       var y = Math.floor(Math.random() * this.MAP_Y-1) + 1;
-      // var elem = map[x][y];
 
       if (this.map[x][y] == 0) {
         this.map[x][y] = 3;
@@ -154,11 +150,23 @@ var Game = (function() {
 
   Game.prototype.setId = function( uuid, socket_id ) {
     this.uuids[uuid] = socket_id;
-  }
+  };
 
   Game.prototype.getSocketIdBy = function( socket_id ) {
     return _.invert(this.uuids)[socket_id];
-  }
+  };
+
+  Game.prototype.getEmptyTile = function () {
+    var emptyTiles = [];
+    _.each(this.map, function (column, x) {
+      _.each(column, function (tile, y) {
+        if (!tile) {
+          emptyTiles.push({ x: x, y: y });
+        }
+      });
+    });
+    return emptyTiles[_.random(0, emptyTiles.length - 1)];
+  };
 
   return Game;
 })();
@@ -194,24 +202,22 @@ app.get('/', function (reseq, res) {
 });
 
 
-  function updatePlayer(uuid, settings) {
-    db.players.update(
-      { uuid: uuid }, // first
-      { $set: settings } ,
-      { upsert: true }
-    );
+function updatePlayer(uuid, settings) {
+  db.players.update(
+    { uuid: uuid }, // first
+    { $set: settings } ,
+    { upsert: true }
+  );
 
-    if (game.uuids_params[uuid] != {}) {
-      game.uuids_params[uuid] = {};
-    }
-
-    game.uuids_params[uuid] = _.extend(game.uuids_params[uuid],settings);
-
+  if (game.uuids_params[uuid] != {}) {
+    game.uuids_params[uuid] = {};
   }
+
+  game.uuids_params[uuid] = _.extend(game.uuids_params[uuid],settings);
+}
 
 
 io.sockets.on('connection', function (socket) {
-
   var ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address.address;
 
   socket.on('update',function(uuid,settings) {
@@ -224,11 +230,12 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('play',function(uuid, settings) {
-    socket.emit('map',game.map);
+    socket.emit('map', game.map);
 
     game.players[socket.id] = { x: 0, y: 0 };
-    
-    socket.emit('play',socket.id,0,0);
+
+    var emptyTile = game.getEmptyTile();
+    socket.emit('play', socket.id, emptyTile.x, emptyTile.y);
 
     socket.broadcast.emit('join',{ id: socket.id, ip: ip, name: settings.name });
 
