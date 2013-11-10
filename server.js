@@ -124,6 +124,16 @@ var Game = (function() {
     return false;
   };
 
+  Game.prototype.getPlayer = function(uuid,cb) {
+
+    db.players.findOne({
+      uuid:uuid
+    }, function(err, docs) {
+      cb(doc)
+    });
+
+  }
+
   Game.prototype.randNewPower = function() {
     if ( this.powerCount < (this.maxCount/5) ) {
       
@@ -219,37 +229,48 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('say', function(uuid,message) {
-    var uuid_params = game.uuids_params[uuid];
-    socket.broadcast.emit('log', '<em>' + uuid_params.name + '</em>: ' +  message);
+    game.getPlayer(uuid,function(player) {
+        socket.broadcast.emit('log', '<em>' + player.name + '</em>: ' +  message);
+    });
   });
 
   socket.on('play',function(uuid, settings) {
+
+    if (_.isEmpty(settings)) {
+
+      game.getPlayer(uuid,function(player) {
+        socket.broadcast.emit('join',{ id: socket.id, ip: ip, name: settings.name });
+
+        socket.emit('info','Welcome <em>'+settings.name+'</em>')
+        socket.broadcast.emit('info','Player <em>' + settings.name + '</em> joined from <img src="http://www.geojoe.co.uk/api/flag/?ip=' + ip + '" alt="-" />')
+      });
+
+    } else {
+        socket.broadcast.emit('join',{ id: socket.id, ip: ip, name: settings.name });
+
+        socket.emit('info','Welcome <em>'+settings.name+'</em>')
+        socket.broadcast.emit('info','Player <em>' + settings.name + '</em> joined from <img src="http://www.geojoe.co.uk/api/flag/?ip=' + ip + '" alt="-" />')
+
+        updatePlayer(uuid, _.extend(
+          {
+
+            ip: ip,
+            joined: new Date()
+          
+          },settings)
+        );
+    }
+
     socket.emit('map',game.map);
 
     game.players[socket.id] = { x: 0, y: 0 };
     
     socket.emit('play',socket.id,0,0);
 
-    socket.broadcast.emit('join',{ id: socket.id, ip: ip, name: settings.name });
-
-
-    socket.emit('log','Player <em>' + settings.name + '</em> joined from <img src="http://www.geojoe.co.uk/api/flag/?ip=' + ip + '" alt="-" />')
-
-
     incStats('players_joins');
 
     game.setId(uuid,socket.id);
-
-    updatePlayer(uuid, _.extend(
-      {
-
-        ip: ip,
-        joined: new Date()
-      
-      },settings)
-    );
     
-
   });
 
   socket.on('mc',function(x,y,type) {
