@@ -2,7 +2,7 @@
     position: absolute;
     top: 20px;
     right: 20px;
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.9);
     padding: 10px 10px 8px 10px;
     border-radius: 3px;
 }
@@ -14,72 +14,4 @@
     height: 120px;
     width: 100%;
     font-family: "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif;
-}
-
-#chat {
-    float: left;
-    width: 50%;
-    height: 120px;
-    overflow: hidden;
-    background: rgba(0, 0, 0, 0.9);
-    font-size: 13px;
-}
-
-#messages {
-    float: left;
-    clear: both;
-    overflow: auto;
-    overflow-x: hidden;
-    height: 100px;
-    padding: 3px 0 0 0;
-}
-
-#messages p {
-    padding: 0 10px;
-    color: #777777;
-}
-
-#messages p mark {
-    color: #fff;
-    background: none;
-}
-
-#messages p mark em {
-    color: #ffff4f;
-}
-
-#input {
-    height: 20px;
-    display: block;
-    width: 100%;
-    border: none;
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
-    padding: 0 0 0 10px;
-}
-#input:focus {
-    -moz-outline: none;
-    outline: none;
-}
-
-#ranking {
-    float: left;
-    width: 50%;
-    height: 120px;
-    overflow: hidden;
-    background: rgba(0, 0, 0, 0.9);
-    color: #fff;
-    font-size: 14px;
-}
-
-#ranking ul {
-    float: left;
-    width: 150px;
-    margin: 10px 5px 0 10px;
-    line-height: 19px;
-}
-
-#ranking li em {
-    color: #954121;
-    font-weight: bold;
 }
