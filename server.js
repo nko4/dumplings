@@ -310,7 +310,9 @@ io.sockets.on('connection', function (socket) {
 
     game.getPlayer(game.getSocketIdBy(socket.id), function(player) {
       socket.broadcast.emit('leave',{ id: socket.id });
-      socket.broadcast.emit('info','<em>'+player.name+'</em> leave');
+      if (player.name) {
+        socket.broadcast.emit('info','<em>'+player.name+'</em> leave');
+      }
     });   
 
   });
