@@ -51,9 +51,9 @@ define([
             this.game.load.spritesheet('brick', 'assets/pics/2/brick.png', 50, 50, 4);
             this.game.load.spritesheet('mixture', 'assets/pics/2/mixture.png', 50, 50, 3);
 
-            this.game.load.spritesheet('player', 'assets/pics/1/fighter-1.png', 35, 35, 4);
-            this.game.load.spritesheet('opponent', 'assets/pics/1/fighter-2.png', 35, 35, 4);
-            this.game.load.spritesheet('special', 'assets/pics/1/fighter-3.png', 35, 35, 4);
+            this.game.load.spritesheet('player', 'assets/pics/2/fighter-1.png', 32, 32, 4);
+            this.game.load.spritesheet('opponent', 'assets/pics/2/fighter-2.png', 32, 32, 4);
+            this.game.load.spritesheet('special', 'assets/pics/2/fighter-3.png', 32, 32, 4);
 
             this.game.load.audio('music', ['assets/audio/sound.wav', 'assets/audio/sound.mp3', 'assets/audio/sound.ogg']);
         },
@@ -152,8 +152,8 @@ define([
             var currentPlayer = this.list[s.id];
             t.destroy();
 
-            var x = Math.round(player.tile.x / Wall.WIDTH);
-            var y = Math.round(player.tile.y / Wall.HEIGHT);
+            var x = Math.round(t.x / Wall.WIDTH);
+            var y = Math.round(t.y / Wall.HEIGHT);
 
             broadcasting(x, y, Map.SPACE);
 

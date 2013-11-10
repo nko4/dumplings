@@ -26,17 +26,12 @@ define([], function () {
             });
         },
         update: function (x, y, type) {
-
-            console.log('map-update',x,y,type)
-
             var tile;
             switch (type) {
                 case Map.SPACE:
                     if (this.map[x]) {
                         var resource = this.map[x][y];
-                        console.log('resource', resource);
                         if (resource) {
-                            console.log('destroy ' + type + ' on map');
                             resource.destroy();
                         }
                     }
