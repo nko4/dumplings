@@ -78,8 +78,8 @@ define([
 
             _.times(this.power * 2 + 1, function (n) {
                 self.points.push({
-                    x: self.x - self.power + n,
-                    y: self.y
+                    x: self.x,
+                    y: self.y - self.power + n
                 });
             });
 
