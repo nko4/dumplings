@@ -49,6 +49,7 @@ var Game = (function () {
 
   Game.REVIVAL_BRICK = 5000; // 5s
   Game.REVIVAL_MIXTURE = 10000; // 10s
+  Game.RAND_NEW_BRICK_TIME = 35 * 1000; // 35s
 
   function Game (max_x, max_y) {
     var self = this;
@@ -63,7 +64,6 @@ var Game = (function () {
     this.powerCount = 0;
     this.maxCount = MAP_X * MAP_Y;
     this.players = {};
-    this.uuids_params = {};
     this.uuids = {};
 
     for (var x = MAP_X; x >= 0; x--) {
@@ -232,12 +232,7 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('play', function (uuid, settings) {
     if (_.isEmpty(settings)) {
-
-
-
       game.getPlayer(uuid, function (player) {
-
-
         socket.broadcast.emit('join',{ id: socket.id, ip: ip, name: player.name });
 
         socket.emit('info','Welcome again <em>' + player.name + '</em>');
@@ -245,23 +240,15 @@ io.sockets.on('connection', function (socket) {
 
         game.players[socket.id] = { n: player.name };
 
+        var emptyTile = game.getEmptyTile();
+        socket.emit('play', socket.id, emptyTile.x, emptyTile.y, player.name);
 
-    var emptyTile = game.getEmptyTile();
-    socket.emit('play', socket.id, emptyTile.x, emptyTile.y, player.name);
+        if (!game.players[socket.id]) {
+          game.players[socket.id] = {};
+        }
 
-
-
-    if (!game.players[socket.id]) {
-      game.players[socket.id] = {};
-    }
-
-
-    game.players[socket.id] = _.extend(game.players[socket.id],{ x: emptyTile.x, y: emptyTile.y })
-
-
-
+        game.players[socket.id] = _.extend(game.players[socket.id],{ x: emptyTile.x, y: emptyTile.y })
       });
-
     } else {
         socket.broadcast.emit('join',{ id: socket.id, ip: ip, name: settings.name });
 
@@ -271,42 +258,29 @@ io.sockets.on('connection', function (socket) {
         updatePlayer(uuid, _.extend({
             ip: ip,
             joined: new Date()
-          
         }, settings));
 
         game.players[socket.id] = { n: settings.name };
 
+        var emptyTile = game.getEmptyTile();
+        socket.emit('play', socket.id, emptyTile.x, emptyTile.y, settings.name);
 
-    var emptyTile = game.getEmptyTile();
-    socket.emit('play', socket.id, emptyTile.x, emptyTile.y, settings.name);
+        if (!game.players[socket.id]) {
+          game.players[socket.id] = {};
+        }
 
-
-
-    if (!game.players[socket.id]) {
-      game.players[socket.id] = {};
-    }
-
-
-    game.players[socket.id] = _.extend(game.players[socket.id],{ x: emptyTile.x, y: emptyTile.y })
-
-
+        game.players[socket.id] = _.extend(game.players[socket.id],{ x: emptyTile.x, y: emptyTile.y });
     }
 
     socket.emit('map',game.map);
-
-    
-    
-
-    
 
     incStats('players_joins');
 
     game.setId(uuid,socket.id);
   });
 
-  socket.on('mc', function (x,y,type) {
-    
-    if (game.map[x][y] == 2 && type == 0) {
+  socket.on('mc', function (x, y, type) {
+    if (game.map[x][y] === 2 && type === 0) {
       game.getPlayer(game.getSocketIdBy(socket.id), function (player) {
           game.brickCount -= 1;
           // db.players.update(
@@ -314,14 +288,11 @@ io.sockets.on('connection', function (socket) {
           //   { $inc: { points: 1 } } ,
           //   { upsert: true }
           // );
-
       });
     }
 
     game.set(x,y,type);
     socket.broadcast.emit('mc',x,y,type);
-    
-
   });
 
   socket.on('kill', function (id) {
@@ -338,15 +309,11 @@ io.sockets.on('connection', function (socket) {
               { upsert: true }
             );
           }
-
       });
     }
-
   });
 
   socket.on('pm', function (x, y) {
-
-
     if (!game.players[socket.id]) {
       game.players[socket.id] = {};
     }
@@ -374,7 +341,7 @@ io.sockets.on('connection', function (socket) {
   });
 });
 
-
+/******************************************************************************/
 
 setInterval(function () {
   db.players.find({ points : { $gt : 1 }, name : { $exists : true } },{name :1 ,points :1}).sort({points:-1}).limit(10).toArray(function(err, ranking) {
@@ -384,9 +351,7 @@ setInterval(function () {
   });
 }, 1000 * 5);
 
-
-
-
+/******************************************************************************/
 
 // setInterval(function () {
 //   var new_brick = game.randNewBrick();
@@ -398,6 +363,8 @@ setInterval(function () {
   
 // }, Game.REVIVAL_BRICK);
 
+/******************************************************************************/
+
 setInterval(function () {
   var new_mixture = game.randNewMixture();
 
@@ -405,18 +372,13 @@ setInterval(function () {
   if (new_mixture) {
     io.sockets.emit('mc', new_mixture[0], new_mixture[1], Game.MIXTURE);
 
-
     setTimeout(function() {
-
       if (game.map[new_mixture[0]][new_mixture[1]] == Game.MIXTURE) {
         io.sockets.emit('mc', new_mixture[0], new_mixture[1], Game.SPACE);
         game.powerCount -= 1;      
       }
-
-    }, 35 * 1000);
-
+    }, Game.RAND_NEW_BRICK_TIME);
 
     incStats('powerups');
   }
 }, Game.REVIVAL_MIXTURE);
-

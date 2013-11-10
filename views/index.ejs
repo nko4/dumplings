@@ -86,12 +86,12 @@
             });
             
             socket.on('join', function (player) {
-                // app.getPlayer().setName(player.name);
+                // do nothing...
             });
 
             socket.on('killed', function(killed) {
                 app.terminateOpponent(killed.id);
-            })
+            });
 
             socket.on('leave', function (player) {
                 app.terminateOpponent(player.id);
@@ -103,18 +103,17 @@
 
             socket.on('pm',function (players) {
             	players.forEach(function (player) {
-                    var obj;
-            		// console.log('player-'+player.id+'-x-'+player.x+'-y-'+player.y);
+                    var user;
 
                     try {
-                        obj = app.getPlayerById(player.id);
+                        user = app.getPlayerById(player.id);
                     } catch (err) {
-                        obj = app.addOpponent(player.id);
-                        obj.setName(player.n);
+                        user = app.addOpponent(player.id);
+                        user.setName(player.n);
                     }
 
                     if (currentPlayer.id != player.id) {
-                        obj.move(player.x,player.y);
+                        user.move(player.x,player.y);
                     }
             	});
             });
