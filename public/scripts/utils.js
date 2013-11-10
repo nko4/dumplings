@@ -26,6 +26,8 @@
     }
 
     function updateRanking(rank) {
+        // doesn't update view when ranking is empty
+        if (!rank.length) return;
         var $column, $ranking = $('#ranking');
         $ranking.empty();
         _.each(rank, function (r, n) {
