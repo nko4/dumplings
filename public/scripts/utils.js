@@ -26,15 +26,13 @@
     }
 
     function updateRanking(rank) {
-        var $ranking = $('#ranking');
+        var $column, $ranking = $('#ranking');
         $ranking.empty();
-
-        var $column = $('<ul>');
         _.each(rank, function (r, n) {
-            $column.append('<li>' + (n + 1) + ". " + r.name + ": <em>" + r.points + "</em></li>");
             if (n % 5 === 0) {
                 $column = $('<ul>');
             }
+            $column.append('<li>' + (n + 1) + ". " + r.name + ": <em>" + r.points + "</em></li>");
             $ranking.append($column);
         });
     }
