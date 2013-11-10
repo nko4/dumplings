@@ -75,12 +75,14 @@
     			socket.emit('pm', currentPlayer.tile.x , currentPlayer.tile.y);
                 info('Welcome to yet not named project by <em>dumplings</em>!');
             });
+            
             socket.on('join', function (player) {
                 log(msg, 1);
             });
+
             socket.on('leave', function (player) {
                 app.terminateOpponent(player.id);
-                log(msg);
+                info(msg);
             });
 
             socket.on('map', function(map) {
@@ -112,6 +114,6 @@
 </div>
 
 <div id="chat">
-    <div id="messages"></div>
     <input id="input" type="text" placeholder="Enter message..." />
+    <div id="messages"></div>
 </div>
