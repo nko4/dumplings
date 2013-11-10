@@ -276,17 +276,40 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('mc', function (x,y,type) {
+    
+    if (game.map[x,y] == game.BRICK && type == game.SPACE) {
+      game.getPlayer(game.getSocketIdBy(socket.id), function (player) {
+
+          db.players.update(
+            { uuid: player.uuid },
+            { $inc: { points: 1 } } ,
+            { upsert: true }
+          );
+
+      });
+    }
+
     game.set(x,y,type);
     socket.broadcast.emit('mc',x,y,type);
-    if (type == Game.BRICK) {
-      incStats('bombs');
-    }
+    
+
   });
 
   socket.on('kill', function (id) {
     delete game.players[id];
     socket.broadcast.emit('killed',{ id: id, by_id: socket.id });
-    incStats('players_kills')
+    incStats('players_kills');
+
+    game.getPlayer(game.getSocketIdBy(socket.id), function (player) {
+
+        db.players.update(
+          { uuid: player.uuid },
+          { $inc: { points: 100 } } ,
+          { upsert: true }
+        );
+
+    });
+
   });
 
   socket.on('pm', function (x, y) {
@@ -311,6 +334,19 @@ io.sockets.on('connection', function (socket) {
     });   
   });
 });
+
+
+
+setInterval(function () {
+
+
+
+
+}, 1000);
+
+
+
+
 
 setInterval(function () {
   var new_brick = game.randNewBrick();
