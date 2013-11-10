@@ -27,11 +27,14 @@ define([
 
     Player.prototype = {
         create: function () {
-            // this.tile = this.game.add.sprite(this.x, this.y, this.sprite);
-            this.tile = this.players.create(this.x, this.y, this.sprite);
-            this.tile.id = this.id;
+            this.tile = this.game.add.sprite(this.x, this.y, this.sprite);
+            this.players.add(this.tile);
+            // this.tile = this.players.create(this.x, this.y, this.sprite);
             this.tile.animations.add('walk');
             this.tile.animations.play('walk', 10, true, true);
+
+            // set id to {Phaser.Sprite}
+            this.tile.id = this.id;
         },
         move: function (x, y) {
             this.tile.body.velocity.y = this.tile.x - x;
@@ -49,7 +52,12 @@ define([
             return {x: x * Wall.WIDTH, y: y * Wall.HEIGHT};
         },
         destroy: function () {
-            this.tile.kill();
+            if (!this.tile.alive) return;
+
+            this.tile.animations.stop('walk');
+            this.tile.animations.destroy();
+
+            this.tile.destroy();
             killPlayer(this.id);
         },
         setName: function (name) {

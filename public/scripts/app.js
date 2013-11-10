@@ -69,12 +69,10 @@ define([
             this.players = this.game.add.group();
             this.mixtures = this.game.add.group();
 
-            var grays = ['181818', '313131', '494949'];
-            this.game.stage.backgroundColor = grays[_.random(0, grays - 1)]; // world color
+            this.game.stage.backgroundColor = '#0c0c0c'; // color of world
 
-            this.cursors = this.game.input.keyboard.createCursorKeys();
-            this.game.input.keyboard.addKeyCapture(32, this._spaceHandler);
-
+            this.cursors = this.game.input.keyboard.createCursorKeys(); // handle moving
+            this.game.input.keyboard.addKeyCapture(32, this._spaceHandler); // handle plant a bomb
             var spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
             spaceKey.onDown.add(this._spaceHandler, this);
 

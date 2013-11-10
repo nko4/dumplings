@@ -14,21 +14,27 @@ define([
     };
     Mixture.prototype = {
         create: function () {
-            this.tile = this.mixtures.create(this.x, this.y, 'mixture');
+            this.tile = this.game.add.sprite(this.x, this.y, 'mixture');
+            this.mixtures.add(this.tile);
+            // this.tile = this.mixtures.create(this.x, this.y, 'mixture');
             this.tile.body.immovable = true;
 
             this.tile.animations.add('brew');
             this.tile.animations.play('brew', 5, true);
         },
         destroy: function () {
+            if (!this.tile.alive) return;
+
             var x = Math.round(this.x / Wall.WIDTH);
             var y = Math.round(this.y / Wall.HEIGHT);
 
-            // this.tile.animations.stop('brew');
+            this.tile.animations.stop('brew');
             this.tile.animations.destroy();
 
-            this.tile.kill();
-            broadcasting(x, y, 0);
+            setTimeout(function () {
+                    this.tile.destroy();
+                    broadcasting(x, y, 0);
+            }.bind(this), 100);
         }
     };
 

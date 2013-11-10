@@ -20,8 +20,9 @@ define([
 
     Bomb.prototype = {
         create: function () {
-            // this.tile = this.game.add.sprite(this.x, this.y, 'bomb');
-            this.tile = this.bombs.create(this.x, this.y, 'bomb');
+            this.tile = this.game.add.sprite(this.x, this.y, 'bomb');
+            this.bombs.add(this.tile);
+            // this.tile = this.bombs.create(this.x, this.y, 'bomb');
             this.tile.body.immovable = true;
 
             setTimeout(function () {
@@ -30,6 +31,8 @@ define([
             }.bind(this), 2000);
         },
         destroy: function () {
+            if (!this.tile.alive) return;
+
             this.isDestroyed = true;
 
             var x = Math.round(this.x / Wall.WIDTH);
@@ -39,11 +42,11 @@ define([
             this.tile.animations.play('destroy', 5, true);
 
             setTimeout(function () {
-                // this.tile.animations.stop('destroy');
+                this.tile.animations.stop('destroy');
                 this.tile.animations.destroy();
 
                 setTimeout(function () {
-                    this.tile.kill();
+                    this.tile.destroy();
                     if (y % 2 === 1) this._lineX.call(this, x, y, this.power);
                     if (x % 2 === 1) this._lineY.call(this, x, y, this.power);
                     broadcasting(x, y, 0);
