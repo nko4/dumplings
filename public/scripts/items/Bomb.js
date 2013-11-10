@@ -66,7 +66,7 @@ define([
                 graphics.destroy();
 
                 _.times(power * 2 + 1, function (n) {
-                    app.updateMap(x + n - 2, y, 0);
+                    app.updateMap(x - power + n, y, 0);
                     app.tryKillOpponent(x - power + n, y);
                     app.tryKillPlayer(x - power + n, y);
                 });
@@ -88,7 +88,7 @@ define([
                 graphics.destroy();
 
                 _.times(power * 2 + 1, function (n) {
-                    app.updateMap(x, y + n - 2, 0);
+                    app.updateMap(x, y - power + n, 0);
                     app.tryKillOpponent(x, y - power + n);
                     app.tryKillPlayer(x, y - power + n);
                 });

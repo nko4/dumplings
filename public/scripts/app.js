@@ -32,6 +32,8 @@ define([
     App.BRICK = 2;
     App.MIXTURE = 3;
 
+    App.MIXTURE_TIME_TO_LIVE = 10 * 1000; // 10s
+
     var player;
     var opponent;
     var block = false;
@@ -197,10 +199,16 @@ define([
             }
         },
         _catchMixtureHandler: function (s, t) {
-            t.destroy();
             var currentPlayer = this.list[s.id];
+            t.destroy();
+
             currentPlayer.power++;
-            updatePlayer(s.id, { power: currentPlayer.power});
+            updatePlayer(s.id, { power: currentPlayer.power });
+
+            setTimeout(function () {
+                currentPlayer.power--;
+                updatePlayer(s.id, { power: currentPlayer.power });
+            }, App.MIXTURE_TIME_TO_LIVE);
         },
         _spaceHandler: function () {
             var x = Math.round(player.tile.x / Wall.WIDTH);
