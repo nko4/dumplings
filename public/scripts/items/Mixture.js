@@ -1,6 +1,7 @@
 define([
-    'items/Wall'
-], function (Wall) {
+    'items/Wall',
+    'items/Map'
+], function (Wall, Map) {
     'use strict';
 
     var Mixture = function (settings) {
@@ -33,8 +34,8 @@ define([
             this.tile.animations.destroy();
 
             setTimeout(function () {
-                    this.tile.destroy();
-                    broadcasting(x, y, 0);
+                this.tile.destroy();
+                broadcasting(x, y, Map.SPACE);
             }.bind(this), 100);
         }
     };

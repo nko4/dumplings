@@ -64,7 +64,9 @@ define([
             broadcasting(x, y, Map.BOMB);
 
             // plant a bomb
-            app.buildBomb(x, y, this);
+            app.buildBomb(x, y, function () {
+                return this;
+            });
         },
         destroy: function () {
             if (!this.tile.alive) return;

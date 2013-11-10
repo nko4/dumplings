@@ -137,7 +137,9 @@ define([
 
             this.game.world.setBounds(0, 0, width, height); // world size
 
-            this.map = new Map(matrix, player);
+            this.map = new Map(matrix, function () {
+                return player;
+            });
         },
         updateMap: function (x, y, type) {
             this.map.update(x, y, type);
@@ -149,7 +151,7 @@ define([
             var x = Math.round(player.tile.x / Wall.WIDTH);
             var y = Math.round(player.tile.y / Wall.HEIGHT);
 
-            broadcasting(x, y, 0);
+            broadcasting(x, y, Map.SPACE);
 
             server.update(s.id, { power: ++currentPlayer.power });
             setTimeout(function () {
@@ -262,11 +264,10 @@ define([
                 y: y * Wall.HEIGHT
             });
         },
-        buildBomb: function (x, y, player) {
+        buildBomb: function (x, y) {
             return new Bomb({
                 game: this.game,
                 bombs: this.bombs,
-                player: player,
                 x: x * Wall.WIDTH,
                 y: y * Wall.HEIGHT
             });

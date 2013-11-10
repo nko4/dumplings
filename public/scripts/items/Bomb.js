@@ -1,14 +1,14 @@
 define([
     'underscore',
     'items/Wall',
-    'items/Laser'
-], function (_, Wall, Laser) {
+    'items/Laser',
+    'items/Map'
+], function (_, Wall, Laser, Map) {
     'use strict';
 
     var Bomb = function (settings) {
         this.game = settings.game;
         this.bombs = settings.bombs;
-        this.player = settings.player;
         this.x = settings.x;
         this.y = settings.y;
         this.tile = null;
@@ -55,11 +55,11 @@ define([
                 game: this.game,
                 x: x,
                 y: y,
-                power: this.player.power,
+                power: app.getPlayer().power,
                 callback: this._doOnPoint
             });
 
-            broadcasting(x, y, 0);
+            broadcasting(x, y, Map.SPACE);
         },
         _doOnPoint: function (points) {
             _.each(points, function (point) {
