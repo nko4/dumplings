@@ -18,7 +18,12 @@
 
     function info(msg) {
         if (!$box) $box = $('#messages');
-        $box.prepend($('<p>').html(' > <mark>' + msg + '</mark>'));
+        $box.prepend($('<p>').html(' > <mark>' + msg + '</mark>').addClass("info"));
+    }
+
+    function warn(msg) {
+        if (!$box) $box = $('#messages');
+        $box.prepend($('<p>').html(' > <mark>' + msg + '</mark>').addClass("warn"));
     }
 
     function strip(html) {
@@ -34,7 +39,7 @@
             if (n % 5 === 0) {
                 $column = $('<ul>');
             }
-            $column.append('<li>' + (n + 1) + ". " + r.name + ": <em>" + r.points + "</em></li>");
+            $column.append('<li>' + (n + 1) + ". <strong>" + r.name + "</strong>: <em>" + r.points + "</em></li>");
             $ranking.append($column);
         });
     }
@@ -42,6 +47,7 @@
     // make public
     exports.log = log;
     exports.info = info;
+    exports.warn = warn;
     exports.strip = strip;
     exports.updateRanking = updateRanking;
 }(this));

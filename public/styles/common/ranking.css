@@ -4,7 +4,7 @@
     height: 120px;
     overflow: hidden;
     background: rgba(0, 0, 0, 0.9);
-    color: #fff;
+    color: #808080;
     font-size: 14px;
 }
 
@@ -13,6 +13,10 @@
     width: 150px;
     margin: 10px 5px 0 10px;
     line-height: 19px;
+}
+
+#ranking li strong {
+    color: #fff;
 }
 
 #ranking li em {

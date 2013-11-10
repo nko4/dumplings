@@ -74,6 +74,10 @@
                 info(message);
             });
 
+            socket.on('warn', function (message) {
+                warn(message);
+            });
+
             socket.on('play', function (id, x, y) {
     			currentPlayer = app.addPlayer(id, x, y);
     			socket.emit('pm', currentPlayer.tile.x , currentPlayer.tile.y);
