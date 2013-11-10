@@ -12,7 +12,7 @@ define([
         this.points = [];
         this.callback = settings.callback;
 
-        this.create(4, 0xFF0000, function () {
+        this.create(4, 0xFFFFFF, function () {
             this.callback(this.points);
         }.bind(this));
         // this.create(2, 0xFFE303);
