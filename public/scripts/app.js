@@ -137,7 +137,7 @@ define([
 
             this.game.world.setBounds(0, 0, width, height); // world size
 
-            this.map = new Map(matrix);
+            this.map = new Map(matrix, player);
         },
         updateMap: function (x, y, type) {
             this.map.update(x, y, type);
