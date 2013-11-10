@@ -24,8 +24,18 @@ require.config({
 
 require([
     'underscore',
+    'cookie',
     'app'
-], function (_, App) {
+], function (_, cookie, App) {
     // creating application
     window.app = new App(connect_to_server);
+
+    (function install_chat() {
+        var $input = $('#input');
+        $input.on('keypress', function (e) {
+            if (e.keyCode !== 13) return;
+            info( '<em>' + cookie.get('username') + '</em>: ' + $input.val() );
+            $input.val('');
+        });
+    }());
 });
