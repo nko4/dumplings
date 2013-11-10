@@ -97,7 +97,7 @@ var Game = (function () {
     this.wallCount += 1;
     this.maxCount -= this.wallCount;
     
-    _.times(parseInt(MAP_X * MAP_Y * 0.20), function () {
+    _.times(parseInt(MAP_X * MAP_Y * 0.30), function () {
 
       var x = Math.floor(Math.random() * MAP_X-1) + 1;
       var y = Math.floor(Math.random() * MAP_Y-1) + 1;
@@ -234,11 +234,9 @@ io.sockets.on('connection', function (socket) {
     if (_.isEmpty(settings)) {
 
 
-      console.log('getPlayer('+uuid+')');
 
       game.getPlayer(uuid, function (player) {
 
-        console.log('getPlayer ', player);
 
         socket.broadcast.emit('join',{ id: socket.id, ip: ip, name: player.name });
 
