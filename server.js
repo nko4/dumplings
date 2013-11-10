@@ -7,20 +7,8 @@ var isProduction = (process.env.NODE_ENV === 'production');
 var http = require('http');
 var port = (isProduction ? 80 : 8000);
 
-var Db = require('mongodb').Db,
-    MongoClient = require('mongodb').MongoClient,
-    Server = require('mongodb').Server,
-    ReplSetServers = require('mongodb').ReplSetServers,
-    ObjectID = require('mongodb').ObjectID,
-    Binary = require('mongodb').Binary,
-    GridStore = require('mongodb').GridStore,
-    Grid = require('mongodb').Grid,
-    Code = require('mongodb').Code,
-    BSON = require('mongodb').pure().BSON;
-
-
-// mongodb://nko:nko@paulo.mongohq.com:10006/nko
-
+var mongojs = require('mongojs');
+var db = mongojs("mongodb://nko:nko@paulo.mongohq.com:10006/nko",["statistics","players"]);
 
 var ejs = require('ejs');
 var express = require('express');
@@ -28,6 +16,14 @@ var _ = require('underscore');
 var app = express();
 var config = {};
 
+
+function incStats(name) {
+  var _inc = {}; _inc[name] = 1;
+  db.statistics.update({_id:"main"},{ $inc: _inc },{upsert:true})
+}
+
+
+incStats('server_starts')
 
 app.configure(function(){
   //app.set('port', process.env.PORT || 3000);
@@ -44,13 +40,6 @@ app.configure(function(){
 
 var globalUri = 'mongodb://nko:nko@paulo.mongohq.com:10006/nko';
 
-MongoClient.connect(globalUri, function(err, db) {
-  if(err) throw err;
-  db.collection('stats').update({ stats: 'here'}, {$set: {hi: 'there'}}, {w:1}, function(err) {
-    if (err) console.warn(err.message);
-    else console.log('successfully updated');
-  });
-});
 
 
 var Game = (function() {
@@ -227,17 +216,23 @@ io.sockets.on('connection', function (socket) {
     game.players[socket.id] = { x: 0, y: 0 };
     socket.emit('play',socket.id,0,0);
     socket.emit('map',game.map);
-    socket.broadcast.emit('join',{ id: socket.id, ip: ip })
+    socket.broadcast.emit('join',{ id: socket.id, ip: ip });
+    incStats('players_joins');
+    db.players.insert({ip:ip, joined:new Date()})
   });
 
   socket.on('mc',function(x,y,type) {
     game.set(x,y,type);
-    socket.broadcast.emit('mc',x,y,type)
+    socket.broadcast.emit('mc',x,y,type);
+    if (type == 2) {
+      incStats('bombs');
+    }
   });
 
   socket.on('kill',function(id) {
     delete game.players[id];
     socket.broadcast.emit('killed',{ id: id, by_id: socket.id })
+    incStats('players_kills')
   });
 
   socket.on('pm',function(x, y) {
@@ -280,6 +275,7 @@ setInterval(function() {
 
   // build ne brick
   if (new_brick) {
-    io.sockets.emit('mc',new_brick[0],new_brick[1],3); 
+    io.sockets.emit('mc',new_brick[0],new_brick[1],3);
+    incStats('powerups');
   }
 },1000 * 5);
