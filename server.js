@@ -23,7 +23,7 @@ function incStats(name) {
 }
 
 
-incStats('server_starts')
+incStats('server_starts');
 
 app.configure(function(){
   //app.set('port', process.env.PORT || 3000);
@@ -63,6 +63,7 @@ var Game = (function() {
     this.powerCount = 0;
     this.maxCount = MAP_X * MAP_Y;
     this.players = {};
+    this.uuids = {};
 
     for (var x = MAP_X; x >= 0; x--) {
       this.map[x] = [];
@@ -150,6 +151,14 @@ var Game = (function() {
     this.map[x][y] = value;
   };
 
+  Game.prototype.setId = function( uuid, socket_id ) {
+    this.uuids[uuid] = socket_id;
+  }
+
+  Game.prototype.getSocketIdBy = function( socket_id ) {
+    return _.invert(this.uuids)[socket_id];
+  }
+
   return Game;
 })();
 
@@ -183,17 +192,51 @@ app.get('/', function (reseq, res) {
     res.render('index', { isProduction: isProduction })
 });
 
+
+  function updatePlayer(uuid, settings) {
+    db.players.update(
+      { uuid: uuid }, // first
+      { $set: settings } ,
+      { upsert: true }
+    );
+  }
+
+
 io.sockets.on('connection', function (socket) {
 
   var ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address.address;
 
-  socket.on('play',function() {
-    game.players[socket.id] = { x: 0, y: 0 };
-    socket.emit('play',socket.id,0,0);
+  socket.on('update',function(uuid,settings) {
+    updatePlayer(uuid,settings)
+  });
+
+  socket.on('play',function(uuid, settings) {
     socket.emit('map',game.map);
-    socket.broadcast.emit('join',{ id: socket.id, ip: ip });
+
+    game.players[socket.id] = { x: 0, y: 0 };
+    
+    socket.emit('play',socket.id,0,0);
+
+    socket.broadcast.emit('join',{ id: socket.id, ip: ip, name: settings.name });
+
+
+    socket.emit('log','Player <em>' + settings.name + '</em> joined from <img src="http://www.geojoe.co.uk/api/flag/?ip=' + ip + '" alt="-" />')
+
+
     incStats('players_joins');
-    db.players.insert({ip:ip, joined:new Date()})
+
+    game.setId(uuid,socket.id);
+
+    updatePlayer(uuid, _.extend(
+      {
+
+        ip: ip,
+        joined: new Date()
+      
+      },settings)
+    );
+    
+
   });
 
   socket.on('mc',function(x,y,type) {
