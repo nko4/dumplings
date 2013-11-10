@@ -85,6 +85,7 @@
             });
             
             socket.on('join', function (player) {
+                app.getPlayer().setName(player.name);
             });
 
             socket.on('leave', function (player) {

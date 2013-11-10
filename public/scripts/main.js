@@ -46,7 +46,7 @@ require([
             $input.focus(); // on start you can write sth
         }());
 
-        (function () {
+        (function install_music_switcher() {
             var enabled = false;
             $("#music").on('click', function (e) {
                 if (enabled = !enabled) {
