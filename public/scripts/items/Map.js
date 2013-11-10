@@ -31,8 +31,8 @@ define([], function () {
                 case Map.SPACE:
                     if (this.map[x]) {
                         var resource = this.map[x][y];
-                        console.log('resource', resource);
                         if (resource) {
+                            console.log('resource', resource);
                             console.log('destroy ' + type + ' on map');
                             resource.destroy();
                         }
