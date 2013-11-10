@@ -43,32 +43,38 @@ var globalUri = 'mongodb://nko:nko@paulo.mongohq.com:10006/nko';
 
 
 var Game = (function() {
-  function Game () {
+
+  Game.SPACE = 0;
+  Game.WALL = 1;
+  Game.BRICK = 2;
+  Game.MIXTURE = 3;
+
+  function Game ( max_x, max_y ) {
     var self = this;
-    var map = [];
 
-    var MAP_X = 44;
-    var MAP_Y = 30;
-
-    this.MAP_X = MAP_X;
-    this.MAP_Y = MAP_Y;
+    var MAP_X = max_x;
+    var MAP_Y = max_y;
+    this.map = [];
+    this.MAP_X = max_x;
+    this.MAP_Y = max_y;
 
     this.brickCount = 0;
     this.wallCount = 0;
     this.powerCount = 0;
     this.maxCount = MAP_X * MAP_Y;
+    this.players = {};
 
     for (var x = MAP_X; x >= 0; x--) {
-      map[x] = [];
+      this.map[x] = [];
       for (var y = MAP_Y; y >= 0; y--) {
-        map[x].push(0);
+        this.map[x].push(0);
       }
     }
 
-    _.times(MAP_X, function (x) { map[x][0] = 1;      self.wallCount += 1; });
-    _.times(MAP_X, function (x) { map[x][MAP_Y] = 1;  self.wallCount += 1; });
-    _.times(MAP_Y, function (y) { map[0][y] = 1;      self.wallCount += 1; });
-    _.times(MAP_Y, function (y) { map[MAP_X][y] = 1;  self.wallCount += 1; });
+    _.times(MAP_X, function (x) { self.map[x][0]      = Game.WALL;      self.wallCount += 1; });
+    _.times(MAP_X, function (x) { self.map[x][MAP_Y]  = Game.WALL;  self.wallCount += 1; });
+    _.times(MAP_Y, function (y) { self.map[0][y]      = Game.WALL;      self.wallCount += 1; });
+    _.times(MAP_Y, function (y) { self.map[MAP_X][y]  = Game.WALL;  self.wallCount += 1; });
     _.times(MAP_X, function (n) {
       if (!n) return;
       if (n % 2) return;
@@ -79,44 +85,28 @@ var Game = (function() {
         if (m % 2) return;
         if (m === MAP_Y - 1) return;
 
-        map[n][m] = 1;
+        self.map[n][m] = Game.WALL;
         self.wallCount += 1;
       });
     });
 
-    map[MAP_X][MAP_Y] = 1; // hack :) - brawo Kamil!
+    this.map[MAP_X][MAP_Y] = 1; // hack :) - brawo Kamil!
 
     this.wallCount += 1;
     this.maxCount -= this.wallCount;
     
-    _.times(parseInt(MAP_X*MAP_Y*0.50),function() {
+    _.times(parseInt(MAP_X*MAP_Y*0.20),function() {
+
       var x = Math.floor(Math.random() * MAP_X-1) + 1;
       var y = Math.floor(Math.random() * MAP_Y-1) + 1;
 
-      if (map[x][y] == 0) {
-        map[x][y] = 2;
+      if (self.map[x][y] == 0) {
+        self.map[x][y] = 2;
         self.brickCount += 1;
       }
     });
 
-    _.times(parseInt(MAP_X*MAP_Y*0.05),function() {
-      var x = Math.floor(Math.random() * MAP_X-1) + 1;
-      var y = Math.floor(Math.random() * MAP_Y-1) + 1;
-
-      if (map[x][y] == 0) {
-        map[x][y] = 3;
-        self.powerCount += 1;
-      }
-    });
-
-    this.map = map;
-    this.players = {};
   }
-
-  Game.SPACE = 0;
-  Game.WALL = 1;
-  Game.BRICK = 2;
-  Game.MIXTURE = 3;
 
   Game.prototype.randNewBrick = function() {
     if ( this.brickCount < (this.maxCount/2) ) {
@@ -163,23 +153,8 @@ var Game = (function() {
   return Game;
 })();
 
-var game = new Game(1);
+var game = new Game(44,30);
 
-var Player = (function() {
-  function Player(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-
-  Player.prototype.getPosition = function() {
-    return {
-      x: this.x,
-      y: this.y
-    };
-  };
-
-  return Player;
-})();
 
 var move_block = false;
 
@@ -268,8 +243,15 @@ setInterval(function() {
   new_brick = game.randNewBrick();
 
   if (new_brick) {
-    io.sockets.emit('mc',new_brick[0],new_brick[1],2); 
+    io.sockets.emit('mc',new_brick[0],new_brick[1],2);
+    incStats('bricks');
   }
+
+},1000 * 5);
+
+setInterval(function() {
+
+  var new_brick;
 
   new_brick = game.randNewPower();
 
@@ -278,4 +260,6 @@ setInterval(function() {
     io.sockets.emit('mc',new_brick[0],new_brick[1],3);
     incStats('powerups');
   }
-},1000 * 5);
+
+},1000 * 10);
+
