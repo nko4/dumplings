@@ -142,7 +142,10 @@ define([
             });
         },
         updateMap: function (x, y, type) {
-            this.map.update(x, y, type);
+            // ignore, when others moving...
+            if (this.map) {
+                this.map.update(x, y, type);
+            }
         },
         _catchMixtureHandler: function (s, t) {
             var currentPlayer = this.list[s.id];
