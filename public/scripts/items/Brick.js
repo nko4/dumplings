@@ -20,11 +20,14 @@ define([
 
     Brick.prototype = {
         create: function () {
-            // this.tile = this.game.add.sprite(this.x, this.y, 'brick');
-            this.tile = this.bricks.create(this.x, this.y, 'brick');
+            this.tile = this.game.add.sprite(this.x, this.y, 'brick');
+            this.bricks.add(this.tile);
+            // this.tile = this.bricks.create(this.x, this.y, 'brick');
             this.tile.body.immovable = true;
         },
         destroy: function () {
+            if (!this.tile.alive) return;
+
             this.isDestroyed = true;
 
             var x = Math.round(this.x / Wall.WIDTH);
@@ -35,11 +38,13 @@ define([
 
             setTimeout(function () {
                 this.tile.animations.stop('destroy');
+                this.tile.animations.destroy();
+
                 setTimeout(function () {
-                    this.tile.kill();
+                    this.tile.destroy();
                     broadcasting(x, y, 0);
-                }.bind(this), 200);
-            }.bind(this), 300);
+                }.bind(this), 100);
+            }.bind(this), 200);
         }
     };
     return Brick;
