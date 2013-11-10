@@ -136,13 +136,8 @@ var Game = (function () {
 
   }
 
-<<<<<<< HEAD
   Game.prototype.randNewMixture = function() {
     if ( this.powerCount < 10 ) {
-=======
-  Game.prototype.randNewMixture = function () {
-    if ( this.powerCount < (this.maxCount/5) ) {
->>>>>>> b11722f4106cb0b53636df1010d0680b0c596cba
       var x = Math.floor(Math.random() * this.MAP_X-1) + 1;
       var y = Math.floor(Math.random() * this.MAP_Y-1) + 1;
 
@@ -329,7 +324,6 @@ setInterval(function () {
   var new_brick = game.randNewBrick();
 
   if (new_brick) {
-    io.sockets.emit('mc', new_brick[0], new_brick[1], Game.BRICK);
     incStats('bricks');
   }
 }, Game.REVIVAL_BRICK);
