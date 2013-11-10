@@ -239,7 +239,6 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('play', function (uuid, settings) {
-
     if (_.isEmpty(settings)) {
 
       game.getPlayer(uuid, function (player) {
@@ -255,14 +254,11 @@ io.sockets.on('connection', function (socket) {
         socket.emit('info','Welcome <em>' + settings.name + '</em>');
         socket.broadcast.emit('info','Player <em>' + settings.name + '</em> joined from <img src="http://www.geojoe.co.uk/api/flag/?ip=' + ip + '" alt="-" />')
 
-
-        updatePlayer(uuid, _.extend(
-          {
+        updatePlayer(uuid, _.extend({
             ip: ip,
             joined: new Date()
           
-          },settings)
-        );
+        }, settings));
     }
 
     socket.emit('map',game.map);
@@ -277,7 +273,6 @@ io.sockets.on('connection', function (socket) {
     incStats('players_joins');
 
     game.setId(uuid,socket.id);
-    
   });
 
   socket.on('mc', function (x,y,type) {
@@ -309,15 +304,12 @@ io.sockets.on('connection', function (socket) {
     delete game.players[socket.id];
 
     game.getPlayer(game.getSocketIdBy(socket.id), function (player) {
-      socket.broadcast.emit('leave',{ id: socket.id });
+      socket.broadcast.emit('leave', { id: socket.id });
       if (player && player.name) {
-        socket.broadcast.emit('info','<em>'+player.name+'</em> leave');
+        socket.broadcast.emit('info', 'Player <em>' + player.name + '</em> leave');
       }
     });   
-
   });
-
-
 });
 
 setInterval(function () {
