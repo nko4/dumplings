@@ -144,8 +144,6 @@ define([
             // ignore, when others moving...
             if (this.map) {
                 this.map.update(x, y, type);
-            } else {
-                console.warn('...can\'t get map');
             }
         },
         _catchMixtureHandler: function (s, t) {
