@@ -12,20 +12,23 @@ define([
         this.points = [];
         this.callback = settings.callback;
 
-        this.create();
+        this.create(4, 0xFF0000, function () {
+            this.callback(this.points);
+        }.bind(this));
+        this.create(2, 0xFFE303);
     };
+
     Laser.prototype = {
-        create: function () {
-            var self = this;
+        create: function (size, color, callback) {
             var x = this.x;
             var y = this.y;
             var lines = [];
 
             if (y % 2 === 1) {
-                lines.push(this._lineX(x, y, this.power));
+                lines.push(this._lineX(x, y, this.power, size, color));
             }
             if (x % 2 === 1) {
-                lines.push(this._lineY(x, y, this.power));
+                lines.push(this._lineY(x, y, this.power, size, color));
             }
 
             setTimeout(function () {
@@ -33,16 +36,18 @@ define([
                     line.destroy();
                 });
 
-                self.callback(self.points);
+                if (typeof callback === "function") {
+                    callback();
+                }
             }, 200);
         },
-        _lineX: function (x, y, power) {
+        _lineX: function (x, y, power, size, color) {
             var self = this;
             var graphics = this.game.add.graphics((x * Wall.WIDTH) - (power * Wall.WIDTH), y * Wall.HEIGHT + Wall.HEIGHT / 2);
 
             // set a fill and line style
-            graphics.beginFill(0xFF0000);
-            graphics.lineStyle(10, 0xFF0000, 1);
+            graphics.beginFill(color);
+            graphics.lineStyle(size, color, 1);
 
             // draw a shape
             graphics.moveTo((x * Wall.WIDTH) - (power * Wall.WIDTH), y * Wall.HEIGHT + Wall.HEIGHT / 2);
@@ -57,13 +62,13 @@ define([
             });
             return graphics;
         },
-        _lineY: function (x, y, power) {
+        _lineY: function (x, y, power, size, color) {
             var self = this;
             var graphics = this.game.add.graphics((x * Wall.WIDTH) + Wall.WIDTH / 2, (y * Wall.HEIGHT) - (power * Wall.HEIGHT));
 
             // set a fill and line style
-            graphics.beginFill(0xFF0000);
-            graphics.lineStyle(10, 0xFF0000, 1);
+            graphics.beginFill(color);
+            graphics.lineStyle(size, color, 1);
 
             // draw a shape
             graphics.moveTo((x * Wall.WIDTH) + Wall.WIDTH / 2, (y * Wall.HEIGHT) - (power * Wall.WIDTH));
