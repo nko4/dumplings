@@ -7,8 +7,6 @@ define([
     var label;
 
     var Player = function (settings) {
-        // log('* new Player="' + settings.id + '"');
-
         this.game = settings.game;
         this.players = settings.players;
         var random = this.random();

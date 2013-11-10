@@ -4,7 +4,6 @@ define([
     'use strict';
 
     var Bomb = function (settings) {
-        // log('* new Bomb');
         this.game = settings.game;
         this.bombs = settings.bombs;
         this.power = settings.power || 1;
