@@ -47,5 +47,18 @@ require([
             });
             $input.focus(); // on start you can write sth
         }());
+
+        (function () {
+            var enabled = false;
+            $("#music").on('click', function () {
+                if (enabled = !enabled) {
+                    app.getMusic().pause();
+                    $(this).addClass('disabled');
+                } else {
+                    app.getMusic().resume();
+                    $(this).removeClass('disabled');
+                }
+            });
+        }());
     });
 });

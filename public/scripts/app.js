@@ -32,6 +32,7 @@ define([
     };
 
     var player;
+    var music;
     var opponent;
     var block = false;
     var emptyHandler = function () {};
@@ -55,7 +56,7 @@ define([
             this.game.load.spritesheet('player', 'assets/pics/fighter-blue.png', 35, 35, 4);
             this.game.load.spritesheet('special', 'assets/pics/fighter-white.png', 35, 35, 4);
 
-            this.game.load.audio('sound', ['assets/audio/sound.wav', 'assets/audio/sound.ogg']);
+            this.game.load.audio('music', ['assets/audio/sound.wav', 'assets/audio/sound.mp3', 'assets/audio/sound.ogg']);
         },
         create: function () {
             this.bricks = this.game.add.group();
@@ -64,8 +65,8 @@ define([
             this.players = this.game.add.group();
             this.mixtures = this.game.add.group();
 
-            var sound = this.game.add.audio('sound');
-            sound.play(null, null, 1, true);
+            music = this.game.add.audio('music');
+            music.play(null, null, 1, true);
 
             this.game.stage.backgroundColor = '#0c0c0c'; // color of world
 
@@ -269,6 +270,9 @@ define([
                 x: x * Wall.WIDTH,
                 y: y * Wall.HEIGHT
             });
+        },
+        getMusic: function () {
+            return music;
         }
     };
 
