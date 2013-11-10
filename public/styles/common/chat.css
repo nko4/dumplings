@@ -7,9 +7,22 @@
     font-size: 13px;
 }
 
+#input {
+    height: 20px;
+    display: block;
+    width: 100%;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 0 0 0 10px;
+}
+#input:focus {
+    -moz-outline: none;
+    outline: none;
+}
+
+
 #messages {
-    float: left;
-    clear: both;
     overflow: auto;
     overflow-x: hidden;
     height: 100px;
@@ -28,18 +41,4 @@
 
 #messages p mark em {
     color: #ffff4f;
-}
-
-#input {
-    height: 20px;
-    display: block;
-    width: 100%;
-    border: none;
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
-    padding: 0 0 0 10px;
-}
-#input:focus {
-    -moz-outline: none;
-    outline: none;
 }
