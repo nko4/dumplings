@@ -32,8 +32,6 @@ define([], function () {
                     if (this.map[x]) {
                         var resource = this.map[x][y];
                         if (resource) {
-                            console.log('resource', resource);
-                            console.log('destroy ' + type + ' on map');
                             resource.destroy();
                         }
                     }
