@@ -234,11 +234,9 @@ io.sockets.on('connection', function (socket) {
     if (_.isEmpty(settings)) {
 
 
-      console.log('getPlayer('+uuid+')');
 
       game.getPlayer(uuid, function (player) {
 
-        console.log('getPlayer ', player);
 
         socket.broadcast.emit('join',{ id: socket.id, ip: ip, name: player.name });
 
