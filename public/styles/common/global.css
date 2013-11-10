@@ -17,6 +17,8 @@
     background: rgba(0, 0, 0, 0.9);
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+    font-size: 13px;
+    font-family: "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif;
 }
 
 #messages {
@@ -24,12 +26,9 @@
     height: 96px;
 }
 
-#input,
 #messages p {
     padding: 2px 10px;
-    font-family: "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif;
     color: #777777;
-    font-size: 13px;
 }
 
 #messages p mark {
@@ -50,5 +49,8 @@
     color: #fff;
 }
 #input:focus {
-    outline: 1px solid #696969;
+    -moz-outline: none;
+    outline: none;
+    border: 1px solid #696969;
+    border-top: none;
 }

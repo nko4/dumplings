@@ -43,15 +43,17 @@ define([
             });
         },
         preload: function () {
-            this.game.load.spritesheet('bomb', 'assets/bomb.png', 50, 50, 3);
-            this.game.load.spritesheet('wall', 'assets/wall.png', 50, 50, 1);
-            this.game.load.spritesheet('brick', 'assets/brick.png', 50, 50, 4);
-            this.game.load.spritesheet('mixture', 'assets/mixture.png', 50, 50, 3);
+            this.game.load.spritesheet('bomb', 'assets/pics/bomb.png', 50, 50, 3);
+            this.game.load.spritesheet('wall', 'assets/pics/wall.png', 50, 50, 1);
+            this.game.load.spritesheet('brick', 'assets/pics/brick.png', 50, 50, 4);
+            this.game.load.spritesheet('mixture', 'assets/pics/mixture.png', 50, 50, 3);
 
-            this.game.load.spritesheet('ghost', 'assets/ghost.png', 35, 35, 4);
-            this.game.load.spritesheet('opponent', 'assets/fighter-yellow.png', 35, 35, 4);
-            this.game.load.spritesheet('player', 'assets/fighter-blue.png', 35, 35, 4);
-            this.game.load.spritesheet('special', 'assets/fighter-white.png', 35, 35, 4);
+            this.game.load.spritesheet('ghost', 'assets/pics/ghost.png', 35, 35, 4);
+            this.game.load.spritesheet('opponent', 'assets/pics/fighter-yellow.png', 35, 35, 4);
+            this.game.load.spritesheet('player', 'assets/pics/fighter-blue.png', 35, 35, 4);
+            this.game.load.spritesheet('special', 'assets/pics/fighter-white.png', 35, 35, 4);
+
+            this.game.load.audio('sound', ['assets/audio/sound.wav', 'assets/audio/sound.ogg']);
         },
         create: function () {
             this.bricks = this.game.add.group();
@@ -59,6 +61,9 @@ define([
             this.bombs = this.game.add.group();
             this.players = this.game.add.group();
             this.mixtures = this.game.add.group();
+
+            var sound = this.game.add.audio('sound');
+            sound.play(null, null, 1, true);
 
             this.game.stage.backgroundColor = '#0c0c0c'; // color of world
 
