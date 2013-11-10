@@ -33,7 +33,7 @@ define([
             var y = Math.round(this.y / Wall.HEIGHT);
 
             this.tile.animations.add('destroy');
-            this.tile.animations.play('destroy', 5, true);
+            this.tile.animations.play('destroy', 10, true);
 
             setTimeout(function () {
                 this.tile.animations.stop('destroy');

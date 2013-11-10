@@ -78,6 +78,7 @@ define([
             this.tile.animations.destroy();
 
             this.tile.destroy();
+            this.label.destroy();
             killPlayer(this.id);
         },
         setName: function (name) {
