@@ -13,6 +13,7 @@ var db = mongojs("mongodb://nko:nko@ds053428.mongolab.com:53428/nko13",["statist
 var ejs = require('ejs');
 var express = require('express');
 var _ = require('underscore');
+var _s = require('underscore.string');
 var app = express();
 var config = {};
 
@@ -122,15 +123,13 @@ var Game = (function () {
     return false;
   };
 
-
   Game.prototype.getPlayer = function (uuid,cb) {
     db.players.findOne({
       uuid: uuid
     }, function (err, doc) {
       cb(doc)
     });
-
-  }
+  };
 
   Game.prototype.randNewMixture = function() {
     if ( this.powerCount < 50 ) {
@@ -210,9 +209,6 @@ app.get('/', function (reseq, res) {
 
 
 function updatePlayer(uuid, settings) {
-
-  console.log("update player "+uuid)
-
   db.players.update(
     { uuid: uuid }, // first
     { $set: settings } ,
@@ -230,7 +226,7 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('say', function (uuid,message) {
     game.getPlayer(uuid, function (player) {
-        io.sockets.emit('warn', '<em>' + player.name + '</em>: ' +  message);
+        io.sockets.emit('warn', '<em>' + player.name + '</em>: ' +  _s.stripTags(message));
     });
   });
 
