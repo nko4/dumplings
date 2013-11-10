@@ -130,7 +130,7 @@ var Game = (function() {
 
     db.players.findOne({
       uuid:uuid
-    }, function(err, docs) {
+    }, function(err, doc) {
       cb(doc)
     });
 
@@ -214,17 +214,14 @@ app.get('/', function (reseq, res) {
 
 
 function updatePlayer(uuid, settings) {
+
+  console.log("update player "+uuid)
+
   db.players.update(
     { uuid: uuid }, // first
     { $set: settings } ,
     { upsert: true }
   );
-
-  if (game.uuids_params[uuid] != {}) {
-    game.uuids_params[uuid] = {};
-  }
-
-  game.uuids_params[uuid] = _.extend(game.uuids_params[uuid],settings);
 }
 
 
@@ -246,10 +243,10 @@ io.sockets.on('connection', function (socket) {
     if (_.isEmpty(settings)) {
 
       game.getPlayer(uuid,function(player) {
-        socket.broadcast.emit('join',{ id: socket.id, ip: ip, name: settings.name });
+        socket.broadcast.emit('join',{ id: socket.id, ip: ip, name: player.name });
 
-        socket.emit('info','Welcome <em>'+settings.name+'</em>')
-        socket.broadcast.emit('info','Player <em>' + settings.name + '</em> joined from <img src="http://www.geojoe.co.uk/api/flag/?ip=' + ip + '" alt="-" />')
+        socket.emit('info','Welcome <em>'+player.name+'</em>')
+        socket.broadcast.emit('info','Player <em>' + player.name + '</em> joined from <img src="http://www.geojoe.co.uk/api/flag/?ip=' + ip + '" alt="-" />')
       });
 
     } else {
