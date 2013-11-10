@@ -17,6 +17,7 @@ define([
         this.name = settings.name;
         this.sprite = settings.sprite;
         this.power = settings.power;
+        this.numOfBombs = 5;
 
         this.create();
     };

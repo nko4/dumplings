@@ -263,6 +263,8 @@ define([
 
                 if (x === px && y === py) {
                     opponent.destroy();
+                    killPlayer(opponent.id);
+                    server.update(cookie.get('uuid'), { numOfBombs: ++player.numOfBombs });
                 }
             });
         },
