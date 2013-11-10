@@ -110,12 +110,8 @@
                         obj = app.getPlayerById(player.id);
                     } catch (err) {
                         obj = app.addOpponent(player.id);
-                        // obj.setName(player.n);
+                        obj.setName(player.n);
                     }
-
-
-
-
 
                     if (currentPlayer.id != player.id) {
                         obj.move(player.x,player.y);
