@@ -26,7 +26,7 @@ define([
         this.cursors = null; // up, down, left, right
         this.map = null; // Map
 
-        this.COOKIE = 'dumplings_2';
+        this.COOKIE = 'dumplings_3';
 
         this.initialize();
     };
@@ -201,8 +201,11 @@ define([
 
                 if (x === px && y === py) {
                     opponent.destroy();
+
+                    var bomb = ++player.bombsMax;
+                    if (bomb > Player.MAX_BOMB) bomb = Player.MAX_BOMB;
+                    server.update(cookie.get(app.COOKIE), { 'bombsMax': bomb });
                 }
-                server.update(cookie.get(app.COOKIE), { 'bombsMax': ++player.bombsMax });
             });
         },
         tryKillPlayer: function (x, y) {
@@ -211,6 +214,10 @@ define([
 
             if (px === x && py === y) {
                 player.destroy();
+                var bomb = --player.bombsMax;
+                if (bomb < Player.MIN_BOMB) bomb = Player.MIN_BOMB;
+                server.update(cookie.get(app.COOKIE), { 'bombsMax': bomb });
+
                 alert('You are dead.');
                 window.location.reload(); // after death reload game
             }

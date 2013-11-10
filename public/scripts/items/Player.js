@@ -18,12 +18,15 @@ define([
         this.sprite = settings.sprite;
         this.power = settings.power;
         this.bombsNum = 0; // current planting bombs
-        this.bombsMax = 2; // max number of bombs what user can plant
+        this.bombsMax = Player.MIN_BOMB; // max number of bombs what user can plant
 
         this.create();
     };
     Player.WIDTH = 30;
     Player.HEIGHT = 45;
+
+    Player.MIN_BOMB = 2;
+    Player.MAX_BOMB = 50;
 
     Player.prototype = {
         create: function () {
