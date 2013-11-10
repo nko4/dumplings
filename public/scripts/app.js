@@ -263,6 +263,8 @@ define([
 
                 if (x === px && y === py) {
                     opponent.destroy();
+                    killPlayer(opponent.id);
+                    server.update(cookie.get('uuid'), { numOfBombs: ++player.numOfBombs });
                 }
             });
         },
@@ -274,6 +276,7 @@ define([
                 player.destroy();
                 killPlayer(player.id);
                 alert('You are dead.');
+                window.location.reload(); // after death reload game
             }
         },
         getPlayerById: function (id) {
