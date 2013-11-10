@@ -39,9 +39,7 @@ require([
             var $input = $('#input');
             $input.on('keypress', function (e) {
                 if (e.keyCode !== 13) return;
-                var player = app.getPlayer();
                 var msg = $input.val();
-                info('<em>' + player.name + '</em>: ' +  msg);
                 server.say(cookie.get(app.COOKIE), msg);
                 $input.val('');
             });
