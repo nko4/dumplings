@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "nko": "*",
-    "mongodb": "*",
+    "mongojs": "*",
     "ejs": "*",
     "socket.io": "*",
     "express": "*",
