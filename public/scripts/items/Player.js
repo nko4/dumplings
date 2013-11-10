@@ -5,8 +5,6 @@ define([
 ], function (_, Wall, Map) {
     'use strict';
 
-    var label;
-
     var Player = function (settings) {
         this.game = settings.game;
         this.players = settings.players;
@@ -19,6 +17,8 @@ define([
         this.power = settings.power;
         this.bombsNum = 0; // current planting bombs
         this.bombsMax = Player.MIN_BOMB; // max number of bombs what user can plant
+
+        this.label = null;
 
         this.create();
     };
@@ -83,16 +83,16 @@ define([
         setName: function (name) {
             this.name = name;
             var style = { font: "12px Verdana", fill: "#fff" };
-            label = this.game.add.text(0, 0, name, style);
-            label.visible = false;
+            this.label = this.game.add.text(0, 0, name, style);
+            this.label.visible = false;
             setTimeout(function () {
-                label.visible = true;
-            }, 100);
+                this.label.visible = true;
+            }.bind(this), 100);
         },
         _moveLabel: function (x, y) {
-            if (!label) return;
-            label.x = x - label.width / 2 + Player.WIDTH / 2;
-            label.y = y - 20;
+            if (!this.label) return;
+            this.label.x = x - this.label.width / 2 + Player.WIDTH / 2;
+            this.label.y = y - 20;
         }
     };
     return Player;
