@@ -338,7 +338,7 @@ io.sockets.on('connection', function (socket) {
 
 
 setInterval(function () {
-  db.players.find({ points : { $gt : 1 }, name : { $exists : true } },{name :1 ,points :1}).sort({points:-1}).toArray(function(err, ranking) {
+  db.players.find({ points : { $gt : 1 }, name : { $exists : true } },{name :1 ,points :1}).sort({points:-1}).limit(10).toArray(function(err, ranking) {
     if (!_.isEmpty(ranking)) {
       io.sockets.emit('ranking', ranking);    
     }
