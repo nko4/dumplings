@@ -42,14 +42,22 @@
         exports.killPlayer = function (id) {
             socket.emit('kill', id);
         };
+        
+        exports.server = {
 
-        exports.updatePlayer = function (id, settings) {
-            var player = app.getPlayerById(id);
-            // TODO: aktualizacja playera o id i rozgloszenie innym tej zmiany
-        };
+            update: function(uuid, settings) {
+                socket.emit('update', uuid, settings);
+            },
+
+            say: function(uuid,message) {
+                socket.emit('say', uuid, message);
+            }
+
+        }
 
         exports.connect_to_server = function () {
-            socket.emit('play');
+
+            socket.emit('play', 'UUID');
 
             socket.on('mc',function(x,y,type) {
                 app.updateMap(x, y, type);
