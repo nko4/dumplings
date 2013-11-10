@@ -1,9 +1,8 @@
 define([], function () {
     'use strict';
 
-    var Map = function (matrix, player) {
+    var Map = function (matrix) {
         this.matrix = matrix;
-        this.player = player;
         this.map = [];
 
         this.create();
@@ -35,21 +34,10 @@ define([], function () {
                     }
                     break;
 
-                case Map.WALL:
-                    tile = app.buildWall(x, y);
-                    break;
-
-                case Map.BRICK:
-                    tile = app.buildBrick(x, y);
-                    break;
-
-                case Map.MIXTURE:
-                    tile = app.buildMixture(x, y);
-                    break;
-
-                case Map.BOMB:
-                    tile = app.buildBomb(x, y, this.player);
-                    break;
+                case Map.WALL: tile = app.buildWall(x, y); break;
+                case Map.BRICK: tile = app.buildBrick(x, y); break;
+                case Map.MIXTURE: tile = app.buildMixture(x, y); break;
+                case Map.BOMB: tile = app.buildBomb(x, y); break;
 
                 default:
                     throw 'unexpected type: ' + type;

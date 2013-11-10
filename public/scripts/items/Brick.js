@@ -1,7 +1,8 @@
 define([
     'underscore',
-    'items/Wall'
-], function (_, Wall) {
+    'items/Wall',
+    'items/Map'
+], function (_, Wall, Map) {
     'use strict';
 
     var Brick = function (settings) {
@@ -40,7 +41,7 @@ define([
 
                 setTimeout(function () {
                     this.tile.destroy();
-                    broadcasting(x, y, 0);
+                    broadcasting(x, y, Map.SPACE);
                 }.bind(this), 100);
             }.bind(this), 200);
         }
