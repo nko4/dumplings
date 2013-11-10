@@ -242,7 +242,7 @@ io.sockets.on('connection', function (socket) {
 
         socket.broadcast.emit('join',{ id: socket.id, ip: ip, name: player.name });
 
-        socket.emit('info','Welcome <em>' + player.name + '</em>');
+        socket.emit('info','Welcome again <em>' + player.name + '</em>');
         socket.broadcast.emit('info','Player <em>' + player.name + '</em> joined from <img src="http://www.geojoe.co.uk/api/flag/?ip=' + ip + '" alt="-" />');
 
         game.players[socket.id] = { n: player.name };
@@ -348,8 +348,6 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('pm', function (x, y) {
 
-
-    console.log("\n\n\ ",game.players,"\n\n");
 
     if (!game.players[socket.id]) {
       game.players[socket.id] = {};
