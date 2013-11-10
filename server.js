@@ -307,8 +307,15 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('disconnect', function() {
     delete game.players[socket.id];
-    socket.broadcast.emit('leave',{ id: socket.id })
+
+    game.getPlayer(game.getSocketIdBy(socket.id), function(player) {
+      socket.broadcast.emit('leave',{ id: socket.id });
+      socket.broadcast.emit('info','<em>'+player.name+'</em> leave');
+    });   
+
   });
+
+
 });
 
 setInterval(function() {

@@ -76,16 +76,11 @@
                 info('Welcome to yet not named project by <em>dumplings</em>!');
             });
             socket.on('join', function (player) {
-                currentPlayer.setName(player.name);
-                var msg = 'Player ' + player.name + ' joined from ' + player.ip;
                 log(msg, 1);
-                info(msg);
             });
             socket.on('leave', function (player) {
                 app.terminateOpponent(player.id);
-                var msg = 'Opponent "' + player.name + '" terminated';
                 log(msg);
-                info(msg);
             });
 
             socket.on('map', function(map) {
