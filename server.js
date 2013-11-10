@@ -8,7 +8,7 @@ var http = require('http');
 var port = (isProduction ? 80 : 8000);
 
 var mongojs = require('mongojs');
-var db = mongojs("mongodb://nko:nko@paulo.mongohq.com:10006/nko",["statistics","players"]);
+var db = mongojs("mongodb://nko:nko@ds053428.mongolab.com:53428/nko13",["statistics","players"]);
 
 var ejs = require('ejs');
 var express = require('express');
@@ -37,9 +37,6 @@ app.configure(function (){
   app.use(express.static(__dirname + '/public'));
   // app.use(require('connect-assets')());
 });
-
-var globalUri = 'mongodb://nko:nko@paulo.mongohq.com:10006/nko';
-
 
 
 var Game = (function () {
@@ -127,9 +124,8 @@ var Game = (function () {
 
 
   Game.prototype.getPlayer = function (uuid,cb) {
-
     db.players.findOne({
-      uuid:uuid
+      uuid: uuid
     }, function (err, doc) {
       cb(doc)
     });
@@ -241,11 +237,35 @@ io.sockets.on('connection', function (socket) {
   socket.on('play', function (uuid, settings) {
     if (_.isEmpty(settings)) {
 
+
+      console.log('getPlayer('+uuid+')');
+
       game.getPlayer(uuid, function (player) {
+
+        console.log('getPlayer ', player);
+
         socket.broadcast.emit('join',{ id: socket.id, ip: ip, name: player.name });
 
         socket.emit('info','Welcome <em>' + player.name + '</em>');
-        socket.broadcast.emit('info','Player <em>' + player.name + '</em> joined from <img src="http://www.geojoe.co.uk/api/flag/?ip=' + ip + '" alt="-" />')
+        socket.broadcast.emit('info','Player <em>' + player.name + '</em> joined from <img src="http://www.geojoe.co.uk/api/flag/?ip=' + ip + '" alt="-" />');
+
+        game.players[socket.id] = { n: player.name };
+
+
+    var emptyTile = game.getEmptyTile();
+    socket.emit('play', socket.id, emptyTile.x, emptyTile.y, player.name);
+
+    
+
+    if (!game.players[socket.id]) {
+      game.players[socket.id] = {};
+    }
+
+
+    game.players[socket.id] = _.extend(game.players[socket.id],{ x: emptyTile.x, y: emptyTile.y })
+
+
+
       });
 
     } else {
@@ -259,15 +279,30 @@ io.sockets.on('connection', function (socket) {
             joined: new Date()
           
         }, settings));
+
+        game.players[socket.id] = { n: settings.name };
+
+
+    var emptyTile = game.getEmptyTile();
+    socket.emit('play', socket.id, emptyTile.x, emptyTile.y, settings.name);
+
+
+
+    if (!game.players[socket.id]) {
+      game.players[socket.id] = {};
+    }
+
+
+    game.players[socket.id] = _.extend(game.players[socket.id],{ x: emptyTile.x, y: emptyTile.y })
+
+
     }
 
     socket.emit('map',game.map);
 
-    game.players[socket.id] = { x: 0, y: 0 };
+    
     
 
-    var emptyTile = game.getEmptyTile();
-    socket.emit('play', socket.id, emptyTile.x, emptyTile.y);
     
 
     incStats('players_joins');
@@ -315,7 +350,16 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('pm', function (x, y) {
-    game.players[socket.id] = { x: x, y: y };
+
+
+    console.log("\n\n\ ",game.players,"\n\n");
+
+    if (!game.players[socket.id]) {
+      game.players[socket.id] = {};
+    }
+
+    game.players[socket.id] = _.extend( game.players[socket.id], { x: x, y: y } );
+    
     var temp_players = [];
 
     _.each(game.players, function (v, k) {
@@ -351,34 +395,34 @@ setInterval(function () {
 
 
 
-setInterval(function () {
-  var new_brick = game.randNewBrick();
+// setInterval(function () {
+//   var new_brick = game.randNewBrick();
 
-  if (new_brick) {
-    io.sockets.emit('mc', new_brick[0], new_brick[1], Game.BRICK);
-    incStats('bricks');
-  }
+//   if (new_brick) {
+//     io.sockets.emit('mc', new_brick[0], new_brick[1], Game.BRICK);
+//     incStats('bricks');
+//   }
   
-}, Game.REVIVAL_BRICK);
+// }, Game.REVIVAL_BRICK);
 
-setInterval(function () {
-  var new_mixture = game.randNewMixture();
+// setInterval(function () {
+//   var new_mixture = game.randNewMixture();
 
-  // build ne brick
-  if (new_mixture) {
-    io.sockets.emit('mc', new_mixture[0], new_mixture[1], Game.MIXTURE);
-
-
-    setTimeout(function() {
-
-      if (game.map[new_mixture[0]][new_mixture[1]] == Game.MIXTURE) {
-        io.sockets.emit('mc', new_mixture[0], new_mixture[1], Game.SPACE);        
-      }
-
-    }, 15 * 1000);
+//   // build ne brick
+//   if (new_mixture) {
+//     io.sockets.emit('mc', new_mixture[0], new_mixture[1], Game.MIXTURE);
 
 
-    incStats('powerups');
-  }
-}, Game.REVIVAL_MIXTURE);
+//     setTimeout(function() {
+
+//       if (game.map[new_mixture[0]][new_mixture[1]] == Game.MIXTURE) {
+//         io.sockets.emit('mc', new_mixture[0], new_mixture[1], Game.SPACE);        
+//       }
+
+//     }, 15 * 1000);
+
+
+//     incStats('powerups');
+//   }
+// }, Game.REVIVAL_MIXTURE);
 

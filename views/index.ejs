@@ -78,14 +78,15 @@
                 warn(message);
             });
 
-            socket.on('play', function (id, x, y) {
+            socket.on('play', function (id, x, y, name) {
     			currentPlayer = app.addPlayer(id, x, y);
+                currentPlayer.setName(name);
     			socket.emit('pm', currentPlayer.tile.x , currentPlayer.tile.y);
                 info('Welcome to yet not named project by <em>dumplings</em>!');
             });
             
             socket.on('join', function (player) {
-                app.getPlayer().setName(player.name);
+                // app.getPlayer().setName(player.name);
             });
 
             socket.on('killed', function(killed) {
@@ -109,7 +110,12 @@
                         obj = app.getPlayerById(player.id);
                     } catch (err) {
                         obj = app.addOpponent(player.id);
+                        // obj.setName(player.n);
                     }
+
+
+
+
 
                     if (currentPlayer.id != player.id) {
                         obj.move(player.x,player.y);
