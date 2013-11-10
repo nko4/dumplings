@@ -300,15 +300,17 @@ io.sockets.on('connection', function (socket) {
     socket.broadcast.emit('killed',{ id: id, by_id: socket.id });
     incStats('players_kills');
 
-    game.getPlayer(game.getSocketIdBy(socket.id), function (player) {
+    if (id != socket.id) {
+      game.getPlayer(game.getSocketIdBy(socket.id), function (player) {
 
-        db.players.update(
-          { uuid: player.uuid },
-          { $inc: { points: 100 } } ,
-          { upsert: true }
-        );
+          db.players.update(
+            { uuid: player.uuid },
+            { $inc: { points: 100 } } ,
+            { upsert: true }
+          );
 
-    });
+      });
+    }
 
   });
 
