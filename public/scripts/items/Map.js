@@ -32,8 +32,13 @@ define([], function () {
             var tile;
             switch (type) {
                 case Map.SPACE:
-                    if (this.map[x] && this.map[x][y]) {
-                        this.map[x][y].destroy();
+                    if (this.map[x]) {
+                        var resource = this.map[x][y];
+                        console.log('resource', resource);
+                        if (resource) {
+                            console.log('destroy ' + type + ' on map');
+                            resource.destroy();
+                        }
                     }
                     break;
 
