@@ -39,7 +39,7 @@ define([
 
     App.prototype = {
         initialize: function () {
-            this.game = new Phaser.Game(window.innerWidth, window.innerHeight - $('#chat').height(), Phaser.CANVAS, 'phaser-example', {
+            this.game = new Phaser.Game(window.innerWidth, window.innerHeight - $('#footer').height(), Phaser.CANVAS, 'phaser-example', {
                 preload: this.preload.bind(this),
                 create: this.create.bind(this),
                 update: this.update.bind(this)

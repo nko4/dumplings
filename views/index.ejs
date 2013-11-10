@@ -63,7 +63,7 @@
             }());
 
             socket.on('ranking', function(ranking) {
-                console.log(ranking);
+                updateRanking(ranking);
             });
 
             socket.on('mc',function(x, y, type) {
@@ -115,9 +115,13 @@
     <iframe src="http://nodeknockout.com/iframe/dumplings" frameborder=0 scrolling=no allowtransparency=true width=115 height=25></iframe>
 </div>
 
-<div id="chat">
-    <input id="input" type="text" placeholder="Enter message..." />
-    <div id="messages"></div>
-</div>
+<div id="footer">
+    <div id="chat">
+        <input id="input" type="text" placeholder="Enter message..." />
+        <div id="messages"></div>
+    </div>
 
-<a id="music" href="#">Music on/off</a>
+    <a id="music" href="#">Music on/off</a>
+
+    <div id="ranking"></div>
+</div>

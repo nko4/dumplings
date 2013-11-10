@@ -1,0 +1,20 @@
+#music {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: rgba(80, 234, 0, 0.9);
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+    font-family: monospace;
+    cursor: pointer;
+}
+#music:before {
+    content: "+ "
+}
+#music.disabled {
+    background: rgba(80, 69, 234, 0.9);
+}
+#music.disabled:before {
+    content: "- "
+}
