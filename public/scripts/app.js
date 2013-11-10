@@ -8,14 +8,14 @@ define([
     'items/Wall',
     'items/Bomb',
     'items/Brick',
-    'items/Mixture'
-], function (_, $, cookie, sha1, Phaser, Player, Wall, Bomb, Brick, Mixture) {
+    'items/Mixture',
+    'items/Map'
+], function (_, $, cookie, sha1, Phaser, Player, Wall, Bomb, Brick, Mixture, Map) {
     'use strict';
 
     var App = function (callback) {
         this._callback = callback;
 
-        this.cursors = null;
         this.bricks = null; // collection of bricks
         this.walls = null; // collection of walls
         this.bombs = null; // collection of bombs
@@ -23,15 +23,11 @@ define([
         this.mixtures = null; // collection of mixtures
 
         this.list = {};
-        this.map = [];
+        this.cursors = null; // up, down, left, right
+        this.map = null; // Map
 
         this.initialize();
     };
-
-    App.SPACE = 0;
-    App.WALL = 1;
-    App.BRICK = 2;
-    App.MIXTURE = 3;
 
     App.MIXTURE_TIME_TO_LIVE = 10 * 1000; // 10s
 
@@ -75,65 +71,17 @@ define([
 
             this._callback.call(this);
         },
-        setMap: function (map) {
+        setMap: function (matrix) {
             var self = this;
+            var width = _.size(matrix) * Wall.WIDTH;
+            var height = _.size(matrix[0]) * Wall.HEIGHT;
 
-            this.game.world.setBounds(0, 0, _.size(map) * Wall.WIDTH, _.size(map[0]) * Wall.HEIGHT); // world size
+            this.game.world.setBounds(0, 0, width, height); // world size
 
-            _.each(map, function (row, x) {
-                _.each(row, function (type, y) {
-                    if (!self.map[x]) self.map[x] = [];
-                    self.map[x][y] = type;
-                    self._setTile.call(self, x, y, type);
-                });
-            });
+            this.map = new Map(matrix);
         },
         updateMap: function (x, y, type) {
-            this._setTile(x, y, type);
-        },
-        _setTile: function (x, y, type) {
-            var tile;
-            switch (type) {
-                case App.SPACE:
-                    if (this.map[x] && this.map[x][y]) {
-                        // console.log(this.map[x][y]);
-                        this.map[x][y].destroy();
-                    }
-                    break;
-
-                case App.WALL:
-                    tile = new Wall({
-                        game: this.game,
-                        walls: this.walls,
-                        x: x * Wall.WIDTH,
-                        y: y * Wall.HEIGHT
-                    });
-                    break;
-
-                case App.BRICK:
-                    tile = new Brick({
-                        game: this.game,
-                        bricks: this.bricks,
-                        x: x * Wall.WIDTH,
-                        y: y * Wall.HEIGHT
-                    });
-                    break;
-
-                case App.MIXTURE:
-                    tile = new Mixture({
-                        game: this.game,
-                        mixtures: this.mixtures,
-                        x: x * Wall.WIDTH,
-                        y: y * Wall.HEIGHT
-                    });
-                    break;
-
-                default:
-                    throw 'unexpected type: ' + type;
-            }
-
-            if (!this.map[x]) this.map[x] = [];
-            this.map[x][y] = tile;
+            this.map.update(x, y, type);
         },
         update: function () {
             if (!player) return; // unless one player should be create
@@ -209,19 +157,7 @@ define([
             }, App.MIXTURE_TIME_TO_LIVE);
         },
         _spaceHandler: function () {
-            var x = Math.round(player.tile.x / Wall.WIDTH);
-            var y = Math.round(player.tile.y / Wall.HEIGHT);
-
-            broadcasting(x, y, 3);
-
-            // plant a bomb
-            new Bomb({
-                game: this.game,
-                bombs: this.bombs,
-                power: player.power,
-                x: x * Wall.WIDTH,
-                y: y * Wall.HEIGHT
-            });
+            player.plantBomb();
         },
         updatePosition: function () {
             player_move(player.tile.x, player.tile.y);
@@ -264,7 +200,7 @@ define([
                 if (x === px && y === py) {
                     opponent.destroy();
                     killPlayer(opponent.id);
-                    server.update(cookie.get('uuid'), { numOfBombs: ++player.numOfBombs });
+                    server.update(cookie.get('session_id'), { 'bombsMax': ++player.bombsMax });
                 }
             });
         },
@@ -285,8 +221,9 @@ define([
             return player;
         },
         _getUserName: function () {
-            var name = cookie.get('uuid');
-            if (!name) {
+            var session_id = cookie.get('session_id');
+            var name = null;
+            if (!session_id) {
                 // first visit
                 name = prompt('Pick your name:');
                 if (!name) {
@@ -294,15 +231,48 @@ define([
                     alert('Name is mandatory, please tell us, what is your name?');
                     name = app._getUserName();
                 }
-                cookie.set('uuid', sha1(navigator.userAgent + (new Date()).toString() + _.random(0, Number.MAX_VALUE - 1)));
+                cookie.set('session_id', sha1(navigator.userAgent + (new Date()).toString() + _.random(0, Number.MAX_VALUE - 1)));
             } else {
-                // next visit, because uuid exists
+                // next visit
             }
             return name;
         },
         getPlayer: function () {
             if (!player) throw 'player doesn\'t exists';
             return player;
+        },
+        buildWall: function (x, y) {
+            return new Wall({
+                game: this.game,
+                walls: this.walls,
+                x: x * Wall.WIDTH,
+                y: y * Wall.HEIGHT
+            });
+        },
+        buildBrick: function (x, y) {
+            return new Brick({
+                game: this.game,
+                bricks: this.bricks,
+                x: x * Wall.WIDTH,
+                y: y * Wall.HEIGHT
+            });
+        },
+        buildMixture: function (x, y) {
+            return new Mixture({
+                game: this.game,
+                mixtures: this.mixtures,
+                x: x * Wall.WIDTH,
+                y: y * Wall.HEIGHT
+            });
+        },
+        buildBomb: function (x, y, power) {
+            return new Bomb({
+                game: this.game,
+                bombs: this.bombs,
+                power: power,
+                x: x * Wall.WIDTH,
+                y: y * Wall.HEIGHT
+            });
         }
     };
 

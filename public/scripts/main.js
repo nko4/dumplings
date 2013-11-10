@@ -42,7 +42,7 @@ require([
                 var player = app.getPlayer();
                 var msg = $input.val();
                 info( '<em>' + player.name + '</em>: ' +  msg);
-                server.say(cookie.get('uuid'), msg);
+                server.say(cookie.get('session_id'), msg);
                 $input.val('');
             });
             $input.focus(); // on start you can write sth

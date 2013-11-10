@@ -1,7 +1,8 @@
 define([
     'underscore',
-    'items/Wall'
-], function (_, Wall) {
+    'items/Wall',
+    'items/Bomb'
+], function (_, Wall, Bomb) {
     'use strict';
 
     var label;
@@ -17,7 +18,8 @@ define([
         this.name = settings.name;
         this.sprite = settings.sprite;
         this.power = settings.power;
-        this.numOfBombs = 5;
+        this.bombsNum = 0; // current planting bombs
+        this.bombsMax = 2; // max number of bombs what user can plant
 
         this.create();
     };
@@ -48,7 +50,18 @@ define([
         random: function () {
             var x = _.random(0, this.game.world.width / Wall.WIDTH - 2);
             var y = _.random(0, this.game.world.height / Wall.HEIGHT - 2);
-            return {x: x * Wall.WIDTH, y: y * Wall.HEIGHT};
+            return { x: x * Wall.WIDTH, y: y * Wall.HEIGHT };
+        },
+        plantBomb: function () {
+            this.bombsNum++;
+
+            var x = Math.round(this.tile.x / Wall.WIDTH);
+            var y = Math.round(this.tile.y / Wall.HEIGHT);
+
+            broadcasting(x, y, 3);
+
+            // plant a bomb
+            app.buildBomb(x, y, this.power);
         },
         destroy: function () {
             if (!this.tile.alive) return;

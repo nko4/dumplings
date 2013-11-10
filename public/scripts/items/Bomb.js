@@ -32,6 +32,7 @@ define([
             if (!this.tile.alive) return;
 
             this.isDestroyed = true;
+            app.getPlayer().bombsNum++;
 
             var x = Math.round(this.x / Wall.WIDTH);
             var y = Math.round(this.y / Wall.HEIGHT);

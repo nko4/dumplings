@@ -55,9 +55,14 @@
         };
 
         exports.connect_to_server = function () {
-            var name = app._getUserName();
-
-            socket.emit('play', cookie.get('uuid'), {name: name});
+            (function () {
+                var settings = {};
+                var name = app._getUserName();
+                if (name) {
+                    settings.name = name;
+                }
+                socket.emit('play', cookie.get('uuid'), settings);
+            }());
 
             socket.on('mc',function(x,y,type) {
                 app.updateMap(x, y, type);
