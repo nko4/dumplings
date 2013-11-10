@@ -21,7 +21,12 @@
         $box.prepend($('<p>').html(' > <mark>' + msg + '</mark>'));
     }
 
+    function strip(html) {
+        return document.createTextNode(html).innerText;
+    }
+
     // make public
     exports.log = log;
     exports.info = info;
+    exports.strip = strip;
 }(this));

@@ -77,14 +77,14 @@
             });
             socket.on('join', function (player) {
                 currentPlayer.setName(player.name);
-                var msg = 'Player ' + player.name + ' joined from ' + player.ip;
-                log(msg, 1);
+                var msg = 'Player <em>' + player.name + '</em> joined from ' + player.ip;
+                log(strip(msg), 1);
                 info(msg);
             });
             socket.on('leave', function (player) {
                 app.terminateOpponent(player.id);
-                var msg = 'Opponent "' + player.name + '" terminated';
-                log(msg);
+                var msg = 'Opponent <em>' + player.name + '</em> terminated';
+                log(strip(msg));
                 info(msg);
             });
 

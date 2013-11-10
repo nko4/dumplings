@@ -41,7 +41,7 @@ require([
                 if (e.keyCode !== 13) return;
                 var player = app.getPlayer();
                 var msg = $input.val();
-                info( '<em>' + player.name + '</em>: ' +  msg);
+                info('<em>' + player.name + '</em>: ' +  msg);
                 server.say(cookie.get('session_id'), msg);
                 $input.val('');
             });
