@@ -152,8 +152,8 @@ define([
             var currentPlayer = this.list[s.id];
             t.destroy();
 
-            var x = Math.round(player.tile.x / Wall.WIDTH);
-            var y = Math.round(player.tile.y / Wall.HEIGHT);
+            var x = Math.round(t.x / Wall.WIDTH);
+            var y = Math.round(t.y / Wall.HEIGHT);
 
             broadcasting(x, y, Map.SPACE);
 
