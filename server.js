@@ -148,11 +148,11 @@ var Game = (function () {
 
   Game.prototype.set = function (x,y,value) {
     if (this.map[x][y] == Game.BRICK) {
-      this.brickCount -= 1;
+      this.brickCount += 1;
     }
 
     if (this.map[x][y] == Game.MIXTURE) {
-      this.powerCount -= 1;
+      this.powerCount += 1;
     }
 
     this.map[x][y] = value;
@@ -314,12 +314,12 @@ io.sockets.on('connection', function (socket) {
     
     if (game.map[x][y] == 2 && type == 0) {
       game.getPlayer(game.getSocketIdBy(socket.id), function (player) {
-
-          db.players.update(
-            { uuid: player.uuid },
-            { $inc: { points: 1 } } ,
-            { upsert: true }
-          );
+          game.brickCount -= 1;
+          // db.players.update(
+          //   { uuid: player.uuid },
+          //   { $inc: { points: 1 } } ,
+          //   { upsert: true }
+          // );
 
       });
     }
@@ -337,12 +337,13 @@ io.sockets.on('connection', function (socket) {
 
     if (id != socket.id) {
       game.getPlayer(game.getSocketIdBy(socket.id), function (player) {
-
-          db.players.update(
-            { uuid: player.uuid },
-            { $inc: { points: 100 } } ,
-            { upsert: true }
-          );
+          if (player && player.uuid) {
+            db.players.update(
+              { uuid: player.uuid },
+              { $inc: { points: 100 } } ,
+              { upsert: true }
+            );
+          }
 
       });
     }
@@ -395,15 +396,15 @@ setInterval(function () {
 
 
 
-// setInterval(function () {
-//   var new_brick = game.randNewBrick();
+setInterval(function () {
+  var new_brick = game.randNewBrick();
 
-//   if (new_brick) {
-//     io.sockets.emit('mc', new_brick[0], new_brick[1], Game.BRICK);
-//     incStats('bricks');
-//   }
+  if (new_brick) {
+    io.sockets.emit('mc', new_brick[0], new_brick[1], Game.BRICK);
+    //incStats('bricks');
+  }
   
-// }, Game.REVIVAL_BRICK);
+}, Game.REVIVAL_BRICK);
 
 setInterval(function () {
   var new_mixture = game.randNewMixture();
