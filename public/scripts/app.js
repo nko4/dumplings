@@ -201,12 +201,10 @@ define([
 
             broadcasting(x, y, 0);
 
-            currentPlayer.power++;
-            updatePlayer(s.id, { power: currentPlayer.power });
-
+            updatePlayer(s.id, { power: ++currentPlayer.power });
             setTimeout(function () {
-                currentPlayer.power--;
-                updatePlayer(s.id, { power: currentPlayer.power });
+                // power is down after couple of seconds
+                updatePlayer(s.id, { power: --currentPlayer.power });
             }, App.MIXTURE_TIME_TO_LIVE);
         },
         _spaceHandler: function () {
@@ -215,6 +213,7 @@ define([
 
             broadcasting(x, y, 3);
 
+            // plant a bomb
             new Bomb({
                 game: this.game,
                 bombs: this.bombs,

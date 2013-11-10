@@ -16,9 +16,8 @@ define([], function () {
     Wall.prototype = {
         create: function () {
             this.tile = this.game.add.sprite(this.x, this.y, 'wall');
-            this.walls.add(this.tile);
-            // this.tile = this.walls.create(this.x, this.y, 'wall');
             this.tile.body.immovable = true;
+            this.walls.add(this.tile);
         },
         destroy: function () {
             // throw 'destroy Wall: you can\'t do this';

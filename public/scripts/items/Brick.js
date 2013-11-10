@@ -20,9 +20,8 @@ define([
     Brick.prototype = {
         create: function () {
             this.tile = this.game.add.sprite(this.x, this.y, 'brick');
-            this.bricks.add(this.tile);
-            // this.tile = this.bricks.create(this.x, this.y, 'brick');
             this.tile.body.immovable = true;
+            this.bricks.add(this.tile);
         },
         destroy: function () {
             if (!this.tile.alive) return;
