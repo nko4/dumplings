@@ -274,6 +274,7 @@ define([
                 player.destroy();
                 killPlayer(player.id);
                 alert('You are dead.');
+                window.location.reload(); // after death reload game
             }
         },
         getPlayerById: function (id) {
