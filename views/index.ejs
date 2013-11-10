@@ -77,12 +77,10 @@
             });
             
             socket.on('join', function (player) {
-                log(msg, 1);
             });
 
             socket.on('leave', function (player) {
                 app.terminateOpponent(player.id);
-                info(msg);
             });
 
             socket.on('map', function(map) {
