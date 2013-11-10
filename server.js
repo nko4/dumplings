@@ -277,7 +277,7 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('mc', function (x,y,type) {
     
-    if (game.map[x][y] == game.BRICK && type == game.SPACE) {
+    if (game.map[x][y] == 2 && type == 0) {
       game.getPlayer(game.getSocketIdBy(socket.id), function (player) {
 
           db.players.update(
@@ -343,7 +343,7 @@ setInterval(function () {
       io.sockets.emit('ranking', ranking);    
     }
   });
-}, 1000);
+}, 1000 * 5);
 
 
 
