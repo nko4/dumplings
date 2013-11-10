@@ -27,6 +27,11 @@ define([
         this.initialize();
     };
 
+    App.SPACE = 0;
+    App.WALL = 1;
+    App.BRICK = 2;
+    App.MIXTURE = 3;
+
     var player;
     var opponent;
     var block = false;
@@ -39,8 +44,7 @@ define([
             this.game = new Phaser.Game(window.innerWidth, window.innerHeight - $('#communication').height(), Phaser.CANVAS, 'phaser-example', {
                 preload: this.preload.bind(this),
                 create: this.create.bind(this),
-                update: this.update.bind(this),
-                render: this.render.bind(this)
+                update: this.update.bind(this)
             });
         },
         preload: function () {
@@ -93,16 +97,14 @@ define([
         _setTile: function (x, y, type) {
             var tile;
             switch (type) {
-                // space
-                case 0:
+                case App.SPACE:
                     if (this.map[x] && this.map[x][y]) {
                         // console.log(this.map[x][y]);
                         this.map[x][y].destroy();
                     }
                     break;
 
-                // wall
-                case 1:
+                case App.WALL:
                     tile = new Wall({
                         game: this.game,
                         walls: this.walls,
@@ -111,8 +113,7 @@ define([
                     });
                     break;
 
-                // brick
-                case 2:
+                case App.BRICK:
                     tile = new Brick({
                         game: this.game,
                         bricks: this.bricks,
@@ -121,8 +122,7 @@ define([
                     });
                     break;
 
-                // mixture
-                case 3:
+                case App.MIXTURE:
                     tile = new Mixture({
                         game: this.game,
                         mixtures: this.mixtures,
@@ -134,6 +134,7 @@ define([
                 default:
                     throw 'unexpected type: ' + type;
             }
+
             if (!this.map[x]) this.map[x] = [];
             this.map[x][y] = tile;
         },
@@ -180,6 +181,9 @@ define([
 
             player._moveLabel(player.tile.x, player.tile.y);
 
+            this.collision();
+        },
+        collision: function () {
             this.game.physics.collide(player.tile, this.bricks, emptyHandler, null, this);
             this.game.physics.collide(player.tile, this.walls, emptyHandler, null, this);
             this.game.physics.collide(player.tile, this.bombs, emptyHandler, null, this);
@@ -214,11 +218,6 @@ define([
         },
         updatePosition: function () {
             player_move(player.tile.x, player.tile.y);
-        },
-        // run per each mouse move on game board
-        render: function () {
-            // this.game.debug.renderCameraInfo(this.game.camera, 60, 75);
-            // if (player) this.game.debug.renderSpriteCoords(player.tile, 60, 180);
         },
         addPlayer: function (id) {
             player = new Player({
@@ -263,7 +262,7 @@ define([
         tryKillPlayer: function (x, y) {
             var px = Math.round(player.tile.x / Wall.WIDTH);
             var py = Math.round(player.tile.y / Wall.HEIGHT);
-            // console.log('tryKillPlayer', {x:x, y:y}, {px: px, py:py});
+
             if (px === x && py === y) {
                 player.destroy();
                 alert('You are dead.');

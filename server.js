@@ -54,21 +54,12 @@ MongoClient.connect(globalUri, function(err, db) {
 
 
 var Game = (function() {
-  function Game (argument) {
+  function Game () {
     var self = this;
-
     var map = [];
-
-    // 0 - space
-    // 1 - wall
-    // 2 - brick
-    // 3 - power
 
     var MAP_X = 44;
     var MAP_Y = 30;
-
-    // MAP_X = 24;
-    // MAP_Y = 13;
 
     this.MAP_X = MAP_X;
     this.MAP_Y = MAP_Y;
@@ -77,7 +68,6 @@ var Game = (function() {
     this.wallCount = 0;
     this.powerCount = 0;
     this.maxCount = MAP_X * MAP_Y;
-
 
     for (var x = MAP_X; x >= 0; x--) {
       map[x] = [];
@@ -113,7 +103,6 @@ var Game = (function() {
     _.times(parseInt(MAP_X*MAP_Y*0.50),function() {
       var x = Math.floor(Math.random() * MAP_X-1) + 1;
       var y = Math.floor(Math.random() * MAP_Y-1) + 1;
-      // var elem = map[x][y];
 
       if (map[x][y] == 0) {
         map[x][y] = 2;
@@ -124,7 +113,6 @@ var Game = (function() {
     _.times(parseInt(MAP_X*MAP_Y*0.05),function() {
       var x = Math.floor(Math.random() * MAP_X-1) + 1;
       var y = Math.floor(Math.random() * MAP_Y-1) + 1;
-      // var elem = map[x][y];
 
       if (map[x][y] == 0) {
         map[x][y] = 3;
@@ -134,14 +122,17 @@ var Game = (function() {
 
     this.map = map;
     this.players = {};
-    // this.nextId = 0;
   }
+
+  Game.SPACE = 0;
+  Game.WALL = 1;
+  Game.BRICK = 2;
+  Game.MIXTURE = 3;
 
   Game.prototype.randNewBrick = function() {
     if ( this.brickCount < (this.maxCount/2) ) {
       var x = Math.floor(Math.random() * this.MAP_X-1) + 1;
       var y = Math.floor(Math.random() * this.MAP_Y-1) + 1;
-      // var elem = map[x][y];
 
       if (this.map[x][y] == 0) {
         this.map[x][y] = 2;
@@ -151,7 +142,6 @@ var Game = (function() {
     }
     return false;
   };
-
 
   Game.prototype.randNewPower = function() {
     if ( this.powerCount < (this.maxCount/5) ) {
@@ -168,7 +158,6 @@ var Game = (function() {
     }
     return false;
   };
-
 
   Game.prototype.set = function(x,y,value) {
     if (this.map[x][y] == 2) {
@@ -251,16 +240,15 @@ io.sockets.on('connection', function (socket) {
     socket.broadcast.emit('killed',{ id: id, by_id: socket.id })
   });
 
-  socket.on('pm',function(x,y) {
-    
-    game.players[socket.id] = { x: x, y: y};
+  socket.on('pm',function(x, y) {
+    game.players[socket.id] = { x: x, y: y };
 
     if (!move_block) {
       // move_block = true;
       var _tmp_players = [];
 
-      _.each(game.players,function(v,k) {
-        _tmp_players.push(_.extend({ id: k },v));
+      _.each(game.players, function(v, k) {
+        _tmp_players.push(_.extend({ id: k }, v));
       });
 
       socket.broadcast.emit('pm',_tmp_players);
@@ -276,7 +264,6 @@ io.sockets.on('connection', function (socket) {
     delete game.players[socket.id];
     socket.broadcast.emit('leave',{ id: socket.id })
   });
-
 });
 
 setInterval(function() {
@@ -284,7 +271,6 @@ setInterval(function() {
 
   // build ne brick
   new_brick = game.randNewBrick();
-
 
   if (new_brick) {
     io.sockets.emit('mc',new_brick[0],new_brick[1],2); 
@@ -296,11 +282,4 @@ setInterval(function() {
   if (new_brick) {
     io.sockets.emit('mc',new_brick[0],new_brick[1],3); 
   }
-
-
 },1000 * 5);
-
-
-
-
-
