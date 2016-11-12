@@ -4,23 +4,24 @@
 <link href="styles/default.css" type="text/css" rel="stylesheet"/>
 
 <script src="scripts/utils.js"></script>
-<script src="scripts/vendor/cookie.js"></script>
-<script src="scripts/vendor/jquery.min.js"></script>
-<script src="scripts/vendor/jquery-ui.min.js"></script>
+<script src="scripts/vendors/cookie.js"></script>
+<script src="scripts/vendors/jquery.min.js"></script>
+<script src="scripts/vendors/jquery-ui.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
-<script data-main="scripts/main" src="scripts/vendor/require.js"></script>
+<script src="scripts/vendors/require.js" data-main="scripts/main"></script>
 <script type="text/javascript">
     // self-invoke function expression - start loading...
     (function (exports) {
         'use strict';
 
-        var socket, currentPlayer = false;
+        var socket;
+        var currentPlayer = false;
 
         if (<%= isProduction %>) {
             console.log('Start :: dumplings :: application in production');
             socket = io.connect('http://dumplings.2013.nodeknockout.com/');
         } else {
-        	var socket_path = location.protocol + '//' + location.hostname + ':' + location.port + '/';
+            var socket_path = location.protocol + '//' + location.hostname + ':' + location.port + '/';
             console.log('Start :: dumplings :: application in development on ' + socket_path);
             socket = io.connect(socket_path);
         }
@@ -43,11 +44,11 @@
         };
 
         exports.server = {
-            update: function(uuid, settings) {
+            update: function (uuid, settings) {
                 socket.emit('update', uuid, settings);
             },
 
-            say: function(uuid, message) {
+            say: function (uuid, message) {
                 socket.emit('say', uuid, message);
             }
         };
@@ -62,11 +63,11 @@
                 socket.emit('play', cookie.get(app.COOKIE), settings);
             }());
 
-            socket.on('ranking', function(ranking) {
+            socket.on('ranking', function (ranking) {
                 updateRanking(ranking);
             });
 
-            socket.on('mc',function(x, y, type) {
+            socket.on('mc', function (x, y, type) {
                 app.updateMap(x, y, type);
             });
 
@@ -79,17 +80,17 @@
             });
 
             socket.on('play', function (id, x, y, name) {
-    			currentPlayer = app.addPlayer(id, x, y);
+                currentPlayer = app.addPlayer(id, x, y);
                 currentPlayer.setName(name);
-    			socket.emit('pm', currentPlayer.tile.x , currentPlayer.tile.y);
+                socket.emit('pm', currentPlayer.tile.x, currentPlayer.tile.y);
                 info('<em>Find & kill other players, <strong>use CTRL to place a bomb</strong>, <strong>ARROWs to move</strong>and keyboard to chat! GL & HF</em>');
             });
-            
+
             socket.on('join', function (player) {
                 // do nothing...
             });
 
-            socket.on('killed', function(killed) {
+            socket.on('killed', function (killed) {
                 app.terminateOpponent(killed.id);
             });
 
@@ -97,12 +98,12 @@
                 app.terminateOpponent(player.id);
             });
 
-            socket.on('map', function(map) {
+            socket.on('map', function (map) {
                 app.setMap(map);
             });
 
-            socket.on('pm',function (players) {
-            	players.forEach(function (player) {
+            socket.on('pm', function (players) {
+                players.forEach(function (player) {
                     var user;
 
                     try {
@@ -113,9 +114,9 @@
                     }
 
                     if (currentPlayer.id != player.id) {
-                        user.move(player.x,player.y);
+                        user.move(player.x, player.y);
                     }
-            	});
+                });
             });
         };
     }(this));
@@ -127,19 +128,18 @@
 
 <div id="footer">
     <div id="chat">
-        <input id="input" type="text" placeholder="Enter message..." />
+        <input id="input" type="text" placeholder="Enter message..."/>
         <div id="messages"></div>
     </div>
 
     <div id="browsers">
         <p>Testing under:</p>
-        <img src="assets/pics/browser/chrome.png" alt="Google Chrome" />
-        <img src="assets/pics/browser/firefox.png" alt="Mozilla Firefox" />
-        <img src="assets/pics/browser/ie.png" alt="IE" />
-        <img src="assets/pics/browser/opera.png" alt="Opera" />
-        <img src="assets/pics/browser/safari.png" alt="Safari" />
+        <img src="assets/pics/browser/chrome.png" alt="Google Chrome"/>
+        <img src="assets/pics/browser/firefox.png" alt="Mozilla Firefox"/>
+        <img src="assets/pics/browser/ie.png" alt="IE"/> <img src="assets/pics/browser/opera.png" alt="Opera"/>
+        <img src="assets/pics/browser/safari.png" alt="Safari"/>
     </div>
     <a id="music" href="#">Music on/off</a>
 
-    <div id="ranking"><img id="ranking-loader" src="assets/pics/ajax-loader.gif" /></div>
+    <div id="ranking"><img id="ranking-loader" src="assets/pics/ajax-loader.gif"/></div>
 </div>

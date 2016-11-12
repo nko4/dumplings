@@ -9,12 +9,15 @@
     font-family: monospace;
     cursor: pointer;
 }
+
 #music:before {
     content: "+ "
 }
+
 #music.disabled {
     background: rgba(80, 69, 234, 0.9);
 }
+
 #music.disabled:before {
     content: "- "
 }

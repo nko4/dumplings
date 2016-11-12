@@ -4,16 +4,16 @@ define([
     'cookie',
     'sha1',
     'phaser',
-    'items/Player',
-    'items/Wall',
-    'items/Bomb',
-    'items/Brick',
-    'items/Mixture',
-    'items/Map'
+    'models/player',
+    'models/wall',
+    'models/bomb',
+    'models/brick',
+    'models/mixture',
+    'models/map'
 ], function (_, $, cookie, sha1, Phaser, Player, Wall, Bomb, Brick, Mixture, Map) {
     'use strict';
 
-    var App = function (callback) {
+    function App(callback) {
         this._callback = callback;
 
         this.bricks = null; // collection of bricks
@@ -29,13 +29,14 @@ define([
         this.COOKIE = 'dumplings_8';
 
         this.initialize();
-    };
+    }
 
     var player;
     var music;
     var opponent;
     var block = false;
-    var emptyHandler = function () {};
+    var emptyHandler = function () {
+    };
 
     App.prototype = {
         initialize: function () {
@@ -71,7 +72,9 @@ define([
 
             this.cursors = this.game.input.keyboard.createCursorKeys(); // handle moving
             var ctrlKey = this.game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
-            ctrlKey.onDown.add(function () { player.plantBomb(); }, this);
+            ctrlKey.onDown.add(function () {
+                player.plantBomb();
+            }, this);
 
             this._callback.call(this);
         },
@@ -86,18 +89,26 @@ define([
             var max_right = this.game.world.width - Player.WIDTH * 2;
 
             if (this.cursors.up.isDown) {
-                if (player.tile.y < max_top) { return; }
+                if (player.tile.y < max_top) {
+                    return;
+                }
                 player.tile.body.velocity.y = -200;
             } else if (this.cursors.down.isDown) {
-                if (player.tile.y > max_bottom) { return; }
+                if (player.tile.y > max_bottom) {
+                    return;
+                }
                 player.tile.body.velocity.y = 200;
             }
 
             if (this.cursors.left.isDown) {
-                if (player.tile.x < max_left) { return; }
+                if (player.tile.x < max_left) {
+                    return;
+                }
                 player.tile.body.velocity.x = -200;
             } else if (this.cursors.right.isDown) {
-                if (player.tile.x > max_right) { return; }
+                if (player.tile.x > max_right) {
+                    return;
+                }
                 player.tile.body.velocity.x = 200;
             }
 

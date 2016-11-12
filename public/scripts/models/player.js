@@ -1,11 +1,11 @@
 define([
     'underscore',
-    'items/Wall',
-    'items/Map'
+    'models/wall',
+    'models/map'
 ], function (_, Wall, Map) {
     'use strict';
 
-    var Player = function (settings) {
+    function Player(settings) {
         this.game = settings.game;
         this.players = settings.players;
         this.x = settings.x;
@@ -21,7 +21,8 @@ define([
         this.label = null;
 
         this.create();
-    };
+    }
+
     Player.WIDTH = 30;
     Player.HEIGHT = 45;
 

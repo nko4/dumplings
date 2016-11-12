@@ -1,10 +1,10 @@
 define([
-    'items/Wall',
-    'items/Map'
+    'models/wall',
+    'models/map'
 ], function (Wall, Map) {
     'use strict';
 
-    var Mixture = function (settings) {
+    function Mixture(settings) {
         this.game = settings.game;
         this.mixtures = settings.mixtures;
         this.x = settings.x;
@@ -12,7 +12,8 @@ define([
         this.tile = null;
 
         this.create();
-    };
+    }
+
     Mixture.TIME_TO_LIVE = 20 * 1000; // 20s
 
     Mixture.prototype = {

@@ -1,11 +1,13 @@
+'use strict';
+
 require.config({
     baseUrl: 'scripts',
     paths: {
-        "phaser": 'vendor/phaser',
-        "underscore": 'vendor/underscore',
-        "jquery": 'vendor/jquery.min',
-        "cookie": 'vendor/cookie',
-        "sha1": 'vendor/sha1'
+        "phaser": 'vendors/phaser',
+        "underscore": 'vendors/underscore',
+        "jquery": 'vendors/jquery.min',
+        "cookie": 'vendors/cookie',
+        "sha1": 'vendors/sha1'
     },
     shim: {
         "phaser": {

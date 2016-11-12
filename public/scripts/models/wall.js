@@ -1,7 +1,7 @@
 define([], function () {
     'use strict';
 
-    var Wall = function (settings) {
+    function Wall(settings) {
         this.game = settings.game;
         this.walls = settings.walls;
         this.x = settings.x;
@@ -9,7 +9,8 @@ define([], function () {
         this.tile = null;
 
         this.create();
-    };
+    }
+
     Wall.WIDTH = 50;
     Wall.HEIGHT = 50;
 

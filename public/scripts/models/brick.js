@@ -1,11 +1,11 @@
 define([
     'underscore',
-    'items/Wall',
-    'items/Map'
+    'models/wall',
+    'models/map'
 ], function (_, Wall, Map) {
     'use strict';
 
-    var Brick = function (settings) {
+    function Brick(settings) {
         this.game = settings.game;
         this.bricks = settings.bricks;
         this.x = settings.x;
@@ -14,7 +14,8 @@ define([
         this.isDestroyed = false;
 
         this.create();
-    };
+    }
+
     Brick.WIDTH = 50;
     Brick.HEIGHT = 50;
 

@@ -1,12 +1,12 @@
 define([], function () {
     'use strict';
 
-    var Map = function (matrix) {
+    function Map(matrix) {
         this.matrix = matrix;
         this.map = [];
 
         this.create();
-    };
+    }
 
     Map.SPACE = 0;
     Map.WALL = 1;
@@ -37,16 +37,30 @@ define([], function () {
                     }
                     break;
 
-                case Map.WALL: tile = app.buildWall(x, y); break;
-                case Map.BRICK: tile = app.buildBrick(x, y); break;
-                case Map.MIXTURE: tile = app.buildMixture(x, y); break;
-                case Map.BOMB: tile = app.buildBomb(x, y); break;
+                case Map.WALL:
+                    tile = app.buildWall(x, y);
+                    break;
+
+                case Map.BRICK:
+                    tile = app.buildBrick(x, y);
+                    break;
+
+                case Map.MIXTURE:
+                    tile = app.buildMixture(x, y);
+                    break;
+
+                case Map.BOMB:
+                    tile = app.buildBomb(x, y);
+                    break;
 
                 default:
                     throw 'unexpected type: ' + type;
             }
 
-            if (!this.map[x]) this.map[x] = [];
+            if (!this.map[x]) {
+                this.map[x] = [];
+            }
+
             this.map[x][y] = tile;
         }
     };

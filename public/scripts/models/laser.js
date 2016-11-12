@@ -1,10 +1,10 @@
 define([
     'underscore',
-    'items/Wall'
+    'models/wall'
 ], function (_, Wall) {
     'use strict';
 
-    var Laser = function (settings) {
+    function Laser(settings) {
         this.game = settings.game;
         this.x = settings.x;
         this.y = settings.y;
@@ -16,7 +16,7 @@ define([
             this.callback(this.points);
         }.bind(this));
         // this.create(2, 0xFFE303);
-    };
+    }
 
     Laser.prototype = {
         create: function (size, color, callback) {

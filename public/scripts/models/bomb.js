@@ -1,12 +1,12 @@
 define([
     'underscore',
-    'items/Wall',
-    'items/Laser',
-    'items/Map'
+    'models/wall',
+    'models/laser',
+    'models/map'
 ], function (_, Wall, Laser, Map) {
     'use strict';
 
-    var Bomb = function (settings) {
+    function Bomb(settings) {
         this.game = settings.game;
         this.bombs = settings.bombs;
         this.x = settings.x;
@@ -15,7 +15,8 @@ define([
         this.isDestroyed = false;
 
         this.create();
-    };
+    }
+
     Bomb.WIDTH = 50;
     Bomb.HEIGHT = 50;
 
