@@ -11,15 +11,15 @@
         "url": "git@github.com:nko4/dumplings.git"
     },
     "dependencies": {
-        "nko": "*",
-        "mongojs": "*",
-        "ejs": "*",
-        "socket.io": "*",
-        "express": "*",
-        "underscore": "*",
-        "underscore.string": "*"
+        "nko": "^0.3.1",
+        "mongojs": "^3.1.0",
+        "ejs": "^3.1.10",
+        "socket.io": "^4.8.3",
+        "express": "^5.2.1",
+        "underscore": "^1.13.7",
+        "underscore.string": "^3.3.6"
     },
     "engines": {
-        "node": "0.10.x"
+        "node": ">=22"
     }
 }

@@ -8,7 +8,8 @@ var http = require('http');
 var port = (isProduction ? 80 : 8000);
 
 var mongojs = require('mongojs');
-var db = mongojs("mongodb://nko:nko@ds053428.mongolab.com:53428/nko13", ["statistics", "players"]);
+var db = mongojs(process.env.MONGODB_URL || "mongodb://localhost:27017/dumplings", ["statistics", "players"]);
+db.on('error', function(err) { console.log('MongoDB error (ignored):', err.message); });
 
 var ejs = require('ejs');
 var express = require('express');
@@ -192,7 +193,7 @@ var Game = (function () {
 var game = new Game(44, 30);
 
 var server = app.listen(port);
-var io = require('socket.io').listen(server);
+var io = require('socket.io')(server);
 
 if (isProduction) {
     io.enable('browser client minification');  // send minified client
@@ -227,7 +228,7 @@ function updatePlayer(uuid, settings) {
 
 
 io.sockets.on('connection', function (socket) {
-    var ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address.address;
+    var ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address;
 
     socket.on('update', function (uuid, settings) {
         updatePlayer(uuid, settings)
@@ -235,6 +236,7 @@ io.sockets.on('connection', function (socket) {
 
     socket.on('say', function (uuid, message) {
         game.getPlayer(uuid, function (player) {
+            if (!player) return;
             io.sockets.emit('warn', '<em>' + player.name + '</em>: ' + _s.stripTags(message));
         });
     });
@@ -242,6 +244,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('play', function (uuid, settings) {
         if (_.isEmpty(settings)) {
             game.getPlayer(uuid, function (player) {
+                if (!player) return;
                 socket.broadcast.emit('join', { id: socket.id, ip: ip, name: player.name });
 
                 socket.emit('info', 'Welcome again <em>' + player.name + '</em>');
