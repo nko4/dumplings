@@ -18,7 +18,9 @@ var mongoOptions = mongoUrl.includes('mongodb+srv') ? {
         version: ServerApiVersion.v1,
         strict: true,
         deprecationErrors: true,
-    }
+    },
+    tls: true,
+    tlsInsecure: true
 } : {};
 
 var client = new MongoClient(mongoUrl, mongoOptions);
