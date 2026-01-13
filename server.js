@@ -7,9 +7,20 @@ var isProduction = (process.env.NODE_ENV === 'production');
 var http = require('http');
 var port = (isProduction ? 80 : 8000);
 
-var mongojs = require('mongojs');
-var db = mongojs(process.env.MONGODB_URL || "mongodb://localhost:27017/dumplings", ["statistics", "players"]);
-db.on('error', function(err) { console.log('MongoDB error (ignored):', err.message); });
+var { MongoClient } = require('mongodb');
+var mongoUrl = process.env.MONGODB_URL || "mongodb://localhost:27017/dumplings";
+var db = null;
+var statistics = null;
+var players = null;
+
+MongoClient.connect(mongoUrl).then(function(client) {
+    db = client.db('dumplings');
+    statistics = db.collection('statistics');
+    players = db.collection('players');
+    console.log('MongoDB connected');
+}).catch(function(err) {
+    console.log('MongoDB error:', err.message);
+});
 
 var ejs = require('ejs');
 var express = require('express');
@@ -20,9 +31,10 @@ var app = express();
 console.log('Node app is running at localhost:' + port);
 
 function incStats(name) {
+    if (!statistics) return;
     var _inc = {};
     _inc[name] = 1;
-    db.statistics.update({ _id: "main" }, { $inc: _inc }, { upsert: true })
+    statistics.updateOne({ _id: "main" }, { $inc: _inc }, { upsert: true });
 }
 
 incStats('server_starts');
@@ -134,10 +146,11 @@ var Game = (function () {
     };
 
     Game.prototype.getPlayer = function (uuid, cb) {
-        db.players.findOne({
-            uuid: uuid
-        }, function (err, doc) {
-            cb(doc)
+        if (!players) return cb(null);
+        players.findOne({ uuid: uuid }).then(function(doc) {
+            cb(doc);
+        }).catch(function() {
+            cb(null);
         });
     };
 
@@ -201,8 +214,9 @@ app.get('/', function (reseq, res) {
 
 
 function updatePlayer(uuid, settings) {
-    db.players.update(
-        { uuid: uuid }, // first
+    if (!players) return;
+    players.updateOne(
+        { uuid: uuid },
         { $set: settings },
         { upsert: true }
     );
@@ -296,8 +310,8 @@ io.sockets.on('connection', function (socket) {
 
         if (id != socket.id) {
             game.getPlayer(game.getSocketIdBy(socket.id), function (player) {
-                if (player && player.uuid) {
-                    db.players.update(
+                if (player && player.uuid && players) {
+                    players.updateOne(
                         { uuid: player.uuid },
                         { $inc: { points: 100 } },
                         { upsert: true }
@@ -338,14 +352,15 @@ io.sockets.on('connection', function (socket) {
 /******************************************************************************/
 
 setInterval(function () {
-    db.players.find({ points: { $gt: 1 }, name: { $exists: true } }, {
-        name: 1,
-        points: 1
-    }).sort({ points: -1 }).limit(10).toArray(function (err, ranking) {
+    if (!players) return;
+    players.find(
+        { points: { $gt: 1 }, name: { $exists: true } },
+        { projection: { name: 1, points: 1 } }
+    ).sort({ points: -1 }).limit(10).toArray().then(function(ranking) {
         if (!_.isEmpty(ranking)) {
             io.sockets.emit('ranking', ranking);
         }
-    });
+    }).catch(function() {});
 }, 1000 * 5);
 
 /******************************************************************************/
