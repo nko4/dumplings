@@ -7,13 +7,22 @@ var isProduction = (process.env.NODE_ENV === 'production');
 var http = require('http');
 var port = (isProduction ? 80 : 8000);
 
-var { MongoClient } = require('mongodb');
+var { MongoClient, ServerApiVersion } = require('mongodb');
 var mongoUrl = process.env.MONGODB_URL || "mongodb://localhost:27017/dumplings";
 var db = null;
 var statistics = null;
 var players = null;
 
-MongoClient.connect(mongoUrl).then(function(client) {
+var mongoOptions = mongoUrl.includes('mongodb+srv') ? {
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+    }
+} : {};
+
+var client = new MongoClient(mongoUrl, mongoOptions);
+client.connect().then(function() {
     db = client.db('dumplings');
     statistics = db.collection('statistics');
     players = db.collection('players');
